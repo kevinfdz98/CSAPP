@@ -24,7 +24,7 @@
               "src/assets"
             ],
             "styles": [
-              "src/custom-theme.scss",
+              "src/punto180-theme.scss",
               "src/styles.css"
             ],
             "scripts": []
