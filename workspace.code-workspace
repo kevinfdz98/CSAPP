@@ -1,6 +1,8 @@
 {
   "folders": [
     {"name": "./src/app/shared", "path": "src/app/shared"},
+    {"name": "./src/app/services", "path": "src/app/services"},
+    {"name": "./src/app/features", "path": "src/app/features"},
     {"name": "./src/app", "path": "src/app"},
     {"name": "./src", "path": "src"},
     {"name": ".", "path": "."},
