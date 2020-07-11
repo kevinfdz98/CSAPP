@@ -1,7 +1,11 @@
 <mat-sidenav-container>
 
   <!--Material Sidenav-->
-  <mat-sidenav mode="over" class="app-sidenav" #drawer>
+  <mat-sidenav
+    [mode]="(onMobile | async).matches? 'over' : 'side'"
+    [opened]="!(onMobile | async).matches"
+    class="app-sidenav" #drawer
+  >
     <div class="sidenav-grid top">
       <span><mat-icon>calendar_today</mat-icon><span>Mes</span></span>
       <span><mat-icon>view_week</mat-icon><span>Semana</span></span>
