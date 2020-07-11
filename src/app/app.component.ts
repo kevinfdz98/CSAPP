@@ -11,7 +11,9 @@ export class AppComponent implements OnInit {
   title = 'CSAPP';
   onMobile: Observable<BreakpointState>;
 
-  constructor(private breakpointObserver: BreakpointObserver) { }
+  constructor(
+    private breakpointObserver: BreakpointObserver
+    ) { }
 
   ngOnInit(): void {
     this.onMobile = this.breakpointObserver.observe(['(max-width: 599px)']);
