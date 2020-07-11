@@ -1,0 +1,25 @@
+// Custom Theming for Angular Material
+// For more information: https://material.angular.io/guide/theming
+@import '~@angular/material/theming';
+
+// Include the common styles for Angular Material
+@include mat-core();
+
+// Define the palletes for the custom theme
+// (see https://material.io/design/color/ for available color palletes)
+$CSAPP-primary: mat-palette($mat-indigo);
+$CSAPP-accent: mat-palette($mat-pink, A200, A100, A400);
+$CSAPP-warn: mat-palette($mat-red); // This pallete is optional (defaults to red).
+
+// Create the theme object
+$CSAPP-theme: mat-light-theme((
+  color: (
+    primary: $CSAPP-primary,
+    accent: $CSAPP-accent,
+    warn: $CSAPP-warn,
+  )
+));
+
+// Include theme styles for core and each component used in the app.
+@include angular-material-theme($CSAPP-theme);
+
