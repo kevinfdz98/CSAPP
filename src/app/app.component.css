@@ -1,0 +1,58 @@
+/* For mobile: */
+
+mat-sidenav-container {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: transparent;
+}
+
+.app-sidenav {
+  background: #20124d;
+  color: white;
+  width: 90vw;
+}
+
+.sidenav-grid {
+  position: absolute;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-auto-rows: 40px;
+  row-gap: 10px;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 25px 0;
+}
+.sidenav-grid.top {top: 0;}
+.sidenav-grid.bottom {bottom: 0;}
+.sidenav-grid > span {
+  display: grid;
+  grid-template-columns: 3em 1fr;
+  padding: 0 25px;
+}
+.sidenav-grid > span:hover { background-color: #ffffff49; cursor: pointer;}
+.sidenav-grid > span > * {
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+
+.main-window {
+  display: grid;
+  grid-template-rows: min-content 1fr min-content;
+}
+
+
+.app-toolbar {
+  background: transparent;
+  color: white;
+}
+.horizontal-spacer { flex: 1 1 auto; }
+.content-container { background-color: white; }
+
+/* For desktop: */
+@media only screen and (min-width: 768px) {
+  .app-sidenav { width: 350px; }
+}
