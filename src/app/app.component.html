@@ -7,9 +7,9 @@
     class="app-sidenav" #drawer
   >
     <div class="sidenav-grid top">
-      <span><mat-icon>calendar_today</mat-icon><span>Mes</span></span>
-      <span><mat-icon>view_week</mat-icon><span>Semana</span></span>
-      <span><mat-icon>view_day</mat-icon><span>Día</span></span>
+      <span routerLink="/calendar/month"><mat-icon>calendar_today</mat-icon><span>Mes</span></span>
+      <span routerLink="/calendar/week"><mat-icon>view_week</mat-icon><span>Semana</span></span>
+      <span routerLink="/calendar/list"><mat-icon>view_list</mat-icon><span>Lista</span></span>
     </div>
     <div class="sidenav-grid bottom" >
       <span><mat-icon>login</mat-icon><span>Login</span></span>
@@ -26,7 +26,9 @@
 
     <!--Container for the app routes-->
     <div class="content-container">
-      <router-outlet></router-outlet>
+      <router-outlet>
+
+      </router-outlet>
     </div>
 
     <!--Material Toolbar (bottom row)-->
