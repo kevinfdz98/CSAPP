@@ -6,80 +6,88 @@ import { auth} from 'firebase/app';
 // Firestore
 import { AngularFireAuth} from '@angular/fire/auth';
 import { AngularFirestore, AngularFirestoreDocument} from '@angular/fire/firestore';
-import { Observable, of} from 'rxjs';
-import { switchMap} from 'rxjs/operators';
+import { BehaviorSubject, Subscription} from 'rxjs';
+import { map } from 'rxjs/operators';
 
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  user$: Observable<User>;
-  loggedIn: boolean;
+  private subscriptionToUser: Subscription = new Subscription();
+  user$: BehaviorSubject<User> = new BehaviorSubject<User>(null);
+  uid$: BehaviorSubject<string> = new BehaviorSubject<string>(null);
 
   constructor(
     private afAuth: AngularFireAuth,
     private afs: AngularFirestore,
     private router: Router
   ) {
-    this.user$ = this.afAuth.authState.pipe(
-      switchMap(user => {
-            if (user) {
-              this.loggedIn = true;
-              return this.afs.doc<User>(`users/${user.uid}`).valueChanges();
-            } else {
-              this.loggedIn = false;
-              return of(null);
-            }
-      })
-    );
+    this.afAuth.onAuthStateChanged(user => {
+      if (user) {
+        this.subscriptionToUser.add(
+          this.afs.doc<User>(`users/${user.uid}`)
+                  .valueChanges()
+                  .subscribe(this.user$)
+        );
+        this.uid$.next(user.uid);
+      } else {
+        this.subscriptionToUser.unsubscribe();
+        this.user$.next(null);
+        this.uid$.next(null);
+      }
+    });
   }
 
-  async googleSignin(): Promise <any> {
-    const provider = new auth.GoogleAuthProvider();
+  isLoggedIn(): boolean {
+    return this.uid$.value !== null;
+  }
+
+  async signinWithGoogle(): Promise<User> {
+    const provider = new auth.GoogleAuthProvider()
+                             .setCustomParameters({prompt: 'select_account'});
+
     const credential = await this.afAuth.signInWithPopup(provider);
     const authorization = credential.additionalUserInfo;
-    const profile = authorization.profile;
+    const userData = (authorization.isNewUser) ?
+        await this.createUser(credential.user.uid, authorization.profile) :
+        await this.getUserData(credential.user.uid);
 
-    console.log('Provider', provider);
-    console.log('credential', credential);
-    console.log('authorization', authorization);
-    console.log('profile', profile);
-
-    if (authorization.isNewUser)
-    {
-      return this.registerUserData(credential.user, profile);
-    }
-    else
-    {
-      return this.getUserData(credential.user);
-    }
+    this.user$.next(userData);
+    return userData;
   }
 
   async signOut(): Promise<boolean> {
     await this.afAuth.signOut();
-    this.loggedIn = false;
     return this.router.navigate(['/']);
   }
 
-  private registerUserData(user, profile): Promise<void> {
-    const userRef: AngularFirestoreDocument<User> = this.afs.doc(`users/${user.uid}`);
-    const data = {
-       uid   : user.uid,
-       fName : profile.given_name,
-       lName : profile.family_name,
-       email : profile.email,
-       roles : [],
-       major : '',
-       following : []
+  private createUser(uid: string, profile: any): Promise<User> {
+    const userRef: AngularFirestoreDocument<User> = this.afs.doc(`users/${uid}`);
+    const data: User = {
+      uid,
+      fName     : profile.given_name,
+      lName     : profile.family_name,
+      email     : profile.email,
+      roles     : ['u'],
+      following : [],
+      isNewUser : true,
     };
-    this.loggedIn = true;
-    return userRef.set(data);
+    // Return promise with user data if success, else return null promise
+    return userRef.set(data).then(() => data, () => null);
   }
 
-  private getUserData(profile): Observable<any> {
-    const userRef: AngularFirestoreDocument<User> = this.afs.doc(`users/${profile.uid}`);
-    this.loggedIn = true;
-    return userRef.get();
+  private getUserData(uid: string): Promise<User> {
+    const userRef: AngularFirestoreDocument<User> = this.afs.doc(`users/${uid}`);
+    return userRef.get().pipe(
+      map(doc => {
+        // If the document exists, return promise with user data
+        if (doc.exists) {
+          return doc.data() as User;
+        }
+        // else, return null promise
+        return null;
+      })
+    ).toPromise();
   }
 }

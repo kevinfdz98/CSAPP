@@ -12,7 +12,12 @@
       <span><mat-icon>view_day</mat-icon><span>Día</span></span>
     </div>
     <div class="sidenav-grid bottom" >
-      <span><mat-icon>login</mat-icon><span>Login</span></span>
+      <span *ngIf="auth.isLoggedIn()"
+            (click)="auth.signOut()"
+      ><mat-icon>meeting_room</mat-icon><span>Salir</span></span>
+      <span *ngIf="!auth.isLoggedIn()"
+            routerLink="/login"
+      ><mat-icon>login</mat-icon><span>Acceder</span></span>
     </div>
   </mat-sidenav>
 
