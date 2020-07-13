@@ -1,19 +1,19 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
-//App modules
+// App modules
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AngularMaterialModule } from './shared/modules/angular-material.module';
 import { LayoutModule } from '@angular/cdk/layout';
 
-//Firestore
-import {AngularFireModule} from '@angular/fire'; 
-import {AngularFireAuthModule} from '@angular/fire/auth'; 
-import {AngularFirestoreModule} from '@angular/fire/firestore'; 
-import {environment} from '../environments/environment'; 
-import {AngularFireStorageModule} from '@angular/fire/storage'
+// Firestore
+import {AngularFireModule} from '@angular/fire';
+import {AngularFireAuthModule} from '@angular/fire/auth';
+import {AngularFirestoreModule} from '@angular/fire/firestore';
+import {environment} from '../environments/environment';
+import {AngularFireStorageModule} from '@angular/fire/storage';
 
 @NgModule({
   declarations: [
@@ -24,11 +24,11 @@ import {AngularFireStorageModule} from '@angular/fire/storage'
     AppRoutingModule,
     BrowserAnimationsModule,
     AngularMaterialModule,
-    LayoutModule, 
-    //Firestore 
-    AngularFireModule.initializeApp(environment.firebaseConfig), 
+    LayoutModule,
+    // Firestore
+    AngularFireModule.initializeApp(environment.firebaseConfig),
     AngularFireAuthModule,
-    AngularFirestoreModule, 
+    AngularFirestoreModule,
     AngularFireStorageModule
 
   ],
