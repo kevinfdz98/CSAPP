@@ -4,7 +4,10 @@ export interface User {
   lName: string;
   email: string;
   roles: string[];
-  major: string;
-  administra?: string;
+  major?: string;
+  matricula?: string;
+  semester?: number;
+  administra?: string[];
   following: string[];
+  isNewUser: boolean;
 }
