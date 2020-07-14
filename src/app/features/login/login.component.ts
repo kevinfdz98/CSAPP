@@ -21,20 +21,22 @@ export class LoginComponent implements OnInit {
 
   signInWithGoogle(): void {
     this.auth.signinWithGoogle()
-             .then(user => this.signinCallback(user));
+             .then(user => this.signinCallback(user))
+             .catch(err => console.log(`Error: ${err}`));
   }
 
   private signinCallback(user: User): void {
     this.userData = user;
-    this.showRegistrationForm = user !== null;
-    if (!user) {
+    this.showRegistrationForm = (user && user.isNewUser);
+    if (user && !user.isNewUser) {
       this.router.navigateByUrl('/calendar');
     }
   }
 
-  saveRegistrationData(event: any): void {
-    this.showRegistrationForm = false;
-    console.log('TODO: update User with => ', event);
-    this.router.navigateByUrl('/calendar');
+  saveRegistrationData(event: Partial<User>): void {
+    this.auth.updateUser({isNewUser: false, ...event}).then(() => {
+      this.showRegistrationForm = false;
+      this.router.navigateByUrl('/calendar');
+    }).catch(err => console.log(`Error: ${err}`));
   }
 }
