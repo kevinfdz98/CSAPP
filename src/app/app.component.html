@@ -12,10 +12,10 @@
       <span routerLink="/calendar/list"><mat-icon>view_list</mat-icon><span>Lista</span></span>
     </div>
     <div class="sidenav-grid bottom" >
-      <span *ngIf="auth.isLoggedIn()"
-            (click)="auth.signOut()"
+      <span *ngIf="(loggedIn | async)"
+            (click)="auth.signout()"
       ><mat-icon>meeting_room</mat-icon><span>Salir</span></span>
-      <span *ngIf="!auth.isLoggedIn()"
+      <span *ngIf="!(loggedIn | async)"
             routerLink="/login"
       ><mat-icon>login</mat-icon><span>Acceder</span></span>
     </div>

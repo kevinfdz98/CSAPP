@@ -11,6 +11,7 @@ import { AuthService } from './services/auth/auth.service';
 export class AppComponent implements OnInit {
   title = 'CSAPP';
   onMobile: Observable<BreakpointState>;
+  loggedIn: Observable<boolean>;
 
   constructor(
     private breakpointObserver: BreakpointObserver,
@@ -18,6 +19,7 @@ export class AppComponent implements OnInit {
     ) { }
 
   ngOnInit(): void {
+    this.loggedIn = this.auth.getLoggedIn();
     this.onMobile = this.breakpointObserver.observe(['(max-width: 599px)']);
   }
 }
