@@ -7,13 +7,14 @@ import { auth} from 'firebase/app';
 import { AngularFireAuth} from '@angular/fire/auth';
 import { AngularFirestore, AngularFirestoreDocument} from '@angular/fire/firestore';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, take } from 'rxjs/operators';
 
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
+  private user$ = new BehaviorSubject<User>(null);
   private uid$ = new BehaviorSubject<string>(null);
 
   constructor(
@@ -21,18 +22,12 @@ export class AuthService {
     private afs: AngularFirestore,
     private router: Router
   ) {
-    this.afAuth.authState.subscribe(user =>
-      this.uid$.next(user ? user.uid : null)
-    );
-  }
-
-  /**
-   * Creates an observable for the user id of the currently logged in user.
-   * @return Observable that immediately returns the uid of the current user
-   *         (or null, if not signed in) and listens to changes in auth state
-   */
-  getUid(): Observable<string> {
-    return this.uid$.asObservable();
+    this.afAuth.authState.subscribe(user => {
+      this.uid$.next(user ? user.uid : null);
+      if (!user) {
+        this.user$.next(null);
+      }
+    });
   }
 
   /**
@@ -47,12 +42,31 @@ export class AuthService {
   }
 
   /**
-   * Promise that fetches the data of current user from Firebase.
+   * Gets the data of the user, either by fetching it from Firebase, or by
+   * retrieving it from stored value (if available). If the user is not
+   * authenticated, this function returns a promise that resolves to null.
    * @async
-   * @return Promise that resolves to a snapshot of the current user data
+   * @param forceUpdate If true, forces the function to fetch a snapshot from
+   *                    Firebase and updates  stored value (defaults to false)
+   * @return            Promise that resolves to a snapshot of the user data
    */
-  getUser(): Promise<User> {
-    return this.getUserData(this.uid$.value);
+  getUser(forceUpdate = false): Promise<User> {
+    return (!this.user$.value || forceUpdate) ?
+      this.getUserData(this.uid$.value) :
+      this.user$.pipe(take(1)).toPromise();
+  }
+
+  /**
+   * Updates the data of the currently logged user in Firebase.
+   * @async
+   * @param  data Object with the fields to be updated in the User document
+   * @return      Empty promise that resolves when user is updated
+   * @throws      If user is not authenticated, throws rejected promise
+   */
+  updateUser(data: Partial<User>): Promise<void> {
+    return this.uid$.value ?
+      this.afs.doc<User>(`users/${this.uid$.value}`).update(data) :
+      new Promise<void>((resolve, reject) => reject('User is not authenticated'));
   }
 
   /**
@@ -69,9 +83,15 @@ export class AuthService {
 
     const credential = await this.afAuth.signInWithPopup(provider);
     const authorization = credential.additionalUserInfo;
+
     return (authorization.isNewUser) ?
+        // If new user, create new user and return user data
         await this.createUser(credential.user.uid, authorization.profile) :
-        await this.getUserData(credential.user.uid);
+        // If old user, get user data
+        await this.getUserData(credential.user.uid).then(user => user ?
+          // If data of old user not found, treat as a new user
+          user : this.createUser(credential.user.uid, authorization.profile)
+        );
   }
 
   /**
@@ -114,7 +134,12 @@ export class AuthService {
       data.matricula = data.email.substr(0, 9).toUpperCase();
     }
     // Return promise with user data if success, else return null promise
-    return userRef.set(data).then(() => data, () => null);
+    return userRef.set(data)
+                  .then(() => data, () => null)
+                  .then(val => {
+                    this.user$.next(val);
+                    return val;
+                  });
   }
 
   /**
@@ -126,7 +151,7 @@ export class AuthService {
    *                 authenticated user or the call will fail)
    * @return         Promise that returns the newly created user's data
    */
-  private getUserData(uid: string): Promise<User> {
+  private getUserData(uid: string, profile?: any): Promise<User> {
     // Check if uid was provided
     if (!uid) { return new Promise(null); }
 
@@ -135,9 +160,12 @@ export class AuthService {
       map(doc => {
         // If the document exists, return promise with user data
         if (doc.exists) {
-          return doc.data() as User;
+          const userData = doc.data() as User;
+          this.user$.next(userData);
+          return userData;
         }
         // else, return null promise
+        this.user$.next(null);
         return null;
       })
     ).toPromise();
