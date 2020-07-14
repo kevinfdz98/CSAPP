@@ -1,0 +1,24 @@
+.registration-form-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 350px;
+  height: 100%;
+  margin: auto;
+}
+.mat-form-field {
+  width: 90%;
+  margin: 0.3em 0;
+}
+.modelo-radios {
+  width: 50%;
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  padding-bottom: 1.34375em;
+}
+.margin-radio {
+  margin: 0 auto;
+}

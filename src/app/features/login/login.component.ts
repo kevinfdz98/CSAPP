@@ -1,42 +1,40 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, EventEmitter } from '@angular/core';
 import { AuthService } from '../../services/auth/auth.service';
 import { Router } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { User } from 'src/app/shared/interfaces/user.interface';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
-export class LoginComponent implements OnInit, OnDestroy {
-  subscriptionToUser: Subscription;
+export class LoginComponent implements OnInit {
   showRegistrationForm = false;
+  userData: User = null;
 
   constructor(
     public auth: AuthService,
     private router: Router
   ) { }
 
-  ngOnInit(): void {
-    // Subscribe to changes in user (log in or log out)
-    this.subscriptionToUser = this.auth.user$.subscribe(user => {
-      this.showRegistrationForm = user ? user.isNewUser : false;
-      if (user && !user.isNewUser) {
-        this.router.navigateByUrl('/calendar');
-      }
-    });
-  }
+  ngOnInit(): void { }
 
   signInWithGoogle(): void {
-    this.auth.signinWithGoogle().then(user => {
-      if (!user) {
-        this.showRegistrationForm = false;
-        alert('Something went wrong during sign in');
-      }
-    });
+    this.auth.signinWithGoogle()
+             .then(user => this.signinCallback(user));
   }
 
-  ngOnDestroy(): void {
-    this.subscriptionToUser.unsubscribe();
+  private signinCallback(user: User): void {
+    this.userData = user;
+    this.showRegistrationForm = user !== null;
+    if (!user) {
+      this.router.navigateByUrl('/calendar');
+    }
+  }
+
+  saveRegistrationData(event: any): void {
+    this.showRegistrationForm = false;
+    console.log('TODO: update User with => ', event);
+    this.router.navigateByUrl('/calendar');
   }
 }

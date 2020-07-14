@@ -1,1 +1,58 @@
-<p>registration-form works!</p>
+<form class="registration-form-container"
+      [formGroup]="userForm"
+      (ngSubmit)="onSubmit()"
+>
+  <h1>Registro de usuario</h1>
+  <mat-form-field appearance="fill">
+    <mat-label>Correo* (read-only)</mat-label>
+    <input matInput readonly formControlName="email">
+  </mat-form-field>
+
+  <mat-form-field appearance="fill" *ngIf="userData.matricula">
+    <mat-label>Matricula* (read-only)</mat-label>
+    <input matInput readonly formControlName="matricula">
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Nombre(s)*</mat-label>
+    <input matInput formControlName="fName">
+    <mat-error
+      *ngIf="userForm.get('fName').hasError('required')"
+    >This field is required</mat-error>
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Apellidos(s)*</mat-label>
+    <input matInput formControlName="lName">
+    <mat-error
+      *ngIf="userForm.get('lName').hasError('required')"
+    >This field is required</mat-error>
+  </mat-form-field>
+
+  <mat-radio-group class="modelo-radios" formControlName="model" *ngIf="userData.matricula">
+    <mat-radio-button class="margin-radio" value="tec20">Tec20</mat-radio-button>
+    <mat-radio-button class="margin-radio" value="tec21">Tec21</mat-radio-button>
+  </mat-radio-group>
+
+  <mat-form-field appearance="fill" *ngIf="userData.matricula">
+    <mat-label>Carrera*</mat-label>
+    <mat-select formControlName="major">
+      <mat-option *ngFor="let major of getMajorsList(userForm.get('model').value)"
+                  [value]="major"
+      >{{major}}</mat-option>
+    </mat-select>
+    <mat-error
+      *ngIf="userForm.get('major').hasError('required')"
+    >This field is required</mat-error>
+  </mat-form-field>
+
+  <mat-form-field appearance="fill" *ngIf="userData.matricula">
+    <mat-label>Semestre*</mat-label>
+    <input matInput formControlName="semester" type="number">
+    <mat-error
+      *ngIf="userForm.get('semester').hasError('required')"
+    >This field is required</mat-error>
+  </mat-form-field>
+
+  <button mat-raised-button color="primary" >Guardar</button>
+</form>

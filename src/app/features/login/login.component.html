@@ -24,5 +24,5 @@
   </div>
 </div>
 <ng-template #form>
-  <app-registration-form></app-registration-form>
+  <app-registration-form [userData]="userData" (save)="saveRegistrationData($event)"></app-registration-form>
 </ng-template>
