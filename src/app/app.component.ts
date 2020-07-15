@@ -3,8 +3,8 @@ import { BreakpointObserver, BreakpointState } from '@angular/cdk/layout';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { AuthService } from './services/auth/auth.service';
 import { Router } from '@angular/router';
-import { tap } from 'rxjs/operators';
 import { MatSidenav } from '@angular/material/sidenav';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
@@ -24,7 +24,7 @@ export class AppComponent implements OnInit {
     ) { }
 
   ngOnInit(): void {
-    this.loggedIn = this.auth.getLoggedIn();
+    this.loggedIn = this.auth.getAuthState().pipe(map(state => state.loggedIn));
     this.breakpointObserver.observe(['(max-width: 599px)'])
                            .subscribe(this.onMobile);
   }

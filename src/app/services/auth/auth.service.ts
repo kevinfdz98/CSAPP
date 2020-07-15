@@ -7,15 +7,22 @@ import { auth} from 'firebase/app';
 import { AngularFireAuth} from '@angular/fire/auth';
 import { AngularFirestore, AngularFirestoreDocument} from '@angular/fire/firestore';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { map, take } from 'rxjs/operators';
+import { map, take, filter } from 'rxjs/operators';
 
+export interface AuthState {
+  user: User;
+  loggedIn: boolean;
+  uid: string;
+  roles: string[];
+}
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private user$ = new BehaviorSubject<User>(null);
-  private uid$ = new BehaviorSubject<string>(null);
+  private authState$ = new BehaviorSubject<AuthState>({
+    uid: null, roles: [], loggedIn: false, user: null
+  });
 
   constructor(
     private afAuth: AngularFireAuth,
@@ -23,22 +30,28 @@ export class AuthService {
     private router: Router
   ) {
     this.afAuth.authState.subscribe(user => {
-      this.uid$.next(user ? user.uid : null);
-      if (!user) {
-        this.user$.next(null);
+      if (user) {
+        // If login event detected, fetch user data and update state
+        this.fetchUser(user.uid).then(data =>
+          this.authState$.next( data ?
+            {uid: data.uid, roles: data.roles, loggedIn: true, user: data} :
+            {uid: data.uid, roles: [], loggedIn: true, user: null}
+          )
+        );
+      } else {
+        // If logout event detected, clear user data from state
+        this.authState$.next({uid: null, roles: [], loggedIn: false, user: null});
       }
     });
   }
 
   /**
-   * Creates an observable for whether the user is logged in.
-   * @return Observable that immediately returns whether the user is logged in
-   *         and listens to changes in auth state
+   * Creates an observable for the auth state of the application.
+   * @return Observable that immediately returns the current auth state of the
+   *         application and listens for changes
    */
-  getLoggedIn(): Observable<boolean> {
-    return this.uid$.asObservable().pipe(
-      map(uid => uid !== null)
-    );
+  getAuthState(): Observable<AuthState> {
+    return this.authState$.asObservable();
   }
 
   /**
@@ -49,11 +62,15 @@ export class AuthService {
    * @param forceUpdate If true, forces the function to fetch a snapshot from
    *                    Firebase and updates  stored value (defaults to false)
    * @return            Promise that resolves to a snapshot of the user data
+   * @throws            If user is not authenticated, throws 'User is not authenticated'
    */
-  getUser(forceUpdate = false): Promise<User> {
-    return (!this.user$.value || forceUpdate) ?
-      this.getUserData(this.uid$.value) :
-      this.user$.pipe(take(1)).toPromise();
+  async getUser(forceUpdate = false): Promise<User> {
+    // Validate that the user is authenticated
+    if (!this.authState$.value.uid) { throw Error('User is not authenticated'); }
+
+    return (!this.authState$.value.user || forceUpdate) ?
+      this.fetchUser(this.authState$.value.uid) :
+      this.authState$.value.user;
   }
 
   /**
@@ -63,10 +80,11 @@ export class AuthService {
    * @return      Empty promise that resolves when user is updated
    * @throws      If user is not authenticated, throws rejected promise
    */
-  updateUser(data: Partial<User>): Promise<void> {
-    return this.uid$.value ?
-      this.afs.doc<User>(`users/${this.uid$.value}`).update(data) :
-      new Promise<void>((resolve, reject) => reject('User is not authenticated'));
+  async updateUser(data: Partial<User>): Promise<void> {
+    // Validate that the user is authenticated
+    if (!this.authState$.value.uid) { throw Error('User is not authenticated'); }
+
+    return this.afs.doc<User>(`users/${this.authState$.value.uid}`).update(data);
   }
 
   /**
@@ -76,6 +94,8 @@ export class AuthService {
    * @async
    * @return Promise that returns the user data (if user exists) or the newly
    *         created user (if it didn't exist).
+   * @throws Throws an catchable error if the user closes the authentication
+   *         window without signing in.
    */
   async signinWithGoogle(): Promise<User> {
     const provider = new auth.GoogleAuthProvider()
@@ -84,14 +104,16 @@ export class AuthService {
     const credential = await this.afAuth.signInWithPopup(provider);
     const authorization = credential.additionalUserInfo;
 
-    return (authorization.isNewUser) ?
-        // If new user, create new user and return user data
-        await this.createUser(credential.user.uid, authorization.profile) :
-        // If old user, get user data
-        await this.getUserData(credential.user.uid).then(user => user ?
-          // If data of old user not found, treat as a new user
-          user : this.createUser(credential.user.uid, authorization.profile)
-        );
+    // Wait until auth state is logged in
+    console.log('Waiting for authState');
+    const authState = await this.authState$.pipe(filter(state => state.loggedIn), take(1)).toPromise();
+    console.log('End wait for authState');
+
+    return authState.user ?
+      // If user document was found, return the user
+      authState.user :
+      // If user document doesn't exist, create the user
+      this.createUser(credential.user.uid, authorization.profile);
   }
 
   /**
@@ -117,7 +139,7 @@ export class AuthService {
    */
   private createUser(uid: string, profile: any): Promise<User> {
     // Check if uid was provided
-    if (!uid) { return new Promise(null); }
+    if (!uid || !profile) { return new Promise(({}, reject) => reject('uid or profile not provided')); }
 
     const userRef: AngularFirestoreDocument<User> = this.afs.doc(`users/${uid}`);
     const data: User = {
@@ -137,35 +159,31 @@ export class AuthService {
     return userRef.set(data)
                   .then(() => data, () => null)
                   .then(val => {
-                    this.user$.next(val);
+                    this.authState$.next({roles: data.roles, user: data, ...this.authState$.value});
                     return val;
                   });
   }
 
   /**
-   * Creates a new user in Firebase parsing the information from the profile returned by the
-   * provider during sign in. Uses a regex to determine if the email is from a Tec student
-   * and parses their matricula from it.
+   * Fetches the data of a user from Firebase and returns a promise with the data.
    * @async
-   * @param  uid     Id if the user to fetch (due to backend rules, can only be the currentle
-   *                 authenticated user or the call will fail)
+   * @param  uid     Id of the user to fetch (due to backend rules, can only be the
+   *                 currently authenticated user or the call will fail)
    * @return         Promise that returns the newly created user's data
    */
-  private getUserData(uid: string, profile?: any): Promise<User> {
+  private fetchUser(uid: string): Promise<User> {
     // Check if uid was provided
-    if (!uid) { return new Promise(null); }
+    if (!uid) { return new Promise(({}, reject) => reject('uid not provided')); }
 
     const userRef: AngularFirestoreDocument<User> = this.afs.doc(`users/${uid}`);
     return userRef.get().pipe(
       map(doc => {
         // If the document exists, return promise with user data
         if (doc.exists) {
-          const userData = doc.data() as User;
-          this.user$.next(userData);
-          return userData;
+          const data = doc.data() as User;
+          this.authState$.next({roles: data.roles, user: data, ...this.authState$.value});
+          return data;
         }
-        // else, return null promise
-        this.user$.next(null);
         return null;
       })
     ).toPromise();
