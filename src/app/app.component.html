@@ -7,16 +7,18 @@
     class="app-sidenav" #drawer
   >
     <div class="sidenav-grid top">
-      <span routerLink="/calendar/month"><mat-icon>calendar_today</mat-icon><span>Mes</span></span>
-      <span routerLink="/calendar/week"><mat-icon>view_week</mat-icon><span>Semana</span></span>
-      <span routerLink="/calendar/list"><mat-icon>view_list</mat-icon><span>Lista</span></span>
+      <span matRipple (click)="navigateByUrl('/calendar/month')"><mat-icon>calendar_today</mat-icon><span>Mes</span></span>
+      <span matRipple (click)="navigateByUrl('/calendar/week')"><mat-icon>view_week</mat-icon><span>Semana</span></span>
+      <span matRipple (click)="navigateByUrl('/calendar/list')"><mat-icon>view_list</mat-icon><span>Lista</span></span>
     </div>
     <div class="sidenav-grid bottom" >
       <span *ngIf="(loggedIn | async)"
+            matRipple
             (click)="auth.signout()"
       ><mat-icon>meeting_room</mat-icon><span>Salir</span></span>
       <span *ngIf="!(loggedIn | async)"
-            routerLink="/login"
+            matRipple
+            (click)="navigateByUrl('/login')"
       ><mat-icon>login</mat-icon><span>Acceder</span></span>
     </div>
   </mat-sidenav>
