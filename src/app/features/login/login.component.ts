@@ -37,6 +37,6 @@ export class LoginComponent implements OnInit {
     this.auth.updateUser({isNewUser: false, ...event}).then(() => {
       this.showRegistrationForm = false;
       this.router.navigateByUrl('/calendar');
-    }).catch(err => console.log(`Error: ${err}`));
+    }).catch(err => console.error(err));
   }
 }

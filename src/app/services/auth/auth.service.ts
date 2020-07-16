@@ -35,9 +35,9 @@ export class AuthService {
         this.fetchUser(user.uid).then(data =>
           this.authState$.next( data ?
             {uid: data.uid, roles: data.roles, loggedIn: true, user: data} :
-            {uid: data.uid, roles: [], loggedIn: true, user: null}
+            {uid: null, roles: [], loggedIn: true, user: null}
           )
-        );
+        ).catch(reason => { console.error(reason); this.signout(); });
       } else {
         // If logout event detected, clear user data from state
         this.authState$.next({uid: null, roles: [], loggedIn: false, user: null});
@@ -84,6 +84,13 @@ export class AuthService {
     // Validate that the user is authenticated
     if (!this.authState$.value.uid) { throw Error('User is not authenticated'); }
 
+    if (data.uid)        { throw Error('Cannot change User.uid'); }
+    if (data.roles)      { throw Error('Cannot change User.roles through AuthService, use UserService with superadmin priviledges'); }
+    if (data.matricula)  { throw Error('Cannot change User.matricula through AuthService, use UserService with superadmin priviledges'); }
+    if (data.roles)      { throw Error('Cannot change User.roles through AuthService, use UserService with superadmin priviledges'); }
+    if (data.administra) { throw Error('Cannot change User.administra through AuthService, use UserService with superadmin priviledges'); }
+    if (data.following)  { throw Error('Cannot change User.roles through AuthService, use EventService with user priviledges'); }
+
     return this.afs.doc<User>(`users/${this.authState$.value.uid}`).update(data);
   }
 
@@ -105,9 +112,7 @@ export class AuthService {
     const authorization = credential.additionalUserInfo;
 
     // Wait until auth state is logged in
-    console.log('Waiting for authState');
     const authState = await this.authState$.pipe(filter(state => state.loggedIn), take(1)).toPromise();
-    console.log('End wait for authState');
 
     return authState.user ?
       // If user document was found, return the user
@@ -150,6 +155,7 @@ export class AuthService {
       roles     : ['u'],
       following : [],
       isNewUser : true,
+      administra: []
     };
     // Check if email is of a tec student (Axxxxxxx@itesm.mx o axxxxxxx@itesm.mx)
     if (/[aA]\d{8}@itesm.mx/.test(data.email)) {
@@ -159,7 +165,7 @@ export class AuthService {
     return userRef.set(data)
                   .then(() => data, () => null)
                   .then(val => {
-                    this.authState$.next({roles: data.roles, user: data, ...this.authState$.value});
+                    this.authState$.next({...this.authState$.value, uid: data.uid, roles: data.roles, user: data});
                     return val;
                   });
   }
@@ -181,7 +187,7 @@ export class AuthService {
         // If the document exists, return promise with user data
         if (doc.exists) {
           const data = doc.data() as User;
-          this.authState$.next({roles: data.roles, user: data, ...this.authState$.value});
+          this.authState$.next({...this.authState$.value, roles: data.roles, user: data});
           return data;
         }
         return null;
