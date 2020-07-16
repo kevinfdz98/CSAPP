@@ -12,5 +12,5 @@ export interface User {
   matricula?: string;
   semester?: number;
   // Atributos para administradores de grupos
-  administra?: string[];
+  administra: string[];
 }
