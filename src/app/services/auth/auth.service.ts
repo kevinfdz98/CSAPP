@@ -91,7 +91,8 @@ export class AuthService {
     if (data.administra) { throw Error('Cannot change User.administra through AuthService, use UserService with superadmin priviledges'); }
     if (data.following)  { throw Error('Cannot change User.roles through AuthService, use EventService with user priviledges'); }
 
-    return this.afs.doc<User>(`users/${this.authState$.value.uid}`).update(data);
+    await this.afs.doc<User>(`users/${this.authState$.value.uid}`).update(data);
+    this.authState$.next({...this.authState$.value, user: {...this.authState$.value.user, ...data}});
   }
 
   /**
