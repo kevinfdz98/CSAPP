@@ -5,7 +5,6 @@ import { UserSummary } from 'src/app/shared/interfaces/user-summary.interface';
 import { AngularFirestore, DocumentReference } from '@angular/fire/firestore';
 import { map } from 'rxjs/operators';
 import * as firebase from 'firebase/app';
-import { transformMenu } from '@angular/material/menu';
 
 @Injectable({
   providedIn: 'root'
@@ -34,7 +33,7 @@ export class UserService {
    */
   async getUser(uid: string, forceUpdate = false): Promise<User> {
     // Validate superadmin privileges
-    if (this.authState.roles.indexOf('su') === -1) { throw Error('User needs superadmin privileges'); }
+    if (!this.authState.roles.includes('su')) { throw Error('User needs superadmin privileges'); }
 
     return (!this.userDetails[uid] || forceUpdate) ?
       this.fetchUser(uid) :
@@ -52,7 +51,7 @@ export class UserService {
    */
   async getAdminList(forceUpdate = false): Promise<{[uid: string]: UserSummary}> {
     // Validate superadmin privileges
-    if (this.authState.roles.indexOf('su') === -1) { throw Error('Operation needs superadmin privileges'); }
+    if (!this.authState.roles.includes('su')) { throw Error('Operation needs superadmin privileges'); }
 
     return (!this.adminsList || forceUpdate) ?
       this.fetchAdminList() :
@@ -60,21 +59,65 @@ export class UserService {
   }
 
   /**
-   * Gets a list of UserSummary objects for the group admins, either by fetching
-   * it from Firebase, or by retrieving it from stored list (if available).
+   * Updates the roles of a user given its uid and two optional arrays
    * The calling user must be authenticated and have superadmin 'su' privileges.
    * @async
-   * @param forceUpdate If true, forces the function to fetch a snapshot from
-   *                    Firebase and updates stored value (defaults to false)
-   * @return            Promise that resolves to a snapshot of the list
+   * @param  removeRoles Array of roles to be removed before adding new roles
+   * @param  addRoles    Aray of roles to be added after removing specified roles
+   * @return             Promise that resolves to a snapshot of the list
    */
-  updateRoles(uid: string, newRoles: string[]): Promise<void> {
+  async updateRoles(uid: string, removeRoles: string[] = [], addRoles: string[] = []): Promise<void> {
     // Validate superadmin privileges
-    if (this.authState.roles.indexOf('su') === -1) { throw Error('Operation needs superadmin privileges'); }
+    if (!this.authState.roles.includes('su')) { throw Error('Operation needs superadmin privileges'); }
 
-    return this.updateRolesTransaction(uid, newRoles).then(
-      () => console.log('Transaction successful'),
-      (reason) => console.error('Transaction unsuccesful => ', reason)
+    return this.updateRolesTransaction(uid, removeRoles, addRoles).then(user => {
+      if (user) {
+        // If admin role changes, do update in adminList
+        if (user.old.roles.includes('a') !== user.new.roles.includes('a')) {
+          // If admin role is added, record in list; else, delete record from list
+          if (user.new.roles.includes('a')) {
+            this.adminsList[uid] = this.mapUserToUserSummary(user.new);
+          } else {
+            delete this.adminsList[uid];
+          }
+        }
+        // In any case, update userDetails
+        this.userDetails[uid] = {...user.new};
+      }
+    });
+  }
+
+  private updateRolesTransaction(uid: string, removeRoles: string[] = [], addRoles: string[] = []): Promise<{old: User, new: User}> {
+    // Validate superadmin privileges
+    if (!this.authState.roles.includes('su')) { throw Error('Operation needs superadmin privileges'); }
+
+    const ref: {[key: string]: DocumentReference} = {};
+    const user: {old: User, new: User} = {old: null, new: null};
+
+    ref.user      = this.afs.doc<User>(`users/${uid}`).ref;
+    ref.adminList = this.afs.doc<{[uid: string]: UserSummary}>(`shared/admins`).ref;
+
+    return this.afs.firestore.runTransaction(async trans => {
+        user.old = (await trans.get(ref.user)).data() as User;
+        // First, remove specified roles
+        user.new = {...user.old, roles: user.old.roles.filter(r => !removeRoles.includes(r))};
+        // Then, include specified roles
+        user.new.roles = [].concat(user.new.roles, addRoles.filter(r => !user.new.roles.includes(r)));
+
+        // If admin role changes, do update in adminList
+        if (user.old.roles.includes('a') !== user.new.roles.includes('a')) {
+
+          // If admin role is added, record in list; else, delete record from list
+          if (user.new.roles.includes('a')) {
+            trans.update(ref.adminList, {[uid]: this.mapUserToUserSummary(user.new)});
+          } else {
+            trans.update(ref.adminList, {[uid]: firebase.firestore.FieldValue.delete()});
+          }
+        }
+        // In any case, update roles in users collection
+        trans.update(ref.user, {roles: user.new.roles});
+        return user;
+      }
     );
   }
 
@@ -87,7 +130,7 @@ export class UserService {
    */
   private async fetchUser(uid: string): Promise<User> {
     // Validate superadmin privileges
-    if (this.authState.roles.indexOf('su') === -1) { throw Error('Operation needs superadmin privileges'); }
+    if (!this.authState.roles.includes('su')) { throw Error('Operation needs superadmin privileges'); }
 
     const userRef = this.afs.doc<User>(`users/${uid}`);
     return userRef.get().pipe(map(doc => {
@@ -103,17 +146,14 @@ export class UserService {
   }
 
   /**
-   * Gets a list of UserSummary objects for the group admins, either by fetching
-   * it from Firebase, or by retrieving it from stored list (if available).
+   * Fetches a list of UserSummary objects for the group admins from Firebase.
    * The calling user must be authenticated and have superadmin 'su' privileges.
    * @async
-   * @param forceUpdate If true, forces the function to fetch a snapshot from
-   *                    Firebase and updates stored value (defaults to false)
    * @return            Promise that resolves to a snapshot of the list
    */
   private async fetchAdminList(): Promise<{[uid: string]: UserSummary}> {
     // Validate superadmin privileges
-    if (this.authState.roles.indexOf('su') === -1) { throw Error('Operation needs superadmin privileges'); }
+    if (!this.authState.roles.includes('su')) { throw Error('Operation needs superadmin privileges'); }
 
     const adminListRef = this.afs.doc<{[uid: string]: UserSummary}>(`shared/admins`);
     return adminListRef.get().pipe(map(doc => {
@@ -123,39 +163,10 @@ export class UserService {
           return {...this.adminsList};
         }
         // else, return null promise
+        this.adminsList = {};
         return null;
       })
     ).toPromise();
-  }
-
-  private async updateRolesTransaction(uid: string, newRoles: string[]): Promise<void> {
-    const ref: {[key: string]: DocumentReference} = {};
-    const user: {[key: string]: User} = {};
-
-    ref.user      = this.afs.doc<User>(`users/${uid}`).ref;
-    ref.adminList = this.afs.doc<{[uid: string]: UserSummary}>(`shared/admins`).ref;
-
-    return this.afs.firestore.runTransaction(async trans => {
-        user.old = (await trans.get(ref.user)).data() as User;
-        user.new = {...user.old, roles: newRoles};
-
-        console.log(user.old, user.new);
-
-        // If admin role changes, do update in adminList
-        if ((user.old.roles.indexOf('a') !== -1) !== (user.new.roles.indexOf('a') !== -1)) {
-
-          // If admin role is added, record in list; else, delete record from list
-          if (user.new.roles.indexOf('a') !== -1) {
-            trans.update(ref.adminList, {[uid]: this.mapUserToUserSummary(user.new)});
-          } else {
-            trans.update(ref.adminList, {[uid]: firebase.firestore.FieldValue.delete()});
-          }
-        }
-        // In any case, do update in users collection
-        trans.update(ref.user, user.new);
-        console.log(user.old, user.new);
-      }
-    );
   }
 
   private mapUserToUserSummary(u: User): UserSummary {
