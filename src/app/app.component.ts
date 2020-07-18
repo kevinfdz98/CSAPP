@@ -15,6 +15,7 @@ export class AppComponent implements OnInit {
   title = 'CSAPP';
   onMobile = new BehaviorSubject<BreakpointState>({matches: false, breakpoints: {}});
   loggedIn: Observable<boolean>;
+  isSuperadmin: Observable<boolean>;
   @ViewChild('drawer') sidenav: MatSidenav;
 
   constructor(
@@ -25,6 +26,7 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     this.loggedIn = this.auth.getAuthState().pipe(map(state => state.loggedIn));
+    this.isSuperadmin = this.auth.getAuthState().pipe(map(state => state.roles.includes('sa')));
     this.breakpointObserver.observe(['(max-width: 599px)'])
                            .subscribe(this.onMobile);
   }

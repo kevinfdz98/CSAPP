@@ -1,0 +1,43 @@
+<div class="admins-list-container">
+  <table mat-table [dataSource]="data" class="admins-list-table">
+
+    <!-- Mobile Column -->
+    <ng-container matColumnDef="mobile">
+      <th mat-header-cell *matHeaderCellDef>Usuario</th>
+      <td mat-cell *matCellDef="let admin">
+        <span class="mobile-names">{{admin.names}}</span>
+        <span class="mobile-email">{{admin.email}}</span>
+      </td>
+    </ng-container>
+
+    <!-- Names Column -->
+    <ng-container matColumnDef="names">
+      <th mat-header-cell *matHeaderCellDef>Usuario</th>
+      <td mat-cell *matCellDef="let admin">{{admin.names}}</td>
+    </ng-container>
+
+    <!-- Email Column -->
+    <ng-container matColumnDef="email">
+      <th mat-header-cell *matHeaderCellDef>Correo</th>
+      <td mat-cell *matCellDef="let admin">{{admin.email}}</td>
+    </ng-container>
+
+    <!-- Group Column -->
+    <ng-container matColumnDef="group">
+      <th mat-header-cell *matHeaderCellDef>Sociedad</th>
+      <td mat-cell *matCellDef="let admin">{{admin.group}}</td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="columns"></tr>
+    <tr mat-row *matRowDef="let admin; columns: columns"></tr>
+
+    <tr class="mat-row" *matNoDataRow>
+      <td class="mat-cell" colspan="3">No se encontraron admins</td>
+    </tr>
+  </table>
+  <button mat-fab
+          color="primary"
+          (click)="fetchData()"
+          class="content-fab"
+  ><mat-icon>refresh</mat-icon></button>
+</div>

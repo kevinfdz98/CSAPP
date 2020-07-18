@@ -5,7 +5,8 @@ import { Routes, RouterModule } from '@angular/router';
 const routes: Routes = [
   { path: '', redirectTo: 'calendar', pathMatch: 'full'},
   { path: 'calendar', loadChildren: () => import('./features/calendar/calendar.module').then(m => m.CalendarModule) },
-  { path: 'login', loadChildren: () => import('./features/login/login.module').then(m => m.LoginModule) }
+  { path: 'login', loadChildren: () => import('./features/login/login.module').then(m => m.LoginModule) },
+  { path: 'admin', loadChildren: () => import('./features/superadmin/superadmin.module').then(m => m.SuperadminModule) }
 ];
 
 @NgModule({

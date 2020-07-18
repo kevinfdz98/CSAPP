@@ -25,7 +25,7 @@ export class UserService {
   /**
    * Gets the data of a user, either by fetching it from Firebase, or by
    * retrieving it from stored value (if available). The calling user must
-   * be authenticated and have superadmin 'su' privileges.
+   * be authenticated and have superadmin 'sa' privileges.
    * @async
    * @param forceUpdate If true, forces the function to fetch a snapshot from
    *                    Firebase and updates stored value (defaults to false)
@@ -33,7 +33,7 @@ export class UserService {
    */
   async getUser(uid: string, forceUpdate = false): Promise<User> {
     // Validate superadmin privileges
-    if (!this.authState.roles.includes('su')) { throw Error('User needs superadmin privileges'); }
+    if (!this.authState.roles.includes('sa')) { throw Error('User needs superadmin privileges'); }
 
     return (!this.userDetails[uid] || forceUpdate) ?
       this.fetchUser(uid) :
@@ -43,7 +43,7 @@ export class UserService {
   /**
    * Gets a list of UserSummary objects for the group admins, either by fetching
    * it from Firebase, or by retrieving it from stored list (if available).
-   * The calling user must be authenticated and have superadmin 'su' privileges.
+   * The calling user must be authenticated and have superadmin 'sa' privileges.
    * @async
    * @param forceUpdate If true, forces the function to fetch a snapshot from
    *                    Firebase and updates stored value (defaults to false)
@@ -51,7 +51,9 @@ export class UserService {
    */
   async getAdminList(forceUpdate = false): Promise<{[uid: string]: UserSummary}> {
     // Validate superadmin privileges
-    if (!this.authState.roles.includes('su')) { throw Error('Operation needs superadmin privileges'); }
+    if (!this.authState.roles.includes('sa')) { throw Error('Operation needs superadmin privileges'); }
+
+    console.log(this.adminsList);
 
     return (!this.adminsList || forceUpdate) ?
       this.fetchAdminList() :
@@ -60,7 +62,7 @@ export class UserService {
 
   /**
    * Updates the roles of a user given its uid and two optional arrays
-   * The calling user must be authenticated and have superadmin 'su' privileges.
+   * The calling user must be authenticated and have superadmin 'sa' privileges.
    * @async
    * @param  removeRoles Array of roles to be removed before adding new roles
    * @param  addRoles    Aray of roles to be added after removing specified roles
@@ -68,7 +70,7 @@ export class UserService {
    */
   async updateRoles(uid: string, removeRoles: string[] = [], addRoles: string[] = []): Promise<void> {
     // Validate superadmin privileges
-    if (!this.authState.roles.includes('su')) { throw Error('Operation needs superadmin privileges'); }
+    if (!this.authState.roles.includes('sa')) { throw Error('Operation needs superadmin privileges'); }
 
     return this.updateRolesTransaction(uid, removeRoles, addRoles).then(user => {
       if (user) {
@@ -89,7 +91,7 @@ export class UserService {
 
   private updateRolesTransaction(uid: string, removeRoles: string[] = [], addRoles: string[] = []): Promise<{old: User, new: User}> {
     // Validate superadmin privileges
-    if (!this.authState.roles.includes('su')) { throw Error('Operation needs superadmin privileges'); }
+    if (!this.authState.roles.includes('sa')) { throw Error('Operation needs superadmin privileges'); }
 
     const ref: {[key: string]: DocumentReference} = {};
     const user: {old: User, new: User} = {old: null, new: null};
@@ -123,14 +125,14 @@ export class UserService {
 
   /**
    * Fetches the data of a user from Firebase and returns a promise with the data.
-   * The calling user must be authenticated and have superadmin 'su' privileges.
+   * The calling user must be authenticated and have superadmin 'sa' privileges.
    * @async
    * @param  uid     Id of the user to fetch
    * @return         Promise that returns the user's data
    */
   private async fetchUser(uid: string): Promise<User> {
     // Validate superadmin privileges
-    if (!this.authState.roles.includes('su')) { throw Error('Operation needs superadmin privileges'); }
+    if (!this.authState.roles.includes('sa')) { throw Error('Operation needs superadmin privileges'); }
 
     const userRef = this.afs.doc<User>(`users/${uid}`);
     return userRef.get().pipe(map(doc => {
@@ -147,13 +149,13 @@ export class UserService {
 
   /**
    * Fetches a list of UserSummary objects for the group admins from Firebase.
-   * The calling user must be authenticated and have superadmin 'su' privileges.
+   * The calling user must be authenticated and have superadmin 'sa' privileges.
    * @async
    * @return            Promise that resolves to a snapshot of the list
    */
   private async fetchAdminList(): Promise<{[uid: string]: UserSummary}> {
     // Validate superadmin privileges
-    if (!this.authState.roles.includes('su')) { throw Error('Operation needs superadmin privileges'); }
+    if (!this.authState.roles.includes('sa')) { throw Error('Operation needs superadmin privileges'); }
 
     const adminListRef = this.afs.doc<{[uid: string]: UserSummary}>(`shared/admins`);
     return adminListRef.get().pipe(map(doc => {

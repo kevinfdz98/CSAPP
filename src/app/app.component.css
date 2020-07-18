@@ -50,7 +50,10 @@ mat-sidenav-container {
   color: white;
 }
 .horizontal-spacer { flex: 1 1 auto; }
-.content-container { background-color: white; }
+.content-container {
+  background-color: white;
+  overflow-y: auto;
+}
 
 /* For desktop: */
 @media only screen and (min-width: 600px) {

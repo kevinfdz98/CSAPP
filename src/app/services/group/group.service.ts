@@ -37,7 +37,7 @@ export class GroupService {
    */
   async getGroup(gid: string, forceUpdate = false): Promise<Group> {
     // Validate group admin or superadmin privileges
-    if (!(this.authState.user.administra.includes(gid) || this.authState.roles.includes('su'))) {
+    if (!(this.authState.user.administra.includes(gid) || this.authState.roles.includes('sa'))) {
       throw Error('Operation needs admin or superadmin privileges');
     }
 
@@ -57,7 +57,7 @@ export class GroupService {
    */
   async getGroupList(forceUpdate = false): Promise<{[gid: string]: GroupSummary}> {
     // Validate group superadmin privileges
-    if (!this.authState.roles.includes('su')) {
+    if (!this.authState.roles.includes('sa')) {
       throw Error('Operation needs superadmin privileges');
     }
 
@@ -76,7 +76,7 @@ export class GroupService {
    */
   async updateAdmins(gid: string, removeAdmins: string[] = [], addAdmins: string[] = []): Promise<void> {
     // Validate group admin or superadmin privileges
-    if (!(this.authState.user.administra.includes(gid) || this.authState.roles.includes('su'))) {
+    if (!(this.authState.user.administra.includes(gid) || this.authState.roles.includes('sa'))) {
       throw Error('Operation needs admin or superadmin privileges');
     }
 
@@ -92,7 +92,7 @@ export class GroupService {
 
   private updateAdminsTransaction(gid: string, removeAdmins: string[] = [], addAdmins: string[] = []): Promise<{old: Group, new: Group}> {
     // Validate group admin or superadmin privileges
-    if (!(this.authState.user.administra.includes(gid) || this.authState.roles.includes('su'))) {
+    if (!(this.authState.user.administra.includes(gid) || this.authState.roles.includes('sa'))) {
       throw Error('Operation needs admin or superadmin privileges');
     }
 
@@ -182,7 +182,7 @@ export class GroupService {
    */
   private async fetchGroup(gid: string): Promise<Group> {
     // Validate superadmin privileges
-    if (!this.authState.roles.includes('su')) { throw Error('Operation needs superadmin privileges'); }
+    if (!this.authState.roles.includes('sa')) { throw Error('Operation needs superadmin privileges'); }
 
     const groupRef = this.afs.doc<Group>(`groups/${gid}`);
     return groupRef.get().pipe(map(doc => {
@@ -205,7 +205,7 @@ export class GroupService {
    */
   private async fetchGroupList(): Promise<{[gid: string]: GroupSummary}> {
     // Validate superadmin privileges
-    if (!this.authState.roles.includes('su')) { throw Error('Operation needs superadmin privileges'); }
+    if (!this.authState.roles.includes('sa')) { throw Error('Operation needs superadmin privileges'); }
 
     const adminListRef = this.afs.doc<{[gid: string]: GroupSummary}>(`shared/groups`);
     return adminListRef.get().pipe(map(doc => {
@@ -223,7 +223,9 @@ export class GroupService {
 
   private mapGroupToGroupSummary(g: Group): GroupSummary {
     return {
-      gid: g.gid
+      gid: g.gid,
+      name: g.name,
+      majors: g.majors
     };
   }
 

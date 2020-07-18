@@ -1,0 +1,43 @@
+<div class="groups-list-container">
+  <table mat-table [dataSource]="data" class="groups-list-table">
+
+    <!-- Mobile Column -->
+    <ng-container matColumnDef="mobile">
+      <th mat-header-cell *matHeaderCellDef>Sociedad</th>
+      <td mat-cell *matCellDef="let group">
+        <span class="mobile-name">{{group.gid+' - '+group.name}}</span>
+        <span class="mobile-majors">{{group.majors}}</span>
+      </td>
+    </ng-container>
+
+    <!-- Gid Column -->
+    <ng-container matColumnDef="gid">
+      <th mat-header-cell *matHeaderCellDef>Sociedad</th>
+      <td mat-cell *matCellDef="let group">{{group.gid}}</td>
+    </ng-container>
+
+    <!-- Name Column -->
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef>Nombre largo</th>
+      <td mat-cell *matCellDef="let group">{{group.name}}</td>
+    </ng-container>
+
+    <!-- Majors Column -->
+    <ng-container matColumnDef="majors">
+      <th mat-header-cell *matHeaderCellDef>Carreras</th>
+      <td mat-cell *matCellDef="let group">{{group.majors}}</td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="columns"></tr>
+    <tr mat-row *matRowDef="let group; columns: columns"></tr>
+
+    <tr class="mat-row" *matNoDataRow>
+      <td class="mat-cell" colspan="3">No se encontraron sociedades</td>
+    </tr>
+  </table>
+  <button mat-fab
+          color="primary"
+          (click)="fetchData()"
+          class="content-fab"
+  ><mat-icon>refresh</mat-icon></button>
+</div>
