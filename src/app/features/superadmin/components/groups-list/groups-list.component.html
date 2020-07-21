@@ -29,7 +29,7 @@
     </ng-container>
 
     <tr mat-header-row *matHeaderRowDef="columns"></tr>
-    <tr mat-row *matRowDef="let group; columns: columns"></tr>
+    <tr mat-row *matRowDef="let group; columns: columns" (click)="editGroupDialog(group.gid)"></tr>
 
     <tr class="mat-row" *matNoDataRow>
       <td class="mat-cell" colspan="3">No se encontraron sociedades</td>
@@ -37,7 +37,7 @@
   </table>
   <button mat-fab
           color="primary"
-          (click)="fetchData()"
+          (click)="createGroupDialog()"
           class="content-fab"
-  ><mat-icon>refresh</mat-icon></button>
+  ><mat-icon>add</mat-icon></button>
 </div>

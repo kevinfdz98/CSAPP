@@ -1,0 +1,59 @@
+<form class="registration-form-container"
+      [formGroup]="groupForm"
+      (ngSubmit)="onSubmit()"
+>
+  <h1 *ngIf="data.action == 'create'">Registro de sociedad</h1>
+  <h1 *ngIf="data.action == 'edit'">Edición de sociedad</h1>
+  <mat-form-field appearance="fill">
+    <mat-label>Siglas*</mat-label>
+    <input matInput [readonly]="data.action == 'edit'" formControlName="gid">
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Nombre de la sociedad*</mat-label>
+    <input matInput formControlName="name">
+    <mat-error
+      *ngIf="groupForm.get('name').hasError('required')"
+    >This field is required</mat-error>
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Carreras Tec21</mat-label>
+    <mat-select formControlName="majorsTec21" multiple>
+      <mat-optgroup *ngFor="let item of Tec21ByArea | keyvalue">
+      <label [ngStyle]="
+      {
+        'color': areasList.Tec21[item.value[0].area].color,
+        'font-weight': '700'
+      }
+      ">{{item.key}}</label>
+        <mat-option *ngFor="let major of item.value"
+                    [value]="major.mid"
+        >
+          {{major.mid+' - '+major.name}}
+        </mat-option>
+      </mat-optgroup>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Carreras Tec20</mat-label>
+    <mat-select formControlName="majorsTec20" multiple>
+      <mat-optgroup *ngFor="let item of Tec20ByArea | keyvalue">
+      <label [ngStyle]="
+      {
+        'color': areasList.Tec20[item.value[0].area].color,
+        'font-weight': '700'
+      }
+      ">{{item.key}}</label>
+      <mat-option *ngFor="let major of item.value"
+                  [value]="major.mid"
+      >
+          {{major.mid+' - '+major.name}}
+        </mat-option>
+      </mat-optgroup>
+    </mat-select>
+  </mat-form-field>
+
+  <button mat-raised-button color="primary">Guardar</button>
+</form>

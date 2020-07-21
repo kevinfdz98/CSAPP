@@ -1,6 +1,8 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { User } from 'src/app/shared/interfaces/user.interface';
+import { Major, majorsList } from 'src/app/shared/interfaces/major.interface';
+import { Model } from 'src/app/shared/enums/model.enum';
 
 @Component({
   selector: 'app-registration-form',
@@ -9,7 +11,7 @@ import { User } from 'src/app/shared/interfaces/user.interface';
 })
 export class RegistrationFormComponent implements OnInit {
   @Input() userData: User;
-  @Output() save = new EventEmitter<any>();
+  @Output() save = new EventEmitter<Partial<User>>();
   userForm: FormGroup;
 
   constructor(
@@ -46,22 +48,8 @@ export class RegistrationFormComponent implements OnInit {
     }
   }
 
-  getMajorsList(model: string): string[] {
-    const majors = {
-      tec20: ['ADI', 'ARQ', 'BIO', 'CIS', 'COM', 'IA ', 'IAB', 'IBN', 'IBT', 'IC ', 'IDA', 'IDS', 'IFI',
-              'IIA', 'IID', 'IIN', 'IIS', 'IMA', 'IMD', 'IME', 'IMI', 'IMT', 'INC', 'ING', 'INT', 'IQA',
-              'IQP', 'IQS', 'ISC', 'ISD', 'ITC', 'ITE', 'ITI', 'ITM', 'ITS', 'LAC', 'LAD', 'LAE', 'LAF',
-              'LAN', 'LAS', 'LAT', 'LBC', 'LCC', 'LCD', 'LCE', 'LCM', 'LCP', 'LCQ', 'LCS', 'LDC', 'LDF',
-              'LDI', 'LDN', 'LDP', 'LEC', 'LED', 'LEF', 'LEM', 'LEP', 'LHC', 'LIN', 'LLE', 'LLN', 'LMC',
-              'LMI', 'LNB', 'LP ', 'LPL', 'LPM', 'LPO', 'LPS', 'LRI', 'LSC', 'LTS', 'MC ', 'MO ', 'NEG',
-              'SLD', 'TIE'],
-      tec21: ['AMC', 'ARQ', 'BGB', 'CIS', 'ESC', 'IAG', 'IAL', 'IBQ', 'IBT', 'IC ', 'ICI', 'ICT', 'IDM',
-              'IDS', 'IE ', 'IFI', 'IID', 'IIS', 'IIT', 'IM ', 'IMD', 'IMT', 'INA', 'IQ ', 'IRS', 'ITC',
-              'ITD', 'LAD', 'LAE', 'LAF', 'LBC', 'LC ', 'LCP', 'LDE', 'LDI', 'LDO', 'LEC', 'LED', 'LEI',
-              'LEM', 'LIN', 'LIT', 'LLE', 'LNB', 'LPE', 'LPS', 'LRI', 'LTM', 'LTP', 'LUB', 'MC ', 'MO ',
-              'NEG', 'SLD']
-    };
-    return (['tec20', 'tec21'].indexOf(model) !== -1) ? majors[model] : [];
+  getMajorsList(model: Model): string[] {
+    return Object.values(majorsList[model]).map(major => major.mid);
   }
 
   onSubmit(): boolean {
@@ -69,7 +57,7 @@ export class RegistrationFormComponent implements OnInit {
     this.userForm.markAsTouched();
     if (!this.userForm.valid) { return false; }
 
-    const value: any = {};
+    const value: Partial<User> = {};
     value.fName    = this.userForm.get('fName').value;
     value.lName    = this.userForm.get('lName').value;
     // Atributos para alumnos Tec

@@ -29,7 +29,7 @@
     </ng-container>
 
     <tr mat-header-row *matHeaderRowDef="columns"></tr>
-    <tr mat-row *matRowDef="let admin; columns: columns"></tr>
+    <tr mat-row *matRowDef="let admin; columns: columns" (click)="editAdminsDialog(admin.uid)"></tr>
 
     <tr class="mat-row" *matNoDataRow>
       <td class="mat-cell" colspan="3">No se encontraron admins</td>
@@ -37,7 +37,7 @@
   </table>
   <button mat-fab
           color="primary"
-          (click)="fetchData()"
+          (click)="editAdminsDialog()"
           class="content-fab"
-  ><mat-icon>refresh</mat-icon></button>
+  ><mat-icon>add</mat-icon></button>
 </div>

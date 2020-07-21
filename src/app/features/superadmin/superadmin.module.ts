@@ -7,10 +7,12 @@ import { AngularMaterialModule } from 'src/app/shared/modules/angular-material.m
 import { ReactiveFormsModule } from '@angular/forms';
 import { AdminsListComponent } from './components/admins-list/admins-list.component';
 import { GroupsListComponent } from './components/groups-list/groups-list.component';
+import { EditGroupComponent } from './components/edit-group/edit-group.component';
+import { EditAdminComponent } from './components/edit-admin/edit-admin.component';
 
 
 @NgModule({
-  declarations: [SuperadminComponent, AdminsListComponent, GroupsListComponent],
+  declarations: [SuperadminComponent, AdminsListComponent, GroupsListComponent, EditGroupComponent, EditAdminComponent],
   imports: [
     CommonModule,
     SuperadminRoutingModule,

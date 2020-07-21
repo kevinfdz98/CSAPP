@@ -2,6 +2,6 @@ export interface Group {
   gid: string;
   admins: string[];
   name: string;
-  majors: string[];
-  area: string[];
+  majorsTec21: string[];
+  majorsTec20: string[];
 }

@@ -2,8 +2,10 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { UserService } from 'src/app/services/user/user.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { filter, take } from 'rxjs/operators';
-import { BehaviorSubject, Subscription } from 'rxjs';
-import { BreakpointState, BreakpointObserver } from '@angular/cdk/layout';
+import { Subscription } from 'rxjs';
+import { BreakpointObserver } from '@angular/cdk/layout';
+import { MatDialog } from '@angular/material/dialog';
+import { EditAdminComponent, EditAdminData } from '../edit-admin/edit-admin.component';
 
 interface UserTableRow {
   uid: string;
@@ -20,7 +22,6 @@ interface UserTableRow {
 export class AdminsListComponent implements OnInit, OnDestroy {
 
   subscriptions = new Subscription();
-  onMobile = new BehaviorSubject<BreakpointState>({matches: false, breakpoints: {}});
   columns: string[];
   data: UserTableRow[] = [];
 
@@ -28,30 +29,52 @@ export class AdminsListComponent implements OnInit, OnDestroy {
     private auth: AuthService,
     private users: UserService,
     private breakpointObserver: BreakpointObserver,
-  ) { }
+    private dialog: MatDialog,
+    ) { }
 
   ngOnInit(): void {
     this.subscriptions.add(
+      // Subscribe to changes in screen size to change table columns
       this.breakpointObserver.observe(['(max-width: 599px)'])
                              .subscribe(observer =>
                                this.columns = observer.matches ? ['mobile', 'group'] : ['names',  'email', 'group']
                              )
     );
     this.subscriptions.add(
-        this.auth.getAuthState().pipe(
-        filter(state => state.roles.includes('sa')),
-        take(1)
-        ).subscribe(state => this.fetchData())
+      // Wait until user is authenticated as superadmin ('sa')
+      // and then subscribe to changes to AdminsList
+      this.auth.getAuthState()
+              .pipe(filter(state => state.roles.includes('sa')), take(1))
+              .subscribe(() => this.subscribeToAdminsListChanges())
     );
   }
 
-  fetchData(): void {
-    this.users.getAdminList(true).then(listObj =>
-      this.data = Object.values(listObj).reduce((arr, user) => arr.concat( (user.administra.length > 0) ?
-        user.administra.map(gid => ({uid: user.uid, names: `${user.fName} ${user.lName}`, email: user.email, group: gid})) :
-        [{uid: user.uid, names: `${user.fName} ${user.lName}`, email: user.email, group: '-'}]
-      ), [] as UserTableRow[])
+  subscribeToAdminsListChanges(): void {
+    this.subscriptions.add(
+      // Subscribe to changes to AdminsList (in Firebase) and build data array for table
+      this.users.observeAdminsList().subscribe(list =>
+        this.data = Object.values(list).reduce(
+          (arr, admin) => arr.concat( (admin.administra.length > 0) ?
+            admin.administra.map(gid => ({uid: admin.uid, names: `${admin.fName} ${admin.lName}`, email: admin.email, group: gid})) :
+            [{uid: admin.uid, names: `${admin.fName} ${admin.lName}`, email: admin.email, group: '-'}]
+          ), [] as UserTableRow[]
+        )
+      )
     );
+  }
+
+  editAdminsDialog(uid?: string): void {
+    const dialogRef = this.dialog.open(EditAdminComponent, {
+      width: '250px',
+      data: {action: uid ? 'edit' : 'create', uid} as EditAdminData
+    });
+
+    dialogRef.afterClosed().subscribe((data: EditAdminData) => {
+      console.log(data);
+      if (data && data.uid && data.uid.length > 0) {
+        this.users.updateGroups(data.uid, data.removeGroups, data.addGroups);
+      }
+    });
   }
 
   ngOnDestroy(): void {
