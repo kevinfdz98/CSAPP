@@ -16,6 +16,7 @@ export class AppComponent implements OnInit {
   onMobile = new BehaviorSubject<BreakpointState>({matches: false, breakpoints: {}});
   loggedIn: Observable<boolean>;
   isSuperadmin: Observable<boolean>;
+  administraList: Observable<string[]>;
   @ViewChild('drawer') sidenav: MatSidenav;
 
   constructor(
@@ -27,6 +28,7 @@ export class AppComponent implements OnInit {
   ngOnInit(): void {
     this.loggedIn = this.auth.getAuthState().pipe(map(state => state.loggedIn));
     this.isSuperadmin = this.auth.getAuthState().pipe(map(state => state.roles.includes('sa')));
+    this.administraList = this.auth.getAuthState().pipe(map(state => (state.user)? state.user.administra : []));
     this.breakpointObserver.observe(['(max-width: 599px)'])
                            .subscribe(this.onMobile);
   }

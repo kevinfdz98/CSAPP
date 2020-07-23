@@ -1,8 +1,8 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { User } from 'src/app/shared/interfaces/user.interface';
-import { Major, majorsList } from 'src/app/shared/interfaces/major.interface';
-import { Model } from 'src/app/shared/enums/model.enum';
+import { majorsList } from 'src/app/shared/interfaces/major.interface';
+import { Models } from 'src/app/shared/enums/major-models.enum';
 
 @Component({
   selector: 'app-registration-form',
@@ -48,7 +48,7 @@ export class RegistrationFormComponent implements OnInit {
     }
   }
 
-  getMajorsList(model: Model): string[] {
+  getMajorsList(model: Models): string[] {
     return Object.values(majorsList[model]).map(major => major.mid);
   }
 

@@ -10,7 +10,19 @@
   "settings": {
     "editor.tabSize": 2,
     "editor.insertSpaces": true,
-    "editor.detectIndentation": true
+    "editor.detectIndentation": true,
+    "files.exclude": {
+      "**/.git": true,
+      "**/.svn": true,
+      "**/.hg": true,
+      "**/CVS": true,
+      "**/.DS_Store": true,
+      "shared": true,
+      "services": true,
+      "features": true,
+      "app": true,
+      "src": true
+    }
   },
   "extensions": {
     "recommendations": [

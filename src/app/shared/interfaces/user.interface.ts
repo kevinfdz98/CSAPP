@@ -1,4 +1,4 @@
-import { Model } from '../enums/model.enum';
+import { Models } from '../enums/major-models.enum';
 
 export interface User {
   uid: string;
@@ -9,7 +9,7 @@ export interface User {
   following: string[];
   isNewUser: boolean;
   // Atributos para alumnos Tec
-  model?: Model;
+  model?: Models;
   major?: string;
   matricula?: string;
   semester?: number;

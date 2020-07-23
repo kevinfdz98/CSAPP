@@ -12,10 +12,14 @@
       <span matRipple (click)="navigateByUrl('/calendar/list')"><mat-icon>view_list</mat-icon><span>Lista</span></span>
     </div>
     <div class="sidenav-grid bottom" >
+      <span *ngFor="let gid of (administraList | async)"
+            matRipple
+            (click)="navigateByUrl('/admin/'+gid)"
+      ><mat-icon>event</mat-icon><span>Eventos{{' '+gid}}</span></span>
       <span *ngIf="(isSuperadmin | async)"
             matRipple
-            (click)="navigateByUrl('/admin')"
-      ><mat-icon>app_settings_alt</mat-icon><span>Panel de administración</span></span>
+            (click)="navigateByUrl('/superadmin')"
+      ><mat-icon>admin_panel_settings</mat-icon><span>Panel de administración</span></span>
       <span *ngIf="(loggedIn | async)"
             matRipple
             (click)="auth.signout()"
