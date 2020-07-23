@@ -1,15 +1,16 @@
 import { Injectable } from '@angular/core';
-import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree } from '@angular/router';
+import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { AuthService } from 'src/app/services/auth/auth.service';
-import { map } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
 export class LoginGuard implements CanActivate {
   constructor(
-    private auth: AuthService
+    private auth: AuthService,
+    private router: Router,
   ) { }
 
   canActivate(
@@ -17,7 +18,10 @@ export class LoginGuard implements CanActivate {
     state: RouterStateSnapshot
   ): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
     return this.auth.observeAuthState().pipe(
-      map(authState => authState.user ? false : true)
+      tap(authState => console.log('LoginGuard => ', authState)),
+      map(authState => !authState.user ?
+        true : this.router.parseUrl('/calendar/month')
+      )
     );
   }
 
