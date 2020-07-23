@@ -32,8 +32,11 @@ export class AuthService {
   ) {
     this.afAuth.authState.subscribe(user => {
       if (user) {
-        // If login event detected, begin to observe user
-        this.observeUser().pipe(take(1)).subscribe(() =>
+        // If login event detected, subscribe to Firebase (User document)
+        if (!this.subscriptionToUser.closed) { this.subscriptionToUser.unsubscribe(); }
+        this.subscriptionToUser = this.subscribeToUser(user.uid);
+        // Wait until authstate has uid (indicating that it has subscribed to Firebase)
+        this.authState$.pipe(filter(state => state.uid ? true : false), take(1)).subscribe(() =>
           // And then change state to logged in
           this.authState$.next({...this.authState$.value, loggedIn: true})
         );
@@ -190,7 +193,7 @@ export class AuthService {
       if (user) {
         this.authState$.next({...this.authState$.value, uid: user.uid, roles: user.roles, user});
       } else {
-        this.authState$.next({...this.authState$.value, uid: user.uid, roles: [], user: null});
+        this.authState$.next({...this.authState$.value, uid, roles: [], user: null});
       }
     });
   }
