@@ -43,7 +43,7 @@ export class AdminsListComponent implements OnInit, OnDestroy {
     this.subscriptions.add(
       // Wait until user is authenticated as superadmin ('sa')
       // and then subscribe to changes to AdminsList
-      this.auth.getAuthState()
+      this.auth.observeAuthState()
               .pipe(filter(state => state.roles.includes('sa')), take(1))
               .subscribe(() => this.subscribeToAdminsListChanges())
     );

@@ -26,7 +26,7 @@ export class GroupService {
     this.subscriptionToGroupsList.closed = true;
 
     // Subscribe to changes in auth state from AuthService
-    this.auth.getAuthState().subscribe(state => {
+    this.auth.observeAuthState().subscribe(state => {
       // If subscribed to Firebase (groupsList)
       if (!this.subscriptionToGroupsList.closed) {
         // If user logs out or their 'sa' role is removed

@@ -44,7 +44,7 @@ export class GroupsListComponent implements OnInit, OnDestroy {
     this.subscriptions.add(
       // Wait until user is authenticated as superadmin ('sa')
       // and then subscribe to changes to GroupsList
-      this.auth.getAuthState()
+      this.auth.observeAuthState()
               .pipe(filter(state => state.roles.includes('sa')), take(1))
               .subscribe(() => this.subscribeToGroupsListChanges())
     );

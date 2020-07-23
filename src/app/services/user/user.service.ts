@@ -25,7 +25,7 @@ export class UserService {
     this.subscriptionToAdminsList.closed = true;
 
     // Subscribe to changes in auth state from AuthService
-    this.auth.getAuthState().subscribe(state => {
+    this.auth.observeAuthState().subscribe(state => {
       // If subscribed to Firebase (adminsList)
       if (!this.subscriptionToAdminsList.closed) {
         // If user logs out or their 'sa' role is removed
@@ -162,17 +162,11 @@ export class UserService {
         addRoles = addRoles.filter(role => !user.old.roles.includes(role));
         // Build new User document with minimum removals and additions
         user.new = {...user.old, roles: user.old.roles.filter(role => !removeRoles.includes(role)).concat(addRoles)};
-
-        // If admin role changes, do update in adminsList
-        if (user.old.roles.includes('a') !== user.new.roles.includes('a')) {
-
-          // If admin role is added, record in list; else, delete record from list
-          if (user.new.roles.includes('a')) {
-            trans.update(list.ref, {[uid]: this.mapUserToUserSummary(user.new)});
-          } else {
-            trans.update(list.ref, {[uid]: firebase.firestore.FieldValue.delete()});
-          }
-        }
+        // If new user is admin, update adminList
+        trans.update(list.ref, user.new.roles.includes('a') ?
+          {[uid]: this.mapUserToUserSummary(user.new)} :
+          {[uid]: firebase.firestore.FieldValue.delete()}
+        );
         // In any case, update roles in users collection
         trans.update(user.ref, {roles: user.new.roles});
         return {old: user.old, new: user.new};
@@ -238,17 +232,19 @@ export class UserService {
         trans.update(group.ref, {admins: firebase.firestore.FieldValue.arrayUnion(uid)});
       }, Promise.resolve());
 
-      // If user is a new admin, add to admins list
+      // If user is a new admin, add role
       if (user.old.administra.length === 0 && user.new.administra.length > 0) {
-        user.new.roles = ['a'].concat(user.old.roles.filter(r => r !== 'a')); // Adds the admin role
-        trans.update(admins.list.ref, {[uid]: this.mapUserToUserSummary(user.new)});
+        user.new.roles = ['a'].concat(user.old.roles.filter(r => r !== 'a'));
       }
-      // If user is no more an admin, remove from admins list
+      // If user is no more an admin, removerole
       else if (user.old.administra.length > 0 && user.new.administra.length === 0) {
-        user.new.roles = user.old.roles.filter(r => r !== 'a'); // Removes the admin role
-        trans.update(admins.list.ref, {[uid]: firebase.firestore.FieldValue.delete()});
+        user.new.roles = user.old.roles.filter(r => r !== 'a');
       }
-
+      // If new user is admin, update adminList
+      trans.update(admins.list.ref, user.new.roles.includes('a') ?
+        {[uid]: this.mapUserToUserSummary(user.new)} :
+        {[uid]: firebase.firestore.FieldValue.delete()}
+      );
       // In any case, update groups in in User document
       trans.update(user.ref, {administra: user.new.administra});
       return {old: user.old, new: user.new};
