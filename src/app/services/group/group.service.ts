@@ -63,7 +63,7 @@ export class GroupService {
       if ((await trans.get(groupRef)).exists) { return false; }
       // Else, create group and return true
       trans.set(groupRef, data);
-      trans.set(groupsListRef, {[data.gid]: this.mapGroupToGroupSummary(data)});
+      trans.update(groupsListRef, {[data.gid]: this.mapGroupToGroupSummary(data)});
       return true;
     }).then(created => {
       // If successfuly created, update local copy of group details
