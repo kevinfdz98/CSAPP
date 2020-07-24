@@ -86,4 +86,8 @@ export class EditGroupComponent implements OnInit {
     return false; // To avoid refreshing of page due to submit (because single-page application)
   }
 
+  onClose(): void {
+    this.dialogRef.close();
+  }
+
 }

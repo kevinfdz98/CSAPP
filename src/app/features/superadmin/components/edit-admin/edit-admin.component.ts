@@ -31,7 +31,7 @@ export class EditAdminComponent implements OnInit {
     private users: UserService,
   ) {
     this.adminForm = fb.group({
-      fullname   : ['', Validators.required],
+      fullname   : [''],
       email      : ['', Validators.required],
       administra : [[]],
     });
@@ -91,6 +91,10 @@ export class EditAdminComponent implements OnInit {
 
     this.dialogRef.close({...this.data, addGroups: this.adminForm.get('administra').value});
     return false; // To avoid refreshing of page due to submit (because single-page application)
+  }
+
+  onClose(): void {
+    this.dialogRef.close();
   }
 
 }

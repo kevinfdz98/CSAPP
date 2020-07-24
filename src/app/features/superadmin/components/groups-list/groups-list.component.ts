@@ -25,6 +25,7 @@ export class GroupsListComponent implements OnInit, OnDestroy {
   subscriptions = new Subscription();
   columns: string[];
   data: GroupTableRow[] = [];
+  onMobile: boolean;
 
   constructor(
     private auth: AuthService,
@@ -37,9 +38,10 @@ export class GroupsListComponent implements OnInit, OnDestroy {
     this.subscriptions.add(
       // Subscribe to changes in screen size to change table columns
       this.breakpointObserver.observe(['(max-width: 599px)'])
-                             .subscribe(observer =>
-                               this.columns = observer.matches ? ['mobile'] : ['gid', 'name', 'majors']
-                             )
+                             .subscribe(observer => {
+                               this.onMobile = observer.matches;
+                               this.columns = this.onMobile ? ['mobile'] : ['gid', 'name', 'majors']
+                             })
     );
     this.subscriptions.add(
       // Wait until user is authenticated as superadmin ('sa')
@@ -52,7 +54,10 @@ export class GroupsListComponent implements OnInit, OnDestroy {
 
   createGroupDialog(): void {
     const dialogRef = this.dialog.open(EditGroupComponent, {
-      width: '250px',
+      width: this.onMobile ? '100vw' : 'min-content',
+      height: this.onMobile ? '100vh' : 'min-content',
+      maxWidth: this.onMobile ? '100vw' : '80vw',
+      maxHeight: this.onMobile ? '100vh' : '70vh',
       data: {action: 'create', group: null} as EditGroupData
     });
 
@@ -64,7 +69,10 @@ export class GroupsListComponent implements OnInit, OnDestroy {
     const group = await this.groups.getGroup(gid);
 
     const dialogRef = this.dialog.open(EditGroupComponent, {
-      width: '250px',
+      width: this.onMobile ? '100vw' : 'min-content',
+      height: this.onMobile ? '100vh' : 'min-content',
+      maxWidth: this.onMobile ? '100vw' : '80vw',
+      maxHeight: this.onMobile ? '100vh' : '70vh',
       data: {action: 'edit', group} as EditGroupData
     });
 

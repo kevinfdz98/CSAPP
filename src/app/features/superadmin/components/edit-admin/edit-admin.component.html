@@ -2,27 +2,27 @@
       [formGroup]="adminForm"
       (ngSubmit)="onSubmit()"
 >
-  <h1 *ngIf="data.action == 'create'">Registro de administrador</h1>
-  <h1 *ngIf="data.action == 'edit'">Edición de administrador</h1>
+  <h1 *ngIf="data.action == 'create'" class="form-element">Registro de administrador</h1>
+  <h1 *ngIf="data.action == 'edit'" class="form-element">Edición de administrador</h1>
 
-  <mat-form-field appearance="fill" [floatLabel]="true">
-    <mat-label>Nombre (read only)</mat-label>
-    <input matInput [readonly]=true formControlName="fullname">
-  </mat-form-field>
-
-  <mat-form-field appearance="fill">
+  <mat-form-field appearance="fill" class="form-element" *ngIf="data.action == 'create'" style="margin-bottom: 1.34375em;">
     <mat-label>Correo {{(data.action == 'edit') ? ' (read only)' : ''}}</mat-label>
     <input matInput [readonly]="data.action == 'edit'" formControlName="email">
     <button mat-icon-button matSuffix (click)="searchUserByEmail(adminForm.get('email').value)" type="button">
       <mat-icon>search</mat-icon>
     </button>
-    <mat-hint *ngIf="data.action == 'create'">Escribe la dirección de correo y presiona el botón para buscar al usuario</mat-hint>
+    <mat-hint>Escribe la dirección de correo y presiona el botón para buscar al usuario</mat-hint>
     <mat-error
       *ngIf="adminForm.get('email').hasError('required')"
-    >This field is required</mat-error>
+    >Escribe la dirección de correo y presiona el botón para buscar al usuario</mat-error>
   </mat-form-field>
 
-  <mat-form-field appearance="fill">
+  <mat-form-field [floatLabel]="true" class="form-element">
+    <mat-label>Nombre (read only)</mat-label>
+    <input matInput [readonly]=true formControlName="fullname">
+  </mat-form-field>
+
+  <mat-form-field appearance="fill" class="form-element">
     <mat-label>Seleccionar sociedad(es)</mat-label>
     <mat-select formControlName="administra" multiple>
         <mat-option *ngFor="let group of groupsList | keyvalue"
@@ -33,5 +33,9 @@
     </mat-select>
   </mat-form-field>
 
-  <button mat-raised-button color="primary">Guardar</button>
+
+  <div class="form-buttons form-element">
+    <button mat-raised-button color="accent" type="submit">Guardar</button>
+    <button mat-raised-button color="primary" type="button" (click)="onClose()">Cancelar</button>
+  </div>
 </form>

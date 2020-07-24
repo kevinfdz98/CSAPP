@@ -24,6 +24,7 @@ export class AdminsListComponent implements OnInit, OnDestroy {
   subscriptions = new Subscription();
   columns: string[];
   data: UserTableRow[] = [];
+  onMobile: boolean;
 
   constructor(
     private auth: AuthService,
@@ -36,9 +37,10 @@ export class AdminsListComponent implements OnInit, OnDestroy {
     this.subscriptions.add(
       // Subscribe to changes in screen size to change table columns
       this.breakpointObserver.observe(['(max-width: 599px)'])
-                             .subscribe(observer =>
-                               this.columns = observer.matches ? ['mobile', 'group'] : ['names',  'email', 'group']
-                             )
+                             .subscribe(observer => {
+                               this.onMobile = observer.matches;
+                               this.columns = this.onMobile ? ['mobile', 'group'] : ['names',  'email', 'group'];
+                             })
     );
     this.subscriptions.add(
       // Wait until user is authenticated as superadmin ('sa')
@@ -65,12 +67,14 @@ export class AdminsListComponent implements OnInit, OnDestroy {
 
   editAdminsDialog(uid?: string): void {
     const dialogRef = this.dialog.open(EditAdminComponent, {
-      width: '250px',
+      width: this.onMobile ? '100vw' : 'min-content',
+      height: this.onMobile ? '100vh' : 'min-content',
+      maxWidth: this.onMobile ? '100vw' : '80vw',
+      maxHeight: this.onMobile ? '100vh' : '70vh',
       data: {action: uid ? 'edit' : 'create', uid} as EditAdminData
     });
 
     dialogRef.afterClosed().subscribe((data: EditAdminData) => {
-      console.log(data);
       if (data && data.uid && data.uid.length > 0) {
         this.users.updateGroups(data.uid, data.removeGroups, data.addGroups);
       }
