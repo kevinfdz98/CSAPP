@@ -19,7 +19,7 @@ export class SuperadminGuard implements CanActivate {
   ): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
     return this.auth.observeAuthState().pipe(
       map(authState => authState.roles.includes('sa') ?
-      true : this.router.parseUrl('/login')
+      true : this.router.parseUrl('/calendar')
     )
   );
 }
