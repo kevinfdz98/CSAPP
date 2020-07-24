@@ -1,8 +1,14 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, Inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { User } from 'src/app/shared/interfaces/user.interface';
 import { majorsList } from 'src/app/shared/interfaces/major.interface';
 import { Models } from 'src/app/shared/enums/major-models.enum';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+
+export interface RegistrationData {
+  userData: User;
+  saveData: Partial<User>;
+}
 
 @Component({
   selector: 'app-registration-form',
@@ -10,11 +16,11 @@ import { Models } from 'src/app/shared/enums/major-models.enum';
   styleUrls: ['./registration-form.component.css']
 })
 export class RegistrationFormComponent implements OnInit {
-  @Input() userData: User;
-  @Output() save = new EventEmitter<Partial<User>>();
   userForm: FormGroup;
 
   constructor(
+    public dialogRef: MatDialogRef<RegistrationFormComponent, RegistrationData>,
+    @Inject(MAT_DIALOG_DATA) public data: RegistrationData,
     fb: FormBuilder
   ) {
     this.userForm = fb.group({
@@ -30,26 +36,30 @@ export class RegistrationFormComponent implements OnInit {
 
   ngOnInit(): void {
     // If Tec student, set additional validators
-    if (this.userData.matricula) {
+    if (this.data.userData.matricula) {
       this.userForm.get('model').setValidators(Validators.required);
       this.userForm.get('major').setValidators(Validators.required);
       this.userForm.get('semester').setValidators(Validators.required);
     }
-    if (this.userData) {
+    if (this.data.userData) {
       this.userForm.setValue({
-        email     : this.userData.email     ? this.userData.email     : '',
-        matricula : this.userData.matricula ? this.userData.matricula : '',
-        fName     : this.userData.fName     ? this.userData.fName     : '',
-        lName     : this.userData.lName     ? this.userData.lName     : '',
-        model     : this.userData.model     ? this.userData.model     : '',
-        major     : this.userData.major     ? this.userData.major     : '',
-        semester  : this.userData.semester  ? this.userData.semester  : ''
+        email     : this.data.userData.email     ? this.data.userData.email     : '',
+        matricula : this.data.userData.matricula ? this.data.userData.matricula : '',
+        fName     : this.data.userData.fName     ? this.data.userData.fName     : '',
+        lName     : this.data.userData.lName     ? this.data.userData.lName     : '',
+        model     : this.data.userData.model     ? this.data.userData.model     : '',
+        major     : this.data.userData.major     ? this.data.userData.major     : '',
+        semester  : this.data.userData.semester  ? this.data.userData.semester  : ''
       });
     }
   }
 
   getMajorsList(model: Models): string[] {
-    return Object.values(majorsList[model]).map(major => major.mid);
+    console.log('model => ' + model);
+    if (model === 'Tec20' || model === 'Tec21') {
+      return Object.values(majorsList[model]).map(major => major.mid);
+    }
+    return [];
   }
 
   onSubmit(): boolean {
@@ -67,7 +77,7 @@ export class RegistrationFormComponent implements OnInit {
       value.semester = this.userForm.get('semester').value;
     }
 
-    this.save.emit(value);
+    this.dialogRef.close({...this.data, saveData: value});
     return false; // To avoid refreshing of page due to submit (because single-page application)
   }
 

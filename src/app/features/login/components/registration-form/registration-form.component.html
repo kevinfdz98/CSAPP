@@ -2,18 +2,19 @@
       [formGroup]="userForm"
       (ngSubmit)="onSubmit()"
 >
-  <h1>Registro de usuario</h1>
-  <mat-form-field appearance="fill">
+  <h1 class="form-element">Registro de usuario</h1>
+
+  <mat-form-field class="form-element">
     <mat-label>Correo* (read-only)</mat-label>
     <input matInput readonly formControlName="email">
   </mat-form-field>
 
-  <mat-form-field appearance="fill" *ngIf="userData.matricula">
+  <mat-form-field class="form-element" *ngIf="data.userData.matricula">
     <mat-label>Matricula* (read-only)</mat-label>
     <input matInput readonly formControlName="matricula">
   </mat-form-field>
 
-  <mat-form-field appearance="fill">
+  <mat-form-field appearance="fill" class="form-element">
     <mat-label>Nombre(s)*</mat-label>
     <input matInput formControlName="fName">
     <mat-error
@@ -21,7 +22,7 @@
     >This field is required</mat-error>
   </mat-form-field>
 
-  <mat-form-field appearance="fill">
+  <mat-form-field appearance="fill" class="form-element">
     <mat-label>Apellidos(s)*</mat-label>
     <input matInput formControlName="lName">
     <mat-error
@@ -29,12 +30,12 @@
     >This field is required</mat-error>
   </mat-form-field>
 
-  <mat-radio-group class="modelo-radios" formControlName="model" *ngIf="userData.matricula">
-    <mat-radio-button class="margin-radio" value="tec20">Tec20</mat-radio-button>
-    <mat-radio-button class="margin-radio" value="tec21">Tec21</mat-radio-button>
+  <mat-radio-group class="modelo-radios" formControlName="model" *ngIf="data.userData.matricula" class="form-element">
+    <mat-radio-button class="margin-radio" value="Tec20">Tec20</mat-radio-button>
+    <mat-radio-button class="margin-radio" value="Tec21">Tec21</mat-radio-button>
   </mat-radio-group>
 
-  <mat-form-field appearance="fill" *ngIf="userData.matricula">
+  <mat-form-field appearance="fill" *ngIf="data.userData.matricula" class="form-element">
     <mat-label>Carrera*</mat-label>
     <mat-select formControlName="major">
       <mat-option *ngFor="let major of getMajorsList(userForm.get('model').value)"
@@ -46,7 +47,7 @@
     >This field is required</mat-error>
   </mat-form-field>
 
-  <mat-form-field appearance="fill" *ngIf="userData.matricula">
+  <mat-form-field appearance="fill" *ngIf="data.userData.matricula" class="form-element">
     <mat-label>Semestre*</mat-label>
     <input matInput formControlName="semester" type="number">
     <mat-error
@@ -54,5 +55,7 @@
     >This field is required</mat-error>
   </mat-form-field>
 
-  <button mat-raised-button color="primary" >Guardar</button>
+  <div class="form-buttons form-element">
+    <button mat-raised-button color="accent" type="submit">Guardar</button>
+  </div>
 </form>

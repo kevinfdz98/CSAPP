@@ -3,23 +3,38 @@ import { AuthService } from '../../services/auth/auth.service';
 import { Router } from '@angular/router';
 import { User } from 'src/app/shared/interfaces/user.interface';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { BreakpointObserver } from '@angular/cdk/layout';
+import { MatDialog } from '@angular/material/dialog';
+import { Subscription } from 'rxjs';
+import { RegistrationFormComponent, RegistrationData } from './components/registration-form/registration-form.component';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
-export class LoginComponent implements OnInit {
-  showRegistrationForm = false;
-  userData: User = null;
+export class LoginComponent implements OnInit, OnDestroy {
+
+  subscriptions = new Subscription();
+  onMobile: boolean;
 
   constructor(
     public auth: AuthService,
     private router: Router,
-    private snack: MatSnackBar
+    private snack: MatSnackBar,
+    private breakpointObserver: BreakpointObserver,
+    private dialog: MatDialog,
   ) { }
 
-  ngOnInit(): void { }
+  ngOnInit(): void {
+    this.subscriptions.add(
+      // Subscribe to changes in screen size to change table columns
+      this.breakpointObserver.observe(['(max-width: 599px)'])
+                             .subscribe(observer => {
+                               this.onMobile = observer.matches;
+                             })
+    );
+  }
 
   signInWithGoogle(): void {
     this.auth.signinWithGoogle()
@@ -33,22 +48,40 @@ export class LoginComponent implements OnInit {
       horizontalPosition: 'center',
       verticalPosition: 'top',
     });
-    this.userData = user;
-    this.showRegistrationForm = (user && user.isNewUser);
-    if (user && !user.isNewUser) {
-      this.router.navigateByUrl('/calendar');
+
+    if (user) {
+      if (user.isNewUser) {
+        this.registrationDialog(user);
+      } else {
+        this.router.navigateByUrl('/calendar');
+      }
     }
   }
 
-  saveRegistrationData(event: Partial<User>): void {
-    this.snack.open(`Cambios guardados`, 'Nice!', {
-      duration: 1000,
-      horizontalPosition: 'center',
-      verticalPosition: 'top',
+  registrationDialog(user: User): void {
+    const dialogRef = this.dialog.open(RegistrationFormComponent, {
+      width: this.onMobile ? '100vw' : 'min-content',
+      height: this.onMobile ? '100vh' : 'min-content',
+      maxWidth: this.onMobile ? '100vw' : '80vw',
+      maxHeight: this.onMobile ? '100vh' : '70vh',
+      data: {userData: {...user}, saveData: null} as RegistrationData
     });
-    this.auth.updateUser({isNewUser: false, ...event}).then(() => {
-      this.showRegistrationForm = false;
-      this.router.navigateByUrl('/calendar');
-    }).catch(err => console.error(err));
+
+    dialogRef.afterClosed().subscribe((data: RegistrationData) => {
+      if (data && data.saveData) {
+        this.snack.open(`Cambios guardados`, 'Nice!', {
+          duration: 1000,
+          horizontalPosition: 'center',
+          verticalPosition: 'top',
+        });
+        this.auth.updateUser({...data.saveData, isNewUser: false}).then(() => {
+          this.router.navigateByUrl('/calendar');
+        }).catch(err => console.error(err));
+      }
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
   }
 }

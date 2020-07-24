@@ -1,4 +1,4 @@
-<div *ngIf="!showRegistrationForm; else form" class="login-container">
+<div class="login-container">
   <div mat-elevation-z4 class="signin-area">
     <h1>¿Qué pongo aquí?</h1>
     <div class="info">
@@ -23,6 +23,3 @@
     </div>
   </div>
 </div>
-<ng-template #form>
-  <app-registration-form [userData]="userData" (save)="saveRegistrationData($event)"></app-registration-form>
-</ng-template>

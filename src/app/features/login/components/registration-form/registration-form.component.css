@@ -3,15 +3,24 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 100%;
-  max-width: 350px;
+  width: 350px;
   height: 100%;
+  max-width: 100%;
+  scroll-behavior: auto;
   margin: auto;
 }
-.mat-form-field {
+
+.form-element {
   width: 90%;
-  margin: 0.3em 0;
 }
+
+.form-buttons {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
 .modelo-radios {
   width: 50%;
   display: flex;
