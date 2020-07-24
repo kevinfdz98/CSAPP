@@ -12,5 +12,5 @@ export interface Event {
   linkRegister: string;
   linkEvent: string;
   imgUrl: string;
-  followersCount: string;
+  followers: string[];
 }
