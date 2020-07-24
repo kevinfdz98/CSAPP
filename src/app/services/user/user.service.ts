@@ -236,7 +236,7 @@ export class UserService {
       if (user.old.administra.length === 0 && user.new.administra.length > 0) {
         user.new.roles = ['a'].concat(user.old.roles.filter(r => r !== 'a'));
       }
-      // If user is no more an admin, removerole
+      // If user is no more an admin, remove role
       else if (user.old.administra.length > 0 && user.new.administra.length === 0) {
         user.new.roles = user.old.roles.filter(r => r !== 'a');
       }
@@ -246,7 +246,7 @@ export class UserService {
         {[uid]: firebase.firestore.FieldValue.delete()}
       );
       // In any case, update groups in in User document
-      trans.update(user.ref, {administra: user.new.administra});
+      trans.update(user.ref, {administra: user.new.administra, roles: user.new.roles});
       return {old: user.old, new: user.new};
     });
   }
