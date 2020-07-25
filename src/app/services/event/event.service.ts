@@ -47,11 +47,11 @@ export class EventService {
     // Run transaction
     return this.afs.firestore.runTransaction(async trans => {
       // Create event
-      trans.set(refs.event, data);
+      trans.set(refs.event, data, {merge: true});
       // Add event to all the months it belongs to
       refs.months.reduce(async (promise, mref) => {
         await promise;
-        trans.update(mref, {[data.eid]: this.mapEventToEventSummary(data)});
+        trans.set(mref, {[data.eid]: this.mapEventToEventSummary(data)}, {merge: true});
       }, Promise.resolve());
       return data;
     }).then(event => this.eventDetails[event.eid] = event);
@@ -209,7 +209,7 @@ export class EventService {
         to:   (new Date(Math.min((new Date(y, 11, 31, 23, 59, 59, 9999)).getTime() - offset,   end.getTime() + margin))).getUTCMonth()
       };
       for (let m = months.from; m <= months.to; m++) {
-        ids.push(`${y}-${m}`);
+        ids.push(`${y}-${((m < 9) ? '0' : '') + (m + 1)}`);
       }
     }
     return ids;

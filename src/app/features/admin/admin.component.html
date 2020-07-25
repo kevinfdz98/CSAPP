@@ -1,1 +1,8 @@
-<p>admin works!</p>
+<div class="group-events-container">
+  <full-calendar [options]="calendarOptions" style="padding: 10px 0px;"></full-calendar>
+  <button mat-fab
+          color="primary"
+          (click)="addEventDialog()"
+          class="content-fab"
+  ><mat-icon>add</mat-icon></button>
+</div>
