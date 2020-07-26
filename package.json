@@ -19,6 +19,7 @@
     "@angular/fire": "^6.0.2",
     "@angular/forms": "~10.0.2",
     "@angular/material": "^10.0.1",
+    "@angular/material-moment-adapter": "^10.1.0",
     "@angular/platform-browser": "~10.0.2",
     "@angular/platform-browser-dynamic": "~10.0.2",
     "@angular/router": "~10.0.2",
@@ -29,6 +30,7 @@
     "@fullcalendar/list": "^5.1.0",
     "@fullcalendar/timegrid": "^5.1.0",
     "firebase": "^7.16.0",
+    "moment": "^2.27.0",
     "rxjs": "~6.5.5",
     "tslib": "^2.0.0",
     "zone.js": "~0.10.3"

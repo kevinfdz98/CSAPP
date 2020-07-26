@@ -1,1 +1,134 @@
-<p>edit-event-form works!</p>
+<form class="edit-event-form-container"
+      [formGroup]="eventForm"
+      (ngSubmit)="onSubmit()"
+>
+  <h1 class="form-element">Registro de evento</h1>
+
+  <!--Event.title-->
+  <mat-form-field appearance="fill" class="form-element">
+    <mat-label>Título del evento*</mat-label>
+    <input matInput formControlName="title">
+    <mat-error
+    *ngIf="eventForm.get('title').hasError('required')"
+    >This field is required</mat-error>
+  </mat-form-field>
+
+  <!--Event.type-->
+  <mat-form-field appearance="fill" class="form-element">
+    <mat-label>Tipo de evento*</mat-label>
+    <mat-select formControlName="type">
+      <mat-option value="Conferencia">Conferencia</mat-option>
+      <mat-option value="Conferencia">Congreso</mat-option>
+    </mat-select>
+    <mat-error
+    *ngIf="eventForm.get('type').hasError('required')"
+    >This field is required</mat-error>
+    <mat-hint>Esto sirve para que los alumnos puedan filtrar eventos por tipo</mat-hint>
+  </mat-form-field>
+
+  <!--Event.areaT21-->
+  <mat-form-field appearance="fill" class="form-element">
+    <mat-label [ngStyle]="{'color': (eventForm.get('areaT21').valid ? areasTec21[eventForm.get('areaT21').value].color : 'white'), 'font-weight': '700'}">Area del evento*</mat-label>
+    <mat-select formControlName="areaT21" #selectAreaT21>
+      <mat-option *ngFor="let item of areasTec21 | keyvalue"
+                  [value]="item.key"
+                  [ngStyle]="{'color': item.value.color, 'font-weight': '700'}"
+      >
+        {{item.value.aid+' - '+item.value.name}}
+      </mat-option>
+    </mat-select>
+    <mat-error
+      *ngIf="eventForm.get('areaT21').hasError('required')"
+    >This field is required</mat-error>
+    <mat-hint>Esto sirve para determinar el color del evento y para que los alumnos puedan filtrar eventos por área</mat-hint>
+  </mat-form-field>
+
+  <!--Event.timestamp.start-->
+  <mat-form-field appearance="fill" class="form-element">
+    <mat-label>Fecha inicio*</mat-label>
+    <input matInput [matDatepicker]="startDatepicker" formControlName="startDate">
+    <mat-datepicker-toggle matSuffix [for]="startDatepicker"></mat-datepicker-toggle>
+    <mat-datepicker #startDatepicker></mat-datepicker>
+    <mat-error
+      *ngIf="eventForm.get('startDate').hasError('required')"
+    >This field is required</mat-error>
+  </mat-form-field>
+  <mat-form-field appearance="fill" class="form-element">
+    <mat-label>Hora inicio*</mat-label>
+    <input matInput formControlName="startTime" type="time">
+    <mat-error
+      *ngIf="eventForm.get('startTime').hasError('required')"
+    >This field is required</mat-error>
+  </mat-form-field>
+
+  <!--Event.timestamp.end-->
+  <mat-form-field appearance="fill" class="form-element">
+    <mat-label>Fecha fin*</mat-label>
+    <input matInput [matDatepicker]="endDatepicker" formControlName="endDate">
+    <mat-datepicker-toggle matSuffix [for]="endDatepicker"></mat-datepicker-toggle>
+    <mat-datepicker #endDatepicker></mat-datepicker>
+    <mat-error
+      *ngIf="eventForm.get('endDate').hasError('required')"
+    >This field is required</mat-error>
+  </mat-form-field>
+  <mat-form-field appearance="fill" class="form-element">
+    <mat-label>Hora fin*</mat-label>
+    <input matInput formControlName="endTime" type="time">
+    <mat-error
+    *ngIf="eventForm.get('endTime').hasError('required')"
+    >This field is required</mat-error>
+  </mat-form-field>
+
+  <!--Event.oranizingGroups-->
+  <mat-form-field appearance="fill" class="form-element">
+    <mat-label>Sociedades organizadoras*</mat-label>
+    <mat-select formControlName="groups" multiple>
+      <mat-option *ngFor="let item of (groupS.observeGroupsList() | async) | keyvalue"
+                  [value]="item.key"
+      >
+        {{item.key}}
+      </mat-option>
+    </mat-select>
+    <mat-error
+      *ngIf="eventForm.get('groups').hasError('required')"
+    >This field is required</mat-error>
+    <mat-hint>Todas las sociedades organizadoras van a poder editar/borrar este evento</mat-hint>
+  </mat-form-field>
+
+  <!--Event.description-->
+  <mat-form-field appearance="fill" class="form-element">
+    <mat-label>Descripción del evento</mat-label>
+    <input matInput formControlName="description">
+  </mat-form-field>
+
+  <!--Event.place-->
+  <mat-form-field appearance="fill" class="form-element">
+    <mat-label>Lugar del evento</mat-label>
+    <input matInput formControlName="place">
+  </mat-form-field>
+
+  <!--Event.linkRegister-->
+  <mat-form-field appearance="fill" class="form-element">
+    <mat-label>Liga de registro</mat-label>
+    <input matInput formControlName="linkRegister">
+  </mat-form-field>
+
+  <!--Event.linkEvent-->
+  <mat-form-field appearance="fill" class="form-element">
+    <mat-label>Liga del evento</mat-label>
+    <input matInput formControlName="linkEvent">
+    <mat-hint>Por ejemplo, liga de la transmisión en vivo o sesión de Zoom</mat-hint>
+  </mat-form-field>
+
+  <!--Event.imgUrl-->
+  <mat-form-field appearance="fill" class="form-element">
+    <mat-label>Imagen</mat-label>
+    <input matInput formControlName="imgUrl">
+    <mat-hint>Por ejemplo, liga de la transmisión en vivo o sesión de Zoom</mat-hint>
+  </mat-form-field>
+
+  <div class="form-buttons form-element">
+    <button mat-raised-button color="accent" type="submit">Guardar</button>
+    <button mat-raised-button color="primary" type="button" (click)="onClose()">Cancelar</button>
+  </div>
+</form>

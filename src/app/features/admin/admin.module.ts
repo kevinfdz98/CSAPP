@@ -7,6 +7,7 @@ import { EditEventFormComponent } from './components/edit-event-form/edit-event-
 import { AngularMaterialModule } from 'src/app/shared/modules/angular-material.module';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MyFullCalendarModule } from 'src/app/shared/modules/my-fullcalendar.module';
+import { MatMomentDateModule } from '@angular/material-moment-adapter';
 
 @NgModule({
   declarations: [AdminComponent, EditEventFormComponent],
@@ -15,7 +16,8 @@ import { MyFullCalendarModule } from 'src/app/shared/modules/my-fullcalendar.mod
     AdminRoutingModule,
     AngularMaterialModule,
     ReactiveFormsModule,
-    MyFullCalendarModule
+    MyFullCalendarModule,
+    MatMomentDateModule,
   ]
 })
 export class AdminModule { }

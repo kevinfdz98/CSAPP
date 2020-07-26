@@ -1,0 +1,14 @@
+.edit-event-form-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 350px;
+  max-width: 100%;
+  scroll-behavior: auto;
+  margin: auto;
+}
+
+.form-element {
+  width: 90%;
+}

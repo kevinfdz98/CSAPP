@@ -1,18 +1,29 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, AfterViewInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { CalendarOptions } from '@fullcalendar/core';
 import { CalendarService } from 'src/app/services/calendar/calendar.service';
 import { EventService } from 'src/app/services/event/event.service';
 import { areasList } from 'src/app/shared/interfaces/area.interface';
-import { EventTypes } from 'src/app/shared/enums/event-types.enum';
-
+import { majorsList } from 'src/app/shared/interfaces/major.interface';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { BreakpointObserver } from '@angular/cdk/layout';
+import { Subscription } from 'rxjs';
+import { MatDialog } from '@angular/material/dialog';
+import { EditEventFormComponent } from './components/edit-event-form/edit-event-form.component';
+import { EditEventData } from './components/edit-event-form/edit-event-form.component';
+import { GroupService } from 'src/app/services/group/group.service';
+import { Event } from 'src/app/shared/interfaces/event.interface';
+import { FullCalendarComponent } from '@fullcalendar/angular';
 @Component({
   selector: 'app-admin',
   templateUrl: './admin.component.html',
   styleUrls: ['./admin.component.css']
 })
-export class AdminComponent implements OnInit {
+export class AdminComponent implements OnInit, AfterViewInit, OnDestroy {
 
+  @ViewChild('calendar') calendarComponent: FullCalendarComponent;
+  private subscriptions = new Subscription();
+  private onMobile: boolean;
   private gid: string;
 
   public calendarOptions: CalendarOptions = {
@@ -26,13 +37,15 @@ export class AdminComponent implements OnInit {
     // Function to fetch events
     events: (info, success, failure) => {
       this.calendarS.getEvents(info.start, info.end)
-                    .then(events => success(events.map(event => ({
-                      title: event.title,
-                      start: event.timestamp.start as Date,
-                      end: event.timestamp.end as Date,
-                      borderColor: areasList.Tec20[event.area.Tec20].color
-                    }))))
-                    .catch(reason => failure(reason));
+                    .then(events => success(
+                      events.filter(event => event.organizingGroups.includes(this.gid))
+                            .map(event => ({
+                              title: event.title,
+                              start: event.timestamp.start as Date,
+                              end: event.timestamp.end as Date,
+                              borderColor: areasList.Tec21[event.areaT21].color
+                            }))
+                    )).catch(reason => failure(reason));
     }
   };
 
@@ -40,34 +53,76 @@ export class AdminComponent implements OnInit {
     private route: ActivatedRoute,
     private calendarS: CalendarService,
     private eventS: EventService,
+    private groupS: GroupService,
+    private snack: MatSnackBar,
+    private breakpointObserver: BreakpointObserver,
+    private dialog: MatDialog,
 ) { }
 
   ngOnInit(): void {
-    this.route.paramMap.subscribe(param => {
+    // Subscribe to changes in screen size to change table columns
+    this.subscriptions.add(
+      this.breakpointObserver.observe(['(max-width: 599px)'])
+                             .subscribe(observer => {
+                               this.onMobile = observer.matches;
+                             })
+    );
+  }
+
+  ngAfterViewInit(): void {
+    // Subscribe to changes in route
+    this.subscriptions.add(this.route.paramMap.subscribe(param => {
+      this.calendarComponent.getApi().refetchEvents();
       this.gid = param.get('gid');
-    });
+    }));
   }
 
   addEventDialog(): void {
-    alert('I will add an event');
-    const n = Math.floor(Math.random() * 31);
-    this.eventS.createEvent(this.gid, {
-      eid: null,
-      title: '',
-      type: EventTypes.Conferencia,
-      area: {Tec20: 'TIE', Tec21: 'ICT'},
-      organizingGroups: [this.gid],
-      timestamp: {
-        start: new Date(2020, 7, n, 15, 0, 0),
-        end: new Date(2020, 7, n, 16, 30, 0)
-      },
-      place: '',
-      description: '',
-      linkRegister: '',
-      linkEvent: '',
-      imgUrl: '',
-      followers: [],
-    })
+    this.editEventDialog();
+  }
+
+  private openSnack(message: string, action: string, ms: number): void {
+    this.snack.open(message, action, {
+      duration: ms,
+      horizontalPosition: 'center',
+      verticalPosition: 'top'
+    });
+  }
+
+  editEventDialog(eid?: string): void {
+    this.groupS.getGroup(this.gid).then(group => {
+      const dialogRef = this.dialog.open(EditEventFormComponent, {
+        width: this.onMobile ? '100vw' : 'min-content',
+        height: this.onMobile ? '80vh' : 'min-content',
+        maxWidth: this.onMobile ? '100vw' : '80vw',
+        maxHeight: this.onMobile ? '100vh' : '70vh',
+        data: {
+          eventIn: {
+            eid: null,
+            areaT21: group.majorsTec21[0] ? majorsList.Tec21[group.majorsTec21[0]].area : '',
+            organizingGroups: [group.gid]
+          },
+          eventOut: null
+        }
+      });
+
+      dialogRef.afterClosed().subscribe(async (data: EditEventData) => {
+        if (data && data.eventOut) {
+          this.openSnack('Cambios guardados', 'Nice!', 1000);
+          if (!data.eventOut.eid) {
+            await this.eventS.createEvent(this.gid, {...data.eventOut as Event});
+          } else {
+            await this.eventS.updateEvent(data.eventOut.eid, {...data.eventOut as Event});
+          }
+          this.calendarS.refresh();
+          this.calendarComponent.getApi().refetchEvents();
+        }
+      });
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
   }
 
 }
