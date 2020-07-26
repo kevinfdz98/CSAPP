@@ -55,7 +55,6 @@ export class RegistrationFormComponent implements OnInit {
   }
 
   getMajorsList(model: Models): string[] {
-    console.log('model => ' + model);
     if (model === 'Tec20' || model === 'Tec21') {
       return Object.values(majorsList[model]).map(major => major.mid);
     }

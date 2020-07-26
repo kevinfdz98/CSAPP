@@ -5,8 +5,9 @@ import { filter, take } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { MatDialog } from '@angular/material/dialog';
-import { stringify } from '@angular/compiler/src/util';
 import { Group } from 'src/app/shared/interfaces/group.interface';
+import { areasList } from 'src/app/shared/interfaces/area.interface';
+import { majorsList } from 'src/app/shared/interfaces/major.interface';
 import { EditGroupComponent, EditGroupData } from '../edit-group/edit-group.component';
 
 interface GroupTableRow {
@@ -87,8 +88,13 @@ export class GroupsListComponent implements OnInit, OnDestroy {
       this.groups.observeGroupsList().subscribe(list => {
         this.data = Object.values(list).map(group => {
           const majors = [].concat(group.majorsTec20, group.majorsTec21);
-          return {gid: group.gid, name: group.name, majors: majors.length > 0 ? majors.join(', ') : '-'};
-        });
+          return {
+            gid: group.gid,
+            name: group.name,
+            majors: majors.length > 0 ? majors.join(', ') : '-',
+            color: (group.majorsTec21.length > 0) ? areasList.Tec21[majorsList.Tec21[group.majorsTec21[0]].area].color : 'black'
+          };
+        }).sort((a, b) => (a.gid === b.gid) ? 0 : (a.gid < b.gid) ? -1 : 1);
       })
     );
   }

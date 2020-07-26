@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { BreakpointObserver, BreakpointState } from '@angular/cdk/layout';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { AuthService } from './services/auth/auth.service';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { MatSidenav } from '@angular/material/sidenav';
 import { map } from 'rxjs/operators';
 
@@ -22,7 +22,8 @@ export class AppComponent implements OnInit {
   constructor(
     private breakpointObserver: BreakpointObserver,
     public auth: AuthService,
-    private router: Router
+    private router: Router,
+    public activated: ActivatedRoute
     ) { }
 
   ngOnInit(): void {
@@ -31,15 +32,10 @@ export class AppComponent implements OnInit {
     this.administraList = this.auth.observeAuthState().pipe(map(state => (state.user)? state.user.administra : []));
     this.breakpointObserver.observe(['(max-width: 599px)'])
                            .subscribe(this.onMobile);
-  }
-
-  navigateByUrl(url: string): void {
-    // Navigate to url
-    this.router.navigateByUrl(url);
-    // If on mobile, close sidenav on click
-    if (this.onMobile.value.matches) {
-      this.sidenav.close();
-    }
+    this.router.events.subscribe(event => {
+      // If on mobile, close sidenav on navigation
+      if (this.onMobile) { this.sidenav.close(); }
+    });
   }
 
 }

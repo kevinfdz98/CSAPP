@@ -7,18 +7,20 @@
     class="app-sidenav punto-180-gradient" #drawer
   >
     <div class="sidenav-grid top">
-      <span matRipple (click)="navigateByUrl('/calendar/month')"><mat-icon>calendar_today</mat-icon><span>Mes</span></span>
-      <span matRipple (click)="navigateByUrl('/calendar/week')"><mat-icon>view_week</mat-icon><span>Semana</span></span>
-      <span matRipple (click)="navigateByUrl('/calendar/list')"><mat-icon>view_list</mat-icon><span>Lista</span></span>
+      <span matRipple [routerLink]="['calendar', 'month']" [routerLinkActive]="'activated'"><mat-icon>calendar_today</mat-icon><span>Mes</span></span>
+      <span matRipple [routerLink]="['calendar', 'week']" [routerLinkActive]="'activated'"><mat-icon>view_week</mat-icon><span>Semana</span></span>
+      <span matRipple [routerLink]="['calendar', 'list']" [routerLinkActive]="'activated'"><mat-icon>view_list</mat-icon><span>Lista</span></span>
     </div>
     <div class="sidenav-grid bottom" >
       <span *ngFor="let gid of (administraList | async)"
             matRipple
-            (click)="navigateByUrl('/admin/'+gid)"
+            [routerLink]="['admin', gid]"
+            [routerLinkActive]="'activated'"
       ><mat-icon>event</mat-icon><span>Eventos{{' '+gid}}</span></span>
       <span *ngIf="(isSuperadmin | async)"
             matRipple
-            (click)="navigateByUrl('/superadmin')"
+            [routerLink]="['superadmin']"
+            [routerLinkActive]="'activated'"
       ><mat-icon>admin_panel_settings</mat-icon><span>Panel de administración</span></span>
       <span *ngIf="(loggedIn | async)"
             matRipple
@@ -26,7 +28,8 @@
       ><mat-icon>meeting_room</mat-icon><span>Salir</span></span>
       <span *ngIf="!(loggedIn | async)"
             matRipple
-            (click)="navigateByUrl('/login')"
+            [routerLink]="['login']"
+            [routerLinkActive]="'activated'"
       ><mat-icon>login</mat-icon><span>Acceder</span></span>
     </div>
   </mat-sidenav>

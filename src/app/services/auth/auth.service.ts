@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
 import {User} from '../../shared/interfaces/user.interface';
 import {Router} from '@angular/router';
-import { auth} from 'firebase/app';
+import * as firebase from 'firebase/app';
+import 'firebase/auth';
+import 'firebase/firestore';
 
 // Firestore
 import { AngularFireAuth} from '@angular/fire/auth';
@@ -119,14 +121,15 @@ export class AuthService {
    *         window without signing in.
    */
   async signinWithGoogle(): Promise<User> {
-    const provider = new auth.GoogleAuthProvider()
-                             .setCustomParameters({prompt: 'select_account'});
+    const provider = new firebase.auth.GoogleAuthProvider()
+                                 .setCustomParameters({prompt: 'select_account'});
 
     const credential = await this.afAuth.signInWithPopup(provider);
     const authorization = credential.additionalUserInfo;
 
     // Wait until auth state is logged in
     const authState = await this.authState$.pipe(filter(state => state.loggedIn), take(1)).toPromise();
+    await this.afs.doc('shared/counters').update({['week-hits']: firebase.firestore.FieldValue.increment(1)});
 
     return authState.user ?
       // If user document was found, return the user
@@ -178,8 +181,9 @@ export class AuthService {
     // Return promise with user data if success, else return null promise
     return userRef.set(data)
                   .then(() => data, () => null)
-                  .then(val => {
+                  .then((val: User | null) => {
                     this.authState$.next({...this.authState$.value, uid: data.uid, roles: data.roles, user: data});
+                    this.afs.doc('shared/counters').update({['registered-tec']: firebase.firestore.FieldValue.increment(1)});
                     return val;
                   });
   }

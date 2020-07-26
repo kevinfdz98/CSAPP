@@ -39,15 +39,19 @@ export class LoginComponent implements OnInit, OnDestroy {
   signInWithGoogle(): void {
     this.auth.signinWithGoogle()
              .then(user => this.signinCallback(user))
-             .catch(err => console.log(`Error: ${err}`));
+             .catch(err => this.openSnack(`Error during login: ${err}`, 'ok :(', 2000));
+  }
+
+  private openSnack(message: string, action: string, ms: number): void {
+    this.snack.open(message, action, {
+      duration: ms,
+      horizontalPosition: 'center',
+      verticalPosition: 'top'
+    });
   }
 
   private signinCallback(user: User): void {
-    this.snack.open(`Bienvenid@ ${user.fName} ${user.lName}`, 'Nice!', {
-      duration: 2000,
-      horizontalPosition: 'center',
-      verticalPosition: 'top',
-    });
+    this.openSnack(`Bienvenid@ ${user.fName} ${user.lName}`, 'Nice!', 2000);
 
     if (user) {
       if (user.isNewUser) {
@@ -69,11 +73,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 
     dialogRef.afterClosed().subscribe((data: RegistrationData) => {
       if (data && data.saveData) {
-        this.snack.open(`Cambios guardados`, 'Nice!', {
-          duration: 1000,
-          horizontalPosition: 'center',
-          verticalPosition: 'top',
-        });
+        this.openSnack('Cambios guardados', 'Nice!', 1000);
         this.auth.updateUser({...data.saveData, isNewUser: false}).then(() => {
           this.router.navigateByUrl('/calendar');
         }).catch(err => console.error(err));

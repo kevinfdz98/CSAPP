@@ -35,6 +35,7 @@ mat-sidenav-container {
   padding: 0 25px;
 }
 .sidenav-grid > span:hover { background-color: #ffffff49; cursor: pointer;}
+.sidenav-grid > span.activated { background-color: #ffffff49;}
 .sidenav-grid > span > * {
   display: flex;
   align-items: center;

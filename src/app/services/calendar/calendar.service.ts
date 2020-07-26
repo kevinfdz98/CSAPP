@@ -1,14 +1,12 @@
 import { Injectable } from '@angular/core';
 import { EventSummary } from 'src/app/shared/interfaces/event-summary.interface';
 import { AngularFirestore } from '@angular/fire/firestore';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { Area } from 'src/app/shared/interfaces/area.interface';
 import { EventTypes } from 'src/app/shared/enums/event-types.enum';
 
 export interface Filter {
-  start: Date;
-  end: Date;
-  areas: Area[];
+  areasT21: string[];
   types: EventTypes[];
 }
 
@@ -17,36 +15,57 @@ export interface Filter {
 })
 export class CalendarService {
 
-  private filter = new BehaviorSubject<Filter>(null);
+  private filter$ = new BehaviorSubject<Filter>({areasT21: [], types: []});
   private monthObjects: {[mid: string]: {[eid: string]: EventSummary}} = {};
 
   constructor(
     private afs: AngularFirestore
   ) { }
 
-  getEvents(start: Date, end: Date): Promise<EventSummary[]> {
+  get filterObservable(): Observable<Filter> {
+    return this.filter$.asObservable();
+  }
+
+  get filterSnapshot(): Filter {
+    return this.filter$.value;
+  }
+
+  set filter(value: Partial<Filter>) {
+    this.filter$.next({...this.filter$.value, ...value});
+  }
+
+  async getEvents(start: Date, end: Date): Promise<EventSummary[]> {
     const monthIds = this.generateMonthIds(start, end);
     // Fetch events from local memory and/or from Firestore month by month
-    return monthIds.reduce(async (promise, mid) => {
+    const events = await monthIds.reduce<Promise<EventSummary[]>>(async (promise, mid) => {
       const acum = await promise;
       // If not in local memory, fetch from Firestore
       if (!this.monthObjects[mid]) {
         const ref = this.afs.doc<{[eid: string]: EventSummary}>(`months/${mid}`);
-        const data = (await ref.get().toPromise()).data() as {[eid: string]: any};
+        const data = (await ref.get().toPromise()).data() as {[eid: string]: EventSummary};
         if (data) {
           // Parse Firebase date formats from data
           Object.values(data).forEach(e => {
-            e.timestamp = {start: e.timestamp.start.toDate(), end: e.timestamp.end.toDate()};
+            e.timestamp = {start: (e.timestamp.start as any).toDate(), end: (e.timestamp.end as any).toDate()};
           });
         }
         // Save the data fetched from Firestore
         this.monthObjects[mid] = data ? data : {};
-        console.log('(fetch) monthIds => ', monthIds);
-        console.log('(response) data => ', data);
       }
       // Accumulate events in array
       return [].concat(acum, Object.values(this.monthObjects[mid]));
-    }, Promise.resolve([] as EventSummary[])).then(val => {console.log('getEvents => ', val); return val;});
+    }, Promise.resolve([] as EventSummary[]));
+
+    const filterSnap = this.filter$.value;
+    return  events.filter(e =>
+      (filterSnap.areasT21.length === 0 || filterSnap.areasT21.includes(e.areaT21)) &&
+      (filterSnap.types.length === 0 || filterSnap.types.includes(e.type))
+    );
+  }
+
+  refresh(): void {
+    this.filter$.next({areasT21: [], types: []});
+    this.monthObjects = {};
   }
 
   generateMonthIds(start: Date, end?: Date): string[] {

@@ -1,17 +1,22 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { UserService } from 'src/app/services/user/user.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
-import { filter, take } from 'rxjs/operators';
-import { Subscription } from 'rxjs';
+import { filter, take, map } from 'rxjs/operators';
+import { Subscription, Observable, of } from 'rxjs';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { MatDialog } from '@angular/material/dialog';
 import { EditAdminComponent, EditAdminData } from '../edit-admin/edit-admin.component';
+import { GroupService } from 'src/app/services/group/group.service';
+import { GroupSummary } from 'src/app/shared/interfaces/group-summary.interface';
+import { areasList } from 'src/app/shared/interfaces/area.interface';
+import { majorsList } from 'src/app/shared/interfaces/major.interface';
 
 interface UserTableRow {
   uid: string;
   names: string;
   email: string;
   group: string;
+  color: Observable<string>;
 }
 
 @Component({
@@ -24,11 +29,13 @@ export class AdminsListComponent implements OnInit, OnDestroy {
   subscriptions = new Subscription();
   columns: string[];
   data: UserTableRow[] = [];
+  groupsList: {[uid: string]: GroupSummary};
   onMobile: boolean;
 
   constructor(
     private auth: AuthService,
-    private users: UserService,
+    private userS: UserService,
+    private groupS: GroupService,
     private breakpointObserver: BreakpointObserver,
     private dialog: MatDialog,
     ) { }
@@ -47,20 +54,40 @@ export class AdminsListComponent implements OnInit, OnDestroy {
       // and then subscribe to changes to AdminsList
       this.auth.observeAuthState()
               .pipe(filter(state => state.roles.includes('sa')), take(1))
-              .subscribe(() => this.subscribeToAdminsListChanges())
+              .subscribe(() => {
+                this.subscribeToAdminsListChanges();
+              })
+    );
+  }
+
+  getGroupColor(gid: string): Observable<string> {
+    return this.groupS.observeGroupsList().pipe(
+      map(list => (list[gid] && list[gid].majorsTec21[0]) ? list[gid].majorsTec21[0] : null),
+      map(mid => mid ? majorsList.Tec21[mid].area : null),
+      map(aid => aid ? areasList.Tec21[aid].color : 'black')
     );
   }
 
   subscribeToAdminsListChanges(): void {
     this.subscriptions.add(
       // Subscribe to changes to AdminsList (in Firebase) and build data array for table
-      this.users.observeAdminsList().subscribe(list =>
+      this.userS.observeAdminsList().subscribe(list =>
         this.data = Object.values(list).reduce(
           (arr, admin) => arr.concat( (admin.administra.length > 0) ?
-            admin.administra.map(gid => ({uid: admin.uid, names: `${admin.fName} ${admin.lName}`, email: admin.email, group: gid})) :
-            [{uid: admin.uid, names: `${admin.fName} ${admin.lName}`, email: admin.email, group: '-'}]
+            admin.administra.map(gid => ({
+              uid: admin.uid,
+              names: `${admin.fName} ${admin.lName}`,
+              email: admin.email,
+              group: gid,
+              color: this.getGroupColor(gid),
+          })) : [{uid: admin.uid, names: `${admin.fName} ${admin.lName}`, email: admin.email, group: '-', color: of('black')}]
           ), [] as UserTableRow[]
-        )
+        ).sort((a, b) => {
+          if (a.group === b.group) {
+            return (a.email === b.email) ? 0 : (a.email < b.email) ? -1 : 1;
+          }
+          return (a.group < b.group) ? -1 : 1;
+        })
       )
     );
   }
@@ -76,7 +103,7 @@ export class AdminsListComponent implements OnInit, OnDestroy {
 
     dialogRef.afterClosed().subscribe((data: EditAdminData) => {
       if (data && data.uid && data.uid.length > 0) {
-        this.users.updateGroups(data.uid, data.removeGroups, data.addGroups);
+        this.userS.updateGroups(data.uid, data.removeGroups, data.addGroups);
       }
     });
   }

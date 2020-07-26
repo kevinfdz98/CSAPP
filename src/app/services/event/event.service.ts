@@ -4,7 +4,6 @@ import { AngularFirestore, DocumentReference } from '@angular/fire/firestore';
 import { Event } from '../../shared/interfaces/event.interface';
 import { EventSummary } from '../../shared/interfaces/event-summary.interface';
 import { firestore, database, User } from 'firebase';
-import { transition } from '@angular/animations';
 
 @Injectable({
   providedIn: 'root'
@@ -47,12 +46,13 @@ export class EventService {
     // Run transaction
     return this.afs.firestore.runTransaction(async trans => {
       // Create event
-      trans.set(refs.event, data, {merge: true});
+      trans.set(refs.event, data);
       // Add event to all the months it belongs to
       refs.months.reduce(async (promise, mref) => {
         await promise;
         trans.set(mref, {[data.eid]: this.mapEventToEventSummary(data)}, {merge: true});
       }, Promise.resolve());
+      console.log(data, this.mapEventToEventSummary(data));
       return data;
     }).then(event => this.eventDetails[event.eid] = event);
   }
@@ -70,7 +70,15 @@ export class EventService {
     // Check if the event is available localy or if a snapshot must be fetched
     return (!this.eventDetails[eid] || forceUpdate) ?
       this.afs.doc<Event>(`events/${eid}`).get().toPromise()
-              .then(snap => snap.data() as Event) :
+              .then(snap => {
+                this.eventDetails[eid] = snap.data() as Event;
+                // Parse Firebase date formats from data
+                this.eventDetails[eid].timestamp = {
+                  start: (this.eventDetails[eid].timestamp.start as any).toDate(),
+                  end: (this.eventDetails[eid].timestamp.end as any).toDate()
+                };
+                return this.eventDetails[eid];
+              }) :
       Promise.resolve(this.eventDetails[eid]);
   }
 
@@ -93,6 +101,8 @@ export class EventService {
     return this.afs.firestore.runTransaction(async trans => {
       // Retrieve old information of event
       event.old = (await trans.get(event.ref)).data() as Event;
+      // Parse Firebase date formats from data
+      event.old.timestamp = {start: (event.old.timestamp.start as any).toDate(), end: (event.old.timestamp.end as any).toDate()};
       // Build new event object
       event.new = {...event.old, ...data, eid: event.old.eid};
 
@@ -118,7 +128,7 @@ export class EventService {
       await months.add.reduce(async (promise, mid) => {
         await promise;
         const ref = this.afs.doc(`months/${mid}`).ref;
-        trans.update(ref, {[event.new.eid]: this.mapEventToEventSummary(event.new)});
+        trans.set(ref, {[event.new.eid]: this.mapEventToEventSummary(event.new)}, {merge: true});
       }, Promise.resolve());
 
       // Update event document
@@ -142,6 +152,8 @@ export class EventService {
     return this.afs.firestore.runTransaction(async trans => {
       // Retrieve old information of event
       event.old = (await trans.get(event.ref)).data() as Event;
+      // Parse Firebase date formats from data
+      event.old.timestamp = {start: (event.old.timestamp.start as any).toDate(), end: (event.old.timestamp.end as any).toDate()};
 
       // Check group admin permissions
       if ( !this.authState.user.administra.some(gid => event.old.organizingGroups.includes(gid))) {
@@ -220,8 +232,9 @@ export class EventService {
       eid: event.eid,
       title: event.title,
       type: event.type,
-      area: {...event.area},
+      areaT21: event.areaT21,
+      organizingGroups: [...event.organizingGroups],
       timestamp: {...event.timestamp},
-    }
+    };
   }
 }

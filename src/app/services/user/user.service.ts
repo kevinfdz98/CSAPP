@@ -5,6 +5,8 @@ import { UserSummary } from 'src/app/shared/interfaces/user-summary.interface';
 import { AngularFirestore, DocumentReference } from '@angular/fire/firestore';
 import { map } from 'rxjs/operators';
 import * as firebase from 'firebase/app';
+import 'firebase/auth';
+import 'firebase/firestore';
 import { BehaviorSubject, Subscription, Observable } from 'rxjs';
 import { Group } from 'src/app/shared/interfaces/group.interface';
 

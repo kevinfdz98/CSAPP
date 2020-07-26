@@ -5,6 +5,7 @@ import { GroupSummary } from 'src/app/shared/interfaces/group-summary.interface'
 import { AngularFirestore, DocumentReference } from '@angular/fire/firestore';
 import { map } from 'rxjs/operators';
 import * as firebase from 'firebase/app';
+import 'firebase/firestore';
 import { User } from 'src/app/shared/interfaces/user.interface';
 import { UserSummary } from 'src/app/shared/interfaces/user-summary.interface';
 import { BehaviorSubject, Subscription, Observable } from 'rxjs';
@@ -29,8 +30,8 @@ export class GroupService {
     this.auth.observeAuthState().subscribe(state => {
       // If subscribed to Firebase (groupsList)
       if (!this.subscriptionToGroupsList.closed) {
-        // If user logs out or their 'sa' role is removed
-        if (!state.loggedIn || (state.roles && !state.roles.includes('sa'))) {
+        // If user logs out
+        if (!state.loggedIn) {
           // Unsubscribe from Firebase (groupsList)
           this.subscriptionToGroupsList.unsubscribe();
           this.groupsList$.next({});
@@ -164,7 +165,9 @@ export class GroupService {
    */
   observeGroupsList(): Observable<{[uid: string]: GroupSummary}> {
     // Validate superadmin privileges
-    if (!this.authState.roles.includes('sa')) { throw Error('Operation needs superadmin privileges'); }
+    if (!this.authState.roles.includes('a') && !this.authState.roles.includes('sa')) {
+      throw Error('Operation needs admin or superadmin privileges');
+    }
 
     // If subscribed to Firebase (adminsList)
     if (this.subscriptionToGroupsList.closed) {
