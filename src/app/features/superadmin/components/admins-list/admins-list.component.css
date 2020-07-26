@@ -6,11 +6,6 @@
 .admins-list-table {
   width: 100%;
 }
-.content-fab {
-  position: absolute;
-  right: 15px;
-  bottom: 15px;
-}
 
 .mobile-names, .mobile-email { display: block; }
 
@@ -20,10 +15,4 @@
   color: #707070;
 }
 
-/* For desktop: */
-@media only screen and (min-width: 600px) {
-  .content-fab {
-    right: 25px;
-    bottom: 10px;
-  }
-}
+

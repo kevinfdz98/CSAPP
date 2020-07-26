@@ -27,7 +27,8 @@ export class CalendarComponent implements OnInit, AfterViewInit {
                       title: event.title,
                       start: event.timestamp.start as Date,
                       end: event.timestamp.end as Date,
-                      borderColor: areasList.Tec20[event.area.Tec20].color
+                      backgroundColor: areasList.Tec21[event.areaT21].color,
+                      borderColor: areasList.Tec21[event.areaT21].color,
                     }))))
                     .catch(reason => failure(reason));
     }

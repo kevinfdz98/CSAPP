@@ -4,7 +4,7 @@
   <mat-sidenav
     [mode]="(onMobile | async).matches? 'over' : 'side'"
     [opened]="!(onMobile | async).matches"
-    class="app-sidenav" #drawer
+    class="app-sidenav punto-180-gradient" #drawer
   >
     <div class="sidenav-grid top">
       <span matRipple (click)="navigateByUrl('/calendar/month')"><mat-icon>calendar_today</mat-icon><span>Mes</span></span>
@@ -36,7 +36,7 @@
     <mat-toolbar class="app-toolbar">
       <button mat-icon-button (click)="drawer.toggle()"><mat-icon>menu</mat-icon></button>
       <span class="horizontal-spacer"></span>
-      <span>Logo de CSApp</span>
+      <img class="logo" src="../assets/logo-punto.png">
     </mat-toolbar>
 
     <!--Container for the app routes-->

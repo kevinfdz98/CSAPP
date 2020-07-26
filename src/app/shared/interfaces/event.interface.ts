@@ -4,7 +4,7 @@ export interface Event {
   eid: string;
   title: string;
   type: EventTypes;
-  area: {Tec20: string, Tec21: string};
+  areaT21: string; // Tec21 compatible
   organizingGroups: string[];
   timestamp: {start: Date, end: Date};
   place: string;

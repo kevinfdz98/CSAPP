@@ -4,9 +4,29 @@ html, body { height: 100%; }
 body {
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
-  background: linear-gradient(135deg,#f81751,#53014a);
 }
 
 .mat-tab-body-wrapper {
   height: 100%;
  }
+
+.punto-180-gradient {
+  background: linear-gradient(135deg,#f81751,#81074c,#53014a);
+  color: white;
+}
+
+button.punto-180-fab {
+  background: linear-gradient(135deg,#f81751,#81074c,#53014a);
+  color: white;
+  position: absolute;
+  right: 15px;
+  bottom: 15px;
+}
+
+/* For desktop: */
+@media only screen and (min-width: 600px) {
+  button.punto-180-fab {
+    right: 25px;
+    bottom: 10px;
+  }
+}

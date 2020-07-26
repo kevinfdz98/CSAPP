@@ -20,7 +20,7 @@
   <mat-form-field appearance="fill" class="form-element">
     <mat-label>Carreras Tec21</mat-label>
     <mat-select formControlName="majorsTec21" multiple>
-      <mat-optgroup *ngFdor="let item of Tec21ByArea | keyvalue">
+      <mat-optgroup *ngFor="let item of Tec21ByArea | keyvalue">
       <label [ngStyle]="
       {
         'color': areasList.Tec21[item.value[0].area].color,
