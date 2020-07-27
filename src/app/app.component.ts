@@ -29,12 +29,12 @@ export class AppComponent implements OnInit {
   ngOnInit(): void {
     this.loggedIn = this.auth.observeAuthState().pipe(map(state => state.loggedIn));
     this.isSuperadmin = this.auth.observeAuthState().pipe(map(state => state.roles.includes('sa')));
-    this.administraList = this.auth.observeAuthState().pipe(map(state => (state.user)? state.user.administra : []));
+    this.administraList = this.auth.observeAuthState().pipe(map(state => (state.user) ? state.user.administra : []));
     this.breakpointObserver.observe(['(max-width: 599px)'])
                            .subscribe(this.onMobile);
     this.router.events.subscribe(event => {
       // If on mobile, close sidenav on navigation
-      if (this.onMobile) { this.sidenav.close(); }
+      if (this.onMobile.value.matches) { this.sidenav.close(); }
     });
   }
 

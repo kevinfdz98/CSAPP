@@ -12,6 +12,11 @@
       <span matRipple [routerLink]="['calendar', 'list']" [routerLinkActive]="'activated'"><mat-icon>view_list</mat-icon><span>Lista</span></span>
     </div>
     <div class="sidenav-grid bottom" >
+      <span *ngIf="(loggedIn | async)"
+            matRipple
+            [routerLink]="['user', 'following']"
+            [routerLinkActive]="'activated'"
+      ><mat-icon>star</mat-icon><span>Following</span></span>
       <span *ngFor="let gid of (administraList | async)"
             matRipple
             [routerLink]="['admin', gid]"
