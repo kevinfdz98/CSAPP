@@ -1,1 +1,7 @@
-<p>events works!</p>
+<div class="event-container">
+  <button mat-icon-button class="btn-follow" *ngIf="following"  (click)="toggleFollow()"><mat-icon>star</mat-icon></button>
+  <button mat-icon-button class="btn-follow" *ngIf="!following" (click)="toggleFollow()"><mat-icon>star_outline</mat-icon></button>
+  <button mat-icon-button class="btn-back" (click)="location.back()"><mat-icon>arrow_back_ios</mat-icon></button>
+  <p>{{ event | json }}</p>
+</div>
+

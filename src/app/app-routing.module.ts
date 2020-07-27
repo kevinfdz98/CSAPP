@@ -12,7 +12,8 @@ const routes: Routes = [
   { path: 'superadmin', canActivate: [SuperadminGuard],
     loadChildren: () => import('./features/superadmin/superadmin.module').then(m => m.SuperadminModule) },
   { path: 'admin', canActivate: [AdminGuard], loadChildren: () => import('./features/admin/admin.module').then(m => m.AdminModule) },
-  { path: 'events', loadChildren: () => import('./features/events/events.module').then(m => m.EventsModule) }
+  { path: 'events', loadChildren: () => import('./features/events/events.module').then(m => m.EventsModule) },
+  { path: 'user', loadChildren: () => import('./features/user/user.module').then(m => m.UserModule) }
 ];
 
 @NgModule({
