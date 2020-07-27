@@ -12,3 +12,10 @@
 .form-element {
   width: 90%;
 }
+
+.form-buttons {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  align-items: center;
+}

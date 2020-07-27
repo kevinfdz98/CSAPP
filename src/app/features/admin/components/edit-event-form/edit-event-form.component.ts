@@ -98,6 +98,10 @@ export class EditEventFormComponent implements OnInit {
     return false; // To avoid refreshing of page due to submit (because single-page application)
   }
 
+  deleteEvent() {
+
+  }
+
   onClose(): void {
     this.dialogRef.close();
   }

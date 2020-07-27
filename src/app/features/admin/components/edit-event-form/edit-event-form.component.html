@@ -130,5 +130,6 @@
   <div class="form-buttons form-element">
     <button mat-raised-button color="accent" type="submit">Guardar</button>
     <button mat-raised-button color="primary" type="button" (click)="onClose()">Cancelar</button>
+    <button mat-raised-button color="warn" type="button" (click)="onDelete()" *ngIf="data.eventIn.eid">Eliminar</button>
   </div>
 </form>

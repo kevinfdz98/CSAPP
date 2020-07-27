@@ -52,7 +52,6 @@ export class EventService {
         await promise;
         trans.set(mref, {[data.eid]: this.mapEventToEventSummary(data)}, {merge: true});
       }, Promise.resolve());
-      console.log(data, this.mapEventToEventSummary(data));
       return data;
     }).then(event => this.eventDetails[event.eid] = event);
   }

@@ -44,6 +44,11 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnDestroy {
       }
     },
 
+    // Handler for clic in an event
+    eventClick: (arg) => {
+      this.router.navigate(['events', arg.event.id]);
+    },
+
     // Handler for clic on day
     dateClick: (arg) => {
       const api = this.calendarComponent.getApi();
@@ -58,6 +63,7 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnDestroy {
     events: (info, success, failure) => {
       this.calendarS.getEvents(info.start, info.end)
                     .then(events => success(events.map(event => ({
+                      id: event.eid,
                       title: event.title,
                       start: event.timestamp.start as Date,
                       end: event.timestamp.end as Date,
@@ -70,8 +76,8 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnDestroy {
 
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private calendarS: CalendarService,
-    private eventS: EventService,
   ) { }
 
   ngOnInit(): void { }

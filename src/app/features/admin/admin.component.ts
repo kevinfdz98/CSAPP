@@ -33,6 +33,13 @@ export class AdminComponent implements OnInit, AfterViewInit, OnDestroy {
     footerToolbar: { start: '', center: 'prev next', end: '' },
     height: '100%',
     duration: {months: 1},
+    handleWindowResize: true,
+    expandRows: true,
+
+    // Function to open edit dialog when clic on event
+    eventClick: (arg) => {
+      this.editEventDialog(arg.event.id);
+    },
 
     // Function to fetch events
     events: (info, success, failure) => {
@@ -40,6 +47,7 @@ export class AdminComponent implements OnInit, AfterViewInit, OnDestroy {
                     .then(events => success(
                       events.filter(event => event.organizingGroups.includes(this.gid))
                             .map(event => ({
+                              id: event.eid,
                               title: event.title,
                               start: event.timestamp.start as Date,
                               end: event.timestamp.end as Date,
@@ -78,7 +86,7 @@ export class AdminComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   addEventDialog(): void {
-    this.editEventDialog();
+    this.editEventDialog(null);
   }
 
   private openSnack(message: string, action: string, ms: number): void {
@@ -90,14 +98,16 @@ export class AdminComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   editEventDialog(eid?: string): void {
-    this.groupS.getGroup(this.gid).then(group => {
+    this.groupS.getGroup(this.gid).then(async group => {
+      const eventData = eid ? (await this.eventS.getEvent(eid, true)) : null;
+
       const dialogRef = this.dialog.open(EditEventFormComponent, {
         width: this.onMobile ? '100vw' : 'min-content',
-        height: this.onMobile ? '80vh' : 'min-content',
+        height: this.onMobile ? '100vh' : 'min-content',
         maxWidth: this.onMobile ? '100vw' : '80vw',
         maxHeight: this.onMobile ? '100vh' : '70vh',
         data: {
-          eventIn: {
+          eventIn: eid ? eventData : {
             eid: null,
             areaT21: group.majorsTec21[0] ? majorsList.Tec21[group.majorsTec21[0]].area : '',
             organizingGroups: [group.gid]
@@ -107,12 +117,20 @@ export class AdminComponent implements OnInit, AfterViewInit, OnDestroy {
       });
 
       dialogRef.afterClosed().subscribe(async (data: EditEventData) => {
-        if (data && data.eventOut) {
-          this.openSnack('Cambios guardados', 'Nice!', 1000);
-          if (!data.eventOut.eid) {
-            await this.eventS.createEvent(this.gid, {...data.eventOut as Event});
+        // If closed with an action
+        if (data) {
+          // If event created or updated
+          if (data.eventOut) {
+            this.openSnack('Cambios guardados', 'Nice!', 1000);
+            // Do apropiate action
+            if (!data.eventOut.eid) {
+              await this.eventS.createEvent(this.gid, {...data.eventOut as Event});
+            } else {
+              await this.eventS.updateEvent(data.eventOut.eid, {...data.eventOut as Event});
+            }
+          // If event deleted
           } else {
-            await this.eventS.updateEvent(data.eventOut.eid, {...data.eventOut as Event});
+            this.openSnack('Evento eliminado', 'Ok!', 1000);
           }
           this.calendarS.refresh();
           this.calendarComponent.getApi().refetchEvents();
