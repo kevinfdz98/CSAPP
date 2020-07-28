@@ -15,7 +15,7 @@
   flex-direction: column;
   justify-content: flex-end;
   align-items: center;
-  background-image: url(../../../assets/signin-area-bcknd.png), linear-gradient(135deg, rgb(248, 23, 81), rgb(129, 7, 76), rgb(83, 1, 74));
+  background-image: url(https://firebasestorage.googleapis.com/v0/b/csapp2020-8620b.appspot.com/o/assets%2Fsignin-area-bcknd.png?alt=media&token=1eba0d76-c90e-4af1-98e0-b44887723b38), linear-gradient(135deg, rgb(248, 23, 81), rgb(129, 7, 76), rgb(83, 1, 74));
   background-repeat: no-repeat;
   background-position: center;
   background-size: 100%;
