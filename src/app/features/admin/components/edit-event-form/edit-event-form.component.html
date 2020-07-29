@@ -121,11 +121,20 @@
   </mat-form-field>
 
   <!--Event.imgUrl-->
-  <mat-form-field appearance="fill" class="form-element">
+  <app-upload-button
+    class="form-element"
+    style="height: 200px;"
+    [url]="this.data.eventIn.imgUrl"
+    #uploadBtn
+  ></app-upload-button>
+
+  <!--https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/Taka_Shiba.jpg/1200px-Taka_Shiba.jpg-->
+
+  <!--<mat-form-field appearance="fill" class="form-element">
     <mat-label>Imagen</mat-label>
     <input matInput formControlName="imgUrl">
     <mat-hint>Por ejemplo, liga de la transmisión en vivo o sesión de Zoom</mat-hint>
-  </mat-form-field>
+  </mat-form-field>-->
 
   <div class="form-buttons form-element">
     <button mat-raised-button color="accent" type="submit">Guardar</button>

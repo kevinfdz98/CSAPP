@@ -1,9 +1,10 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, ViewChild } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Event } from 'src/app/shared/interfaces/event.interface';
 import { areasList, Area } from 'src/app/shared/interfaces/area.interface';
 import { GroupService } from 'src/app/services/group/group.service';
+import { UploadButtonComponent } from '../upload-button/upload-button.component';
 import * as moment from 'moment';
 
 export interface EditEventData {
@@ -19,6 +20,7 @@ export interface EditEventData {
 export class EditEventFormComponent implements OnInit {
   eventForm: FormGroup;
   areasTec21: {[aid: string]: Area};
+  @ViewChild('uploadBtn') uploadBtnRef: UploadButtonComponent;
 
   constructor(
     public dialogRef: MatDialogRef<EditEventFormComponent, EditEventData>,
@@ -38,8 +40,7 @@ export class EditEventFormComponent implements OnInit {
       description: [''],
       place: [''],
       linkRegister: [''],
-      linkEvent: [''],
-      imgUrl: ['']
+      linkEvent: ['']
     });
   }
 
@@ -62,14 +63,13 @@ export class EditEventFormComponent implements OnInit {
       description  : this.data.eventIn.description ?      this.data.eventIn.description  : null,
       place        : this.data.eventIn.place ?            this.data.eventIn.place  : null,
       linkRegister : this.data.eventIn.linkRegister ?     this.data.eventIn.linkRegister  : null,
-      linkEvent    : this.data.eventIn.linkEvent ?        this.data.eventIn.linkEvent  : null,
-      imgUrl       : this.data.eventIn.imgUrl ?           this.data.eventIn.imgUrl  : null,
+      linkEvent    : this.data.eventIn.linkEvent ?        this.data.eventIn.linkEvent  : null
     });
     // Make areasList accessible to html template
     this.areasTec21 = areasList.Tec21;
   }
 
-  onSubmit(): boolean {
+  async onSubmit(): Promise<boolean> {
     // Fail if some fields are invalid
     this.eventForm.markAsTouched();
     if (!this.eventForm.valid) { return false; }
@@ -92,14 +92,15 @@ export class EditEventFormComponent implements OnInit {
     value.description      = this.eventForm.get('description').value;
     value.linkRegister     = this.eventForm.get('linkRegister').value;
     value.linkEvent        = this.eventForm.get('linkEvent').value;
-    value.imgUrl           = this.eventForm.get('imgUrl').value;
+    value.imgUrl           = await this.uploadBtnRef.getImageUrl();
 
     this.dialogRef.close({...this.data, eventOut: value});
     return false; // To avoid refreshing of page due to submit (because single-page application)
   }
 
-  deleteEvent() {
-
+  onDelete(): boolean {
+    this.dialogRef.close({...this.data, eventOut: null});
+    return false; // To avoid refreshing of page due to submit (because single-page application)
   }
 
   onClose(): void {

@@ -8,9 +8,12 @@ import { AngularMaterialModule } from 'src/app/shared/modules/angular-material.m
 import { ReactiveFormsModule } from '@angular/forms';
 import { MyFullCalendarModule } from 'src/app/shared/modules/my-fullcalendar.module';
 import { MatMomentDateModule } from '@angular/material-moment-adapter';
+import { UploadButtonComponent } from './components/upload-button/upload-button.component';
+import { AngularFireStorage, AngularFireStorageModule } from '@angular/fire/storage';
+import { from } from 'rxjs';
 
 @NgModule({
-  declarations: [AdminComponent, EditEventFormComponent],
+  declarations: [AdminComponent, EditEventFormComponent, UploadButtonComponent],
   imports: [
     CommonModule,
     AdminRoutingModule,
@@ -18,6 +21,7 @@ import { MatMomentDateModule } from '@angular/material-moment-adapter';
     ReactiveFormsModule,
     MyFullCalendarModule,
     MatMomentDateModule,
+    AngularFireStorageModule,
   ]
 })
 export class AdminModule { }

@@ -1,0 +1,14 @@
+<input type="file"
+       accept="image/*"
+       (change)="readFile($event)"
+       #inputBtn
+       hidden
+>
+<div class="upload-container">
+  <img class="bckgnd-image" src="{{value ? value : ''}}" alt="event image preview">
+  <div class="browse-icon" (click)="inputBtn.click()">
+    <mat-icon>camera_alt</mat-icon>
+  </div>
+  <mat-spinner *ngIf="state == 'loading' || state == 'uploading'" class="spinner"></mat-spinner>
+</div>
+
