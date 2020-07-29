@@ -131,6 +131,7 @@ export class AdminComponent implements OnInit, AfterViewInit, OnDestroy {
           // If event deleted
           } else {
             this.openSnack('Evento eliminado', 'Ok!', 1000);
+            await this.eventS.deleteEvent(data.eventOut.eid);
           }
           this.calendarS.refresh();
           this.calendarComponent.getApi().refetchEvents();
