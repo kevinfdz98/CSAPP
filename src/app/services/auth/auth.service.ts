@@ -17,6 +17,10 @@ export interface AuthState {
   uid: string;
   roles: string[];
 }
+export interface Counters {
+  'registered-tec': number;
+  'week-hits': number;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -201,4 +205,13 @@ export class AuthService {
       }
     });
   }
+
+  /**
+   * Creates an observable for the counters.
+   * @return Observable that immediately returns the current counters
+   */
+  observeCounters(): Observable<Counters> {
+    return this.afs.doc<Counters>('shared/counters').valueChanges();
+  }
+
 }

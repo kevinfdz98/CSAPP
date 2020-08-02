@@ -1,0 +1,23 @@
+<div class="filter-dialog-container">
+
+  <mat-selection-list #selAreas (selectionChange)="onChangeSelAreas($event)" class="form-element">
+    <mat-list-option
+      *ngFor="let item of (areasList.Tec21 | keyvalue)"
+      [value]="item.key"
+      [ngStyle]="
+      {
+        'color': item.value.color,
+        'font-weight': '700'
+      }"
+    >
+      {{item.value.aid+' - '+item.value.name}}
+    </mat-list-option>
+  </mat-selection-list>
+
+  <div class="form-buttons form-element">
+    <button mat-raised-button color="primary" type="button" (click)="onClose()">Cerrar</button>
+  </div>
+
+</div>
+
+

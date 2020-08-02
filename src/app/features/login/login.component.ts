@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, EventEmitter } from '@angular/core';
-import { AuthService } from '../../services/auth/auth.service';
+import { AuthService, Counters } from '../../services/auth/auth.service';
 import { Router } from '@angular/router';
 import { User } from 'src/app/shared/interfaces/user.interface';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -17,6 +17,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   subscriptions = new Subscription();
   onMobile: boolean;
+  counters: Counters;
 
   constructor(
     public auth: AuthService,
@@ -33,6 +34,10 @@ export class LoginComponent implements OnInit, OnDestroy {
                              .subscribe(observer => {
                                this.onMobile = observer.matches;
                              })
+    );
+    this.subscriptions.add(
+      // Subscribe to changes in counters
+      this.auth.observeCounters().subscribe(val => this.counters = val)
     );
   }
 
