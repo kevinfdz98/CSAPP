@@ -1,7 +1,64 @@
-<div class="event-container">
-  <button mat-icon-button class="btn-follow" *ngIf="following"  (click)="toggleFollow()"><mat-icon>star</mat-icon></button>
-  <button mat-icon-button class="btn-follow" *ngIf="!following" (click)="toggleFollow()"><mat-icon>star_outline</mat-icon></button>
+<mat-toolbar [ngStyle]="{ 'background-color': areaColor }" id="displayGroup">
   <button mat-icon-button class="btn-back" (click)="location.back()"><mat-icon>arrow_back_ios</mat-icon></button>
-  <p>{{ event | json }}</p>
-</div>
+  <span class="example-fill-remaining-space"> </span>  
+  <span class="displayLogos"> </span>
+  <span class="example-fill-remaining-space"></span>
+</mat-toolbar>
 
+
+<div class="background-event">
+
+  <div class="event-container">
+    <div class="title-container">
+      <h2>{{event ? event.title : ''}} </h2>
+     </div>
+  
+    <div class="image-container">
+      <img src ="{{ (event && event.imgUrl) ? event.imgUrl : 'https://firebasestorage.googleapis.com/v0/b/csapp2020-8620b.appspot.com/o/assets%2Fno-image-found-360x250.png?alt=media&token=f1f386ce-e4b0-4439-bf20-e2e2f6577dd5'}}" alt="image of event" class="event-image"> 
+    </div> 
+  
+    <div class="eventType-container">
+      <h3>{{event ? event.type: ''}} </h3>
+     </div>
+  
+   
+  
+    <div class="buttons-container">
+      <button mat-icon-button class="btn-follow" *ngIf="following"  (click)="toggleFollow()"><mat-icon>star</mat-icon></button>
+      <button mat-icon-button class="btn-follow" *ngIf="!following" (click)="toggleFollow()"><mat-icon>star_outline</mat-icon></button>
+      <h2>{{(event && event.followers) ?  event.followers.length : ''}}</h2>
+      <button mat-icon-button class="btn-share"  (click)="copy()"> <mat-icon>share</mat-icon></button>
+    </div>
+  
+  
+  
+    <div class="sidenav-grid bottom" >
+      <span class="date-container">
+        <mat-icon>event</mat-icon>
+        <span>{{event ? ( event.timestamp.start  | date:'yyyy/MM/dd') : '' }} - {{event ? (event.timestamp.end  | date:'yyyy/MM/dd') : '' }}</span>
+      </span>
+      <span class="hour-container">
+        <mat-icon>schedule</mat-icon>
+        <span>{{event ? (event.timestamp.start  | date:'h:mm:ss a') : '' }} - {{event ? (event.timestamp.end  | date:'h:mm:ss a') : '' }} </span>
+      </span>
+      <span class="location-container">
+        <mat-icon>place</mat-icon>
+        <span>{{event ? event.place : ''}}</span>
+      </span>
+      <span class="url-container">
+        <mat-icon>link</mat-icon>
+        <span>{{event ? event.linkEvent : ''}}</span>
+      </span>
+      <span>
+        <mat-icon>how_to_reg</mat-icon>
+        <span>{{event ? event.linkRegister : ''}}</span>
+      </span>
+      <span>
+        <mat-icon>description</mat-icon>
+        <span>{{event ? event.description : ''}}</span>
+      </span>
+    </div>
+  </div>
+  
+
+</div>

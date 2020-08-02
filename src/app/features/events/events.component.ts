@@ -7,6 +7,9 @@ import { AuthService } from 'src/app/services/auth/auth.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { take, map } from 'rxjs/operators';
 import { Location } from '@angular/common';
+import {AngularFireStorage} from '@angular/fire/storage';
+import { areasList } from 'src/app/shared/interfaces/area.interface';
+
 @Component({
   selector: 'app-events',
   templateUrl: './events.component.html',
@@ -18,6 +21,7 @@ export class EventsComponent implements OnInit, OnDestroy {
   private eid: string;
   public event: Event;
   public following: boolean;
+  public areaColor = '#FFFFFF';
 
   constructor(
     private authS: AuthService,
@@ -25,6 +29,7 @@ export class EventsComponent implements OnInit, OnDestroy {
     private snack: MatSnackBar,
     private route: ActivatedRoute,
     public location: Location,
+    private fireStorage: AngularFireStorage
   ) { }
 
   ngOnInit(): void {
@@ -33,7 +38,23 @@ export class EventsComponent implements OnInit, OnDestroy {
         // Get eid from route params
         this.eid = params.get('eid');
         // Fetch event information
-        if (this.eid) { this.eventS.getEvent(this.eid).then(e => e ? this.event = e : null); }
+        if (this.eid){
+          this.eventS.getEvent(this.eid).then(e => {
+            if (e){
+              this.event = e;
+              this.areaColor = areasList.Tec21[e.areaT21].color;
+               // Retrieve logo from students group
+              const storageRef = this.fireStorage.storage;
+              this.event.organizingGroups.forEach(element => {
+                const logoRef = storageRef.ref(`sociedades/${element}.png`);
+                logoRef.getDownloadURL().then(url => {
+                     document.querySelector('.displayLogos').innerHTML +=
+                      `<img src="${url}" alt="Logo de la mesa" class="logos" style= "width: 220px;">`;
+                  }).catch( err => { console.log(err); });
+                });
+              } else { this.event = null; }
+          });
+         }
       })
     );
     // Subscribe to user following this event
@@ -64,6 +85,18 @@ export class EventsComponent implements OnInit, OnDestroy {
                    .then(() => this.openSnack(`Ahora sigues a este evento`, 'Yay!', 1000))
                    .catch(reason => this.openSnack(`Error: ${reason}`, 'Oh noes!', 1000));
       }
+    }
+  }
+
+  copy(): void {
+    const url = window.location.href;
+    navigator.clipboard.writeText(url);
+    try {
+      navigator.clipboard.writeText(url);
+      alert('Url coppied to clipboard');
+    }
+    catch (err) {
+      alert('Unable to copy text');
     }
   }
 

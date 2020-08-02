@@ -291,8 +291,10 @@ export class GroupService {
    * @return         Promise that returns the group's data
    */
   private async fetchGroup(gid: string): Promise<Group> {
-    // Validate superadmin privileges
-    if (!this.authState.roles.includes('sa')) { throw Error('Operation needs superadmin privileges'); }
+    // Validate group admin or superadmin privileges
+    if (!(this.authState.user.administra.includes(gid) || this.authState.roles.includes('sa'))) {
+      throw Error('Operation needs admin or superadmin privileges');
+    }
 
     const groupRef = this.afs.doc<Group>(`groups/${gid}`);
     return groupRef.get().pipe(map(doc => {
@@ -309,7 +311,7 @@ export class GroupService {
 
   private subscribeToGroupsList(): Subscription {
     // Validate superadmin privileges
-    if (!this.authState.roles.includes('sa')) { throw Error('Operation needs superadmin privileges'); }
+    if (!this.authState.roles.includes('a') && !this.authState.roles.includes('sa')) { throw Error('Operation needs admin or superman privileges'); }
 
     const groupsListRef = this.afs.doc<{[gid: string]: GroupSummary}>(`shared/groups`);
     return groupsListRef.valueChanges().subscribe(list => this.groupsList$.next(list));
