@@ -6,6 +6,9 @@ import { EventService } from 'src/app/services/event/event.service';
 import { areasList } from 'src/app/shared/interfaces/area.interface';
 import { FullCalendarComponent } from '@fullcalendar/angular';
 import { Subscription } from 'rxjs';
+import { MatDialog } from '@angular/material/dialog';
+import { BreakpointObserver } from '@angular/cdk/layout';
+import { FilterDialogComponent } from './components/filter-dialog/filter-dialog.component';
 
 @Component({
   selector: 'app-calendar',
@@ -15,6 +18,7 @@ import { Subscription } from 'rxjs';
 export class CalendarComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private subscriptions = new Subscription();
+  private onMobile = false;
   @ViewChild('calendar') calendarComponent: FullCalendarComponent;
   public calendarOptions: CalendarOptions = {
     // View configuration and display
@@ -78,9 +82,19 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private calendarS: CalendarService,
+    private breakpointObserver: BreakpointObserver,
+    private dialog: MatDialog,
   ) { }
 
-  ngOnInit(): void { }
+  ngOnInit(): void {
+    // Subscribe to changes in screen size to change table columns
+    this.subscriptions.add(
+      this.breakpointObserver.observe(['(max-width: 599px)'])
+                             .subscribe(observer => {
+                               this.onMobile = observer.matches;
+                             })
+    );
+  }
 
   ngAfterViewInit(): void {
     // Subscribe to paramMap
@@ -96,10 +110,24 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnDestroy {
     );
     // Subscribe to filter
     this.subscriptions.add(
-      this.calendarS.filterObservable.subscribe(filter => {
+      this.calendarS.filter.subscribe(filter => {
         const api = this.calendarComponent.getApi();
         api.refetchEvents();
       })
+    );
+  }
+
+  openFilterDialog(): void {
+    const dialogRef = this.dialog.open(FilterDialogComponent, {
+      width: this.onMobile ? '100vw' : 'min-content',
+      height: this.onMobile ? '100vh' : 'min-content',
+      maxWidth: this.onMobile ? '100vw' : '80vw',
+      maxHeight: this.onMobile ? '100vh' : '70vh'
+    });
+
+    // Refetch events after filter is closed
+    dialogRef.afterClosed().subscribe(() =>
+      this.calendarComponent.getApi().refetchEvents()
     );
   }
 

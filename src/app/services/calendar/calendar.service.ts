@@ -22,15 +22,15 @@ export class CalendarService {
     private afs: AngularFirestore
   ) { }
 
-  get filterObservable(): Observable<Filter> {
+  get filter(): Observable<Filter> {
     return this.filter$.asObservable();
   }
 
-  get filterSnapshot(): Filter {
+  getFilterSnapshot(): Filter {
     return this.filter$.value;
   }
 
-  set filter(value: Partial<Filter>) {
+  setFilter(value: Partial<Filter>): void {
     this.filter$.next({...this.filter$.value, ...value});
   }
 

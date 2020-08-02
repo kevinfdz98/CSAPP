@@ -6,10 +6,11 @@ import { CalendarRoutingModule } from './calendar-routing.module';
 import { CalendarComponent } from './calendar.component';
 import { AngularMaterialModule } from 'src/app/shared/modules/angular-material.module';
 import { MyFullCalendarModule } from 'src/app/shared/modules/my-fullcalendar.module';
+import { FilterDialogComponent } from './components/filter-dialog/filter-dialog.component';
 
 
 @NgModule({
-  declarations: [CalendarComponent],
+  declarations: [CalendarComponent, FilterDialogComponent],
   imports: [
     CommonModule,
     CalendarRoutingModule,
