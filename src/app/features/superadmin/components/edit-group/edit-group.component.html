@@ -55,6 +55,14 @@
     </mat-select>
   </mat-form-field>
 
+  <!--Event.imgUrl-->
+  <app-logo-upload
+    class="form-element"
+    style="height: 200px;"
+    [url]="this.data.group.logoUrl"
+    #uploadBtn
+  ></app-logo-upload>
+
   <div class="form-buttons form-element">
     <button mat-raised-button color="accent" type="submit">Guardar</button>
     <button mat-raised-button color="primary" type="button" (click)="onClose()">Cancelar</button>

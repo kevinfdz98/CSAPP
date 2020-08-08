@@ -322,7 +322,8 @@ export class GroupService {
       gid: g.gid,
       name: g.name,
       majorsTec21: g.majorsTec21,
-      majorsTec20: g.majorsTec20
+      majorsTec20: g.majorsTec20,
+      logoUrl: g.logoUrl
     };
   }
 

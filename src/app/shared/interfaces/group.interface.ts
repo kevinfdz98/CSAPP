@@ -4,4 +4,5 @@ export interface Group {
   name: string;
   majorsTec21: string[];
   majorsTec20: string[];
+  logoUrl: string;
 }
