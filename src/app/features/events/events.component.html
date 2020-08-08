@@ -26,7 +26,7 @@
     <div class="buttons-container">
       <button mat-icon-button class="btn-favorite" *ngIf="favorite"  (click)="toggleFavorite()"><mat-icon>favorite</mat-icon></button>
       <button mat-icon-button class="btn-favorite" *ngIf="!favorite" (click)="toggleFavorite()"><mat-icon>favorite_border</mat-icon></button>
-      <h2>{{(event && event.ffavoriteof) ?  event.ffavoriteof.length : ''}}</h2>
+      <h2>{{(event && event.favoriteof) ?  event.favoriteof.length : ''}}</h2>
       <button mat-icon-button class="btn-share"  (click)="copy()"> <mat-icon>share</mat-icon></button>
     </div>
 
