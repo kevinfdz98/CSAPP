@@ -108,7 +108,8 @@ export class AuthService {
     if (data.matricula)  { throw Error('Cannot change User.matricula through AuthService, use UserService with superadmin priviledges'); }
     if (data.roles)      { throw Error('Cannot change User.roles through AuthService, use UserService with superadmin priviledges'); }
     if (data.administra) { throw Error('Cannot change User.administra through AuthService, use UserService with superadmin priviledges'); }
-    if (data.following)  { throw Error('Cannot change User.roles through AuthService, use EventService with user priviledges'); }
+    if (data.following)  { throw Error('Cannot change User.following through AuthService, use UserService with user priviledges'); }
+    if (data.favorite)  { throw Error('Cannot change User.favorite through AuthService, use EventService with user priviledges'); }
 
     await this.afs.doc<User>(`users/${this.authState$.value.uid}`).update(data);
     this.authState$.next({...this.authState$.value, user: {...this.authState$.value.user, ...data}});
@@ -175,6 +176,7 @@ export class AuthService {
       email     : profile.email,
       roles     : ['u'],
       following : [],
+      favorite  : [],
       isNewUser : true,
       administra: []
     };

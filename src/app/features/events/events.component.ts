@@ -20,7 +20,7 @@ export class EventsComponent implements OnInit, OnDestroy {
   private subscriptions = new Subscription();
   private eid: string;
   public event: Event;
-  public following: boolean;
+  public favorite: boolean;
   public areaColor = '#FFFFFF';
 
   constructor(
@@ -57,9 +57,9 @@ export class EventsComponent implements OnInit, OnDestroy {
          }
       })
     );
-    // Subscribe to user following this event
+    // Subscribe to user favorite this event
     this.subscriptions.add(
-      this.authS.observeAuthState().subscribe(state => this.following = (state.user && state.user.following.includes(this.eid)))
+      this.authS.observeAuthState().subscribe(state => this.favorite = (state.user && state.user.favorite.includes(this.eid)))
     );
   }
 
@@ -71,18 +71,18 @@ export class EventsComponent implements OnInit, OnDestroy {
     });
   }
 
-  async toggleFollow(): Promise<void> {
+  async toggleFavorite(): Promise<void> {
     // If user is not authenticated, display invitation to login
     if (!(await this.authS.observeAuthState().pipe(take(1), map(state => state.loggedIn)).toPromise())) {
-      this.openSnack(`Para seguir este evento, tienes que iniciar sesión`, 'ok', 2500)
+      this.openSnack(`Para marcar como favorito este, tienes que iniciar sesión`, 'ok', 2500);
     } else {
-      if (this.following) {
+      if (this.favorite) {
         this.eventS.unsubscribeFromEvent(this.eid)
-                   .then(() => this.openSnack(`Dejaste de seguir a este evento`, 'ok', 1000))
+                   .then(() => this.openSnack(`Borraste este evento de Favorites`, 'ok', 1000))
                    .catch(reason => this.openSnack(`Error: ${reason}`, 'Oh noes!', 1000));
       } else {
-        this.eventS.subscribeToEvent(this.eid)
-                   .then(() => this.openSnack(`Ahora sigues a este evento`, 'Yay!', 1000))
+        this.eventS.favoriteEvent(this.eid)
+                   .then(() => this.openSnack(`Guardaste este evento en Favoritos`, 'Yay!', 1000))
                    .catch(reason => this.openSnack(`Error: ${reason}`, 'Oh noes!', 1000));
       }
     }

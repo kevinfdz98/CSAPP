@@ -1,14 +1,22 @@
-import { Component, OnInit, OnDestroy, AfterViewInit, ViewChild } from '@angular/core';
-import { FullCalendarComponent, CalendarOptions } from '@fullcalendar/angular';
-import { Subscription } from 'rxjs';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { GroupService } from 'src/app/services/group/group.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
-import { CalendarService } from 'src/app/services/calendar/calendar.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { filter, take } from 'rxjs/operators';
+import { Subscription } from 'rxjs';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { MatDialog } from '@angular/material/dialog';
+import { Group } from 'src/app/shared/interfaces/group.interface';
 import { areasList } from 'src/app/shared/interfaces/area.interface';
-import { User } from 'src/app/shared/interfaces/user.interface';
-import { Router } from '@angular/router';
+import { majorsList } from 'src/app/shared/interfaces/major.interface';
+import { UserService } from 'src/app/services/user/user.service';
+import { MatSlideToggleChange } from '@angular/material/slide-toggle';
+
+interface GroupTableRow {
+  gid: string;
+  name: string;
+  majors: string;
+  subscribed: boolean;
+}
 
 @Component({
   selector: 'app-following',
@@ -16,79 +24,72 @@ import { Router } from '@angular/router';
   styleUrls: ['./following.component.css']
 })
 export class FollowingComponent implements OnInit, OnDestroy {
-  @ViewChild('calendar') calendarComponent: FullCalendarComponent;
-  private subscriptions = new Subscription();
-  private onMobile: boolean;
-  private gid: string;
-  private user: User;
 
-  public calendarOptions: CalendarOptions = {
-    // View configuration and display
-    initialView: 'list',
-    headerToolbar: { start: '', center: 'title', end: '' },
-    footerToolbar: { start: '', center: 'prev next', end: '' },
-    height: '100%',
-    duration: {months: 1},
-    handleWindowResize: true,
-    expandRows: true,
-
-    // Handler for clic in an event
-    eventClick: (arg) => {
-      this.router.navigate(['events', arg.event.id]);
-    },
-
-    // Function to fetch events
-    events: (info, success, failure) => {
-      this.calendarS.getEvents(info.start, info.end)
-                    .then(events => success(
-                      events.filter(event => this.user.following.includes(event.eid))
-                            .map(event => ({
-                              id: event.eid,
-                              title: event.title,
-                              start: event.timestamp.start as Date,
-                              end: event.timestamp.end as Date,
-                              borderColor: areasList.Tec21[event.areaT21].color
-                            }))
-                    )).catch(reason => failure(reason));
-    }
-  };
+  subscriptions = new Subscription();
+  columns: string[];
+  data: GroupTableRow[] = [];
+  onMobile: boolean;
+  following: string[] = [];
 
   constructor(
-    private authS: AuthService,
-    private calendarS: CalendarService,
-    private snack: MatSnackBar,
-    private router: Router,
-    private breakpointObserver: BreakpointObserver,
-    private dialog: MatDialog,
-) { }
+    private auth: AuthService,
+    private groups: GroupService,
+    private users: UserService,
+    private breakpointObserver: BreakpointObserver
+  ) { }
 
   ngOnInit(): void {
-    // Subscribe to changes in screen size to change table columns
     this.subscriptions.add(
+      // Subscribe to changes in screen size to change table columns
       this.breakpointObserver.observe(['(max-width: 599px)'])
                              .subscribe(observer => {
                                this.onMobile = observer.matches;
+                               this.columns = this.onMobile ? ['mobile', 'toggle'] : ['gid', 'name', 'majors', 'toggle']
                              })
     );
-    // Subscribe to changes in screen size to change table columns
     this.subscriptions.add(
-      this.authS.observeUser().subscribe(user => this.user = user)
+      // Wait until user is authenticated as superadmin ('sa')
+      // and then subscribe to changes to GroupsList
+      this.auth.observeAuthState()
+              .subscribe(state => this.following = [...state.user.following])
+    );
+    this.subscriptions.add(
+      // Wait until user is authenticated as superadmin ('sa')
+      // and then subscribe to changes to GroupsList
+      this.auth.observeAuthState()
+              .pipe(filter(state => state.roles.includes('u')), take(1))
+              .subscribe(() => this.subscribeToGroupsListChanges())
     );
   }
 
-  private openSnack(message: string, action: string, ms: number): void {
-    this.snack.open(message, action, {
-      duration: ms,
-      horizontalPosition: 'center',
-      verticalPosition: 'top'
-    });
+  subscribeToGroupsListChanges(): void {
+    this.subscriptions.add(
+      // Subscribe to changes to GroupsList (in Firebase) and build data array for table
+      this.groups.observeGroupsList().subscribe(list => {
+        this.data = Object.values(list).map(group => {
+          const majors = [].concat(group.majorsTec20, group.majorsTec21);
+          return {
+            gid: group.gid,
+            name: group.name,
+            majors: majors.length > 0 ? majors.join(', ') : '-',
+            color: (group.majorsTec21.length > 0) ? areasList.Tec21[majorsList.Tec21[group.majorsTec21[0]].area].color : 'black',
+            subscribed:  this.following.includes(group.gid),
+          };
+        }).sort((a, b) => (a.gid === b.gid) ? 0 : (a.gid < b.gid) ? -1 : 1);
+      })
+    );
   }
 
-  openSettingsDialog(): void {
-    alert('openSettings()');
+  toggleSubscription(event: MatSlideToggleChange, group: GroupTableRow): void {
+    console.log(event, group);
+    this.users.updateSubscriptions(
+      event.checked ? [] : [group.gid],
+      event.checked ? [group.gid] : []
+    );
   }
 
   ngOnDestroy(): void {
     this.subscriptions.unsubscribe();
   }
+
 }

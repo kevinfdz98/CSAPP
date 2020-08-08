@@ -15,9 +15,8 @@
   background-color: #f6f6f6;
 }
 
-.btn-follow {
- 
-  color: #FFEB3B;
+.btn-favorite {
+  color: red;
 }
 
 .btn-share {
@@ -25,7 +24,6 @@
 }
 
 .btn-back {
-  
   color: white;
 }
 
@@ -54,7 +52,7 @@
 }
 
 .example-fill-remaining-space {
-  /* This fills the remaining space, by using flexbox. 
+  /* This fills the remaining space, by using flexbox.
      Every toolbar row uses a flexbox row layout. */
   flex: 1 1 auto;
 }

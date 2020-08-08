@@ -1,5 +1,16 @@
-.following-container {
-  position: relative;
+.groups-list-container {
   width: 100%;
   height: 100%
+}
+
+.groups-list-table {
+  width: 100%;
+}
+
+.mobile-name, .mobile-majors { display: block; }
+
+.mobile-majors {
+  font-style: italic;
+  font-size: 0.9em;
+  color: #707070;
 }

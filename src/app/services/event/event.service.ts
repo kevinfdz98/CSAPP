@@ -174,8 +174,12 @@ export class EventService {
     });
   }
 
-  // TO DO
-  subscribeToEvent(eid: string): Promise<void> {
+  /**
+   * Favorites an event on behalf of the current user
+   * @async
+   * @param  eid  Id of the event to delete
+   */
+  favoriteEvent(eid: string): Promise<void> {
     // Check that user is authenticated
     if (!this.authState.user) {
       throw Error('The current user is not authenticated');
@@ -185,8 +189,8 @@ export class EventService {
     const  userRef = this.afs.doc<User>(`users/${uid}`).ref;
 
     return this.afs.firestore.runTransaction(async trans => {
-      trans.update(userRef, {following: firestore.FieldValue.arrayUnion(eid)});
-      trans.update(eventRef, {followers: firestore.FieldValue.arrayUnion(uid)});
+      trans.update(userRef, {favorite: firestore.FieldValue.arrayUnion(eid)});
+      trans.update(eventRef, {favoriteof: firestore.FieldValue.arrayUnion(uid)});
     });
   }
 
@@ -201,8 +205,8 @@ export class EventService {
     const  userRef = this.afs.doc<User>(`users/${uid}`).ref;
 
     return this.afs.firestore.runTransaction(async trans => {
-      trans.update(userRef, {following: firestore.FieldValue.arrayRemove(eid)});
-      trans.update(eventRef, {followers: firestore.FieldValue.arrayRemove(uid)});
+      trans.update(userRef, {favorite: firestore.FieldValue.arrayRemove(eid)});
+      trans.update(eventRef, {ffavoriteof: firestore.FieldValue.arrayRemove(uid)});
     });
   }
 

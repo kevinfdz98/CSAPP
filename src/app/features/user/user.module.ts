@@ -5,11 +5,12 @@ import { UserRoutingModule } from './user-routing.module';
 import { AngularMaterialModule } from 'src/app/shared/modules/angular-material.module';
 import { MyFullCalendarModule } from 'src/app/shared/modules/my-fullcalendar.module';
 import { UserComponent } from './user.component';
+import { FavoriteComponent } from './components/favorite/favorite.component';
 import { FollowingComponent } from './components/following/following.component';
 
 
 @NgModule({
-  declarations: [UserComponent, FollowingComponent],
+  declarations: [UserComponent, FavoriteComponent, FollowingComponent],
   imports: [
     CommonModule,
     UserRoutingModule,

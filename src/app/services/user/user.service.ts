@@ -102,6 +102,27 @@ export class UserService {
   }
 
   /**
+   * Updates the subscriptions of a user given its uid and two optional arrays
+   * The calling user must be authenticated and have superadmin user privileges.
+   * @async
+   * @param  removeSubscriptions Array of subscriptions to be removed before adding new subscriptions
+   * @param  addSubscriptions    Aray of subscriptions to be added after removing specified subscriptions
+   * @return             Promise that resolves to a snapshot of the list
+   */
+  async updateSubscriptions(removeSubscriptions: string[] = [], addSubscriptions: string[] = []): Promise<void> {
+    // Validate superadmin privileges
+    if (!this.authState.roles.includes('u')) { throw Error('Operation needs user privileges'); }
+    const uid = this.authState.uid;
+
+    return this.updateSubscriptionsTransaction(removeSubscriptions, addSubscriptions).then(user => {
+      if (user) {
+        // Update local copy of userDetails
+        this.userDetails[uid] = {...user.new};
+      }
+    });
+  }
+
+  /**
    * Updates the roles of a user given its uid and two optional arrays
    * The calling user must be authenticated and have superadmin 'sa' privileges.
    * @async
@@ -174,6 +195,52 @@ export class UserService {
         return {old: user.old, new: user.new};
       }
     );
+  }
+
+  private updateSubscriptionsTransaction(
+    removeSubscriptions: string[] = [],
+    addSubscriptions: string[] = []
+  ): Promise<{old: User, new: User}> {
+    const uid = this.authState.uid;
+    const user: {
+      ref: DocumentReference, old: User, new: User
+    } = {ref: null, old: null, new: null};
+    const groups: {
+      toAdd: {ref: DocumentReference, data: Group}[],
+      toRemove: {ref: DocumentReference, data: Group}[]
+    } = {toAdd: [], toRemove: []};
+
+    user.ref = this.afs.doc<User>(`users/${uid}`).ref;
+
+    return this.afs.firestore.runTransaction(async trans => {
+      // Get current state of User document
+      user.old = (await trans.get(user.ref)).data() as User;
+      // Get minimum removals
+      removeSubscriptions = removeSubscriptions.filter(group => user.old.following.includes(group) && !addSubscriptions.includes(group));
+      // Get minimum additions
+      addSubscriptions = addSubscriptions.filter(group => !user.old.following.includes(group));
+      // Build new User document with minimum removals and additions
+      user.new = {...user.old,
+        following: user.old.following.filter(group => !removeSubscriptions.includes(group)).concat(addSubscriptions)
+      };
+
+      // Process group removals
+      await removeSubscriptions.reduce(async (promise, gid, i) => {
+        await promise;
+        const ref = this.afs.doc<Group>(`groups/${gid}`).ref;
+        trans.update(ref, {followedBy: firebase.firestore.FieldValue.arrayRemove(uid)});
+      }, Promise.resolve());
+
+      // Process group additions
+      await addSubscriptions.reduce(async (promise, gid, i) => {
+        await promise;
+        const ref = this.afs.doc<Group>(`groups/${gid}`).ref;
+        trans.update(ref, {followedBy: firebase.firestore.FieldValue.arrayUnion(uid)});
+      }, Promise.resolve());
+
+      trans.update(user.ref, {following: user.new.following});
+      return {old: user.old, new: user.new};
+    });
   }
 
   private updateGroupsTransaction(uid: string, removeGroups: string[] = [], addGroups: string[] = []): Promise<{old: User, new: User}> {

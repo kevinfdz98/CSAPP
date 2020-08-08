@@ -165,8 +165,8 @@ export class GroupService {
    */
   observeGroupsList(): Observable<{[uid: string]: GroupSummary}> {
     // Validate superadmin privileges
-    if (!this.authState.roles.includes('a') && !this.authState.roles.includes('sa')) {
-      throw Error('Operation needs admin or superadmin privileges');
+    if (!this.authState.roles.includes('u') && !this.authState.roles.includes('a') && !this.authState.roles.includes('sa')) {
+      throw Error('Operation needs user, admin or superadmin privileges');
     }
 
     // If subscribed to Firebase (adminsList)
@@ -310,9 +310,6 @@ export class GroupService {
   }
 
   private subscribeToGroupsList(): Subscription {
-    // Validate superadmin privileges
-    if (!this.authState.roles.includes('a') && !this.authState.roles.includes('sa')) { throw Error('Operation needs admin or superman privileges'); }
-
     const groupsListRef = this.afs.doc<{[gid: string]: GroupSummary}>(`shared/groups`);
     return groupsListRef.valueChanges().subscribe(list => this.groupsList$.next(list));
   }

@@ -7,6 +7,7 @@ export interface User {
   email: string;
   roles: string[];
   following: string[];
+  favorite: string[];
   isNewUser: boolean;
   // Atributos para alumnos Tec
   model?: Models;
