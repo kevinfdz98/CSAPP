@@ -50,7 +50,7 @@ export class EventsComponent implements OnInit, OnDestroy {
                 logoRef.getDownloadURL().then(url => {
                      document.querySelector('.displayLogos').innerHTML +=
                       `<img src="${url}" alt="Logo de la mesa" class="logos" style= "width: 110px;">`;
-                  }).catch( err => { console.log(err); });
+                  }).catch( err => { });
                 });
               } else { this.event = null; }
           });

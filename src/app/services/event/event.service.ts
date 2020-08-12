@@ -206,7 +206,7 @@ export class EventService {
 
     return this.afs.firestore.runTransaction(async trans => {
       trans.update(userRef, {favorite: firestore.FieldValue.arrayRemove(eid)});
-      trans.update(eventRef, {ffavoriteof: firestore.FieldValue.arrayRemove(uid)});
+      trans.update(eventRef, {favoriteof: firestore.FieldValue.arrayRemove(uid)});
     });
   }
 

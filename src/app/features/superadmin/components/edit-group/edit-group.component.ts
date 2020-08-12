@@ -33,6 +33,9 @@ export class EditGroupComponent implements OnInit {
         name        : ['', Validators.required],
         majorsTec21 : [''],
         majorsTec20 : [''],
+        facebook    : [''],
+        instagram   : [''],
+        twitter     : ['']
       });
     }
 
@@ -58,11 +61,14 @@ export class EditGroupComponent implements OnInit {
 
     // Populate form fields
     if (this.data.group) {
-      this.groupForm.setValue({
+      this.groupForm.patchValue({
         gid         : this.data.group.gid,
         name        : this.data.group.name,
         majorsTec21 : this.data.group.majorsTec21,
-        majorsTec20 : this.data.group.majorsTec20
+        majorsTec20 : this.data.group.majorsTec20,
+        facebook    : this.data.group.facebook,
+        instagram   : this.data.group.instagram,
+        twitter     : this.data.group.twitter
       });
     }
   }
@@ -76,6 +82,9 @@ export class EditGroupComponent implements OnInit {
       name: this.groupForm.get('name').value,
       majorsTec21: this.groupForm.get('majorsTec21').value,
       majorsTec20: this.groupForm.get('majorsTec20').value,
+      facebook: this.groupForm.get('facebook').value,
+      instagram: this.groupForm.get('instagram').value,
+      twitter: this.groupForm.get('twitter').value
     };
     value.logoUrl =  await this.uploadBtnRef.getImageUrl();
     value.majorsTec21 = (typeof value.majorsTec21.length === 'string') ? [] : this.groupForm.get('majorsTec21').value;
