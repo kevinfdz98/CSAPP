@@ -11,9 +11,11 @@ import { MatMomentDateModule } from '@angular/material-moment-adapter';
 import { UploadButtonComponent } from './components/upload-button/upload-button.component';
 import { AngularFireStorage, AngularFireStorageModule } from '@angular/fire/storage';
 import { from } from 'rxjs';
+import { EventsListComponent } from './components/events-list/events-list.component';
+import { ReportsPanelComponent } from './components/reports-panel/reports-panel.component';
 
 @NgModule({
-  declarations: [AdminComponent, EditEventFormComponent, UploadButtonComponent],
+  declarations: [AdminComponent, EditEventFormComponent, UploadButtonComponent, EventsListComponent, ReportsPanelComponent],
   imports: [
     CommonModule,
     AdminRoutingModule,
