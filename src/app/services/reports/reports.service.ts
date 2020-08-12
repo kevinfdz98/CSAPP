@@ -34,7 +34,7 @@ export class ReportsService {
     private afs: AngularFirestore
   ) { }
 
-  async generateReport(gid: string, from: Date, to: Date): Promise<void> {
+  async generateEventsReport(gid: string, from: Date, to: Date): Promise<void> {
     const ref = this.afs.collection('events').ref;
     const query = ref.orderBy('timestamp.start')
                       .where('timestamp.start', '>=', from)

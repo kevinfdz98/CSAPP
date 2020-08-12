@@ -1,7 +1,8 @@
-<div class="group-events-container">
-  <full-calendar [options]="calendarOptions" style="padding: 10px 0px;" #calendar></full-calendar>
-  <button mat-fab
-          (click)="addEventDialog()"
-          class="punto-180-fab"
-  ><mat-icon>add</mat-icon></button>
-</div>
+<mat-tab-group style="height: 100%;">
+  <mat-tab label="Events" style="height: 100%;">
+    <app-events-list></app-events-list>
+  </mat-tab>
+  <mat-tab label="Reports">
+    <app-reports-panel></app-reports-panel>
+  </mat-tab>
+</mat-tab-group>
