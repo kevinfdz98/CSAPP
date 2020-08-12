@@ -13,7 +13,8 @@ const routes: Routes = [
     loadChildren: () => import('./features/superadmin/superadmin.module').then(m => m.SuperadminModule) },
   { path: 'admin', canActivate: [AdminGuard], loadChildren: () => import('./features/admin/admin.module').then(m => m.AdminModule) },
   { path: 'events', loadChildren: () => import('./features/events/events.module').then(m => m.EventsModule) },
-  { path: 'user', loadChildren: () => import('./features/user/user.module').then(m => m.UserModule) }
+  { path: 'user', loadChildren: () => import('./features/user/user.module').then(m => m.UserModule) },
+  { path: 'groups', loadChildren: () => import('./features/groups/groups.module').then(m => m.GroupsModule) }
 ];
 
 @NgModule({

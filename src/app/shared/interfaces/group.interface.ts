@@ -6,4 +6,7 @@ export interface Group {
   majorsTec20: string[];
   logoUrl: string;
   followedBy: string[];
+  facebook?: string;
+  instagram?: string;
+  twitter?: string;
 }

@@ -10,6 +10,7 @@ import { areasList } from 'src/app/shared/interfaces/area.interface';
 import { majorsList } from 'src/app/shared/interfaces/major.interface';
 import { UserService } from 'src/app/services/user/user.service';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
+import { Router, ActivatedRoute, ParamMap } from '@angular/router';
 
 interface GroupTableRow {
   gid: string;
@@ -35,7 +36,8 @@ export class FollowingComponent implements OnInit, OnDestroy {
     private auth: AuthService,
     private groups: GroupService,
     private users: UserService,
-    private breakpointObserver: BreakpointObserver
+    private breakpointObserver: BreakpointObserver,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
@@ -86,6 +88,10 @@ export class FollowingComponent implements OnInit, OnDestroy {
       event.checked ? [] : [group.gid],
       event.checked ? [group.gid] : []
     );
+  }
+
+  doSomething(gid: string): void {
+    this.router.navigate(['groups', gid]);
   }
 
   ngOnDestroy(): void {

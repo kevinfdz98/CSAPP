@@ -4,7 +4,7 @@
     <!-- Mobile Column -->
     <ng-container matColumnDef="mobile">
       <th mat-header-cell *matHeaderCellDef>Sociedad</th>
-      <td mat-cell *matCellDef="let group">
+      <td mat-cell *matCellDef="let group" (click)="doSomething(group.gid)">
         <span class="mobile-name"><span [ngStyle]="{'color': group.color, 'font-weight': '700'}">{{group.gid}}</span>{{' - '+group.name}}</span>
       </td>
     </ng-container>
@@ -12,19 +12,19 @@
     <!-- Gid Column -->
     <ng-container matColumnDef="gid">
       <th mat-header-cell *matHeaderCellDef>Sociedad</th>
-      <td mat-cell *matCellDef="let group" [ngStyle]="{'color': group.color, 'font-weight': '700'}">{{group.gid}}</td>
+      <td mat-cell *matCellDef="let group" [ngStyle]="{'color': group.color, 'font-weight': '700'}" (click)="doSomething(group.gid)">{{group.gid}}</td>
     </ng-container>
 
     <!-- Name Column -->
     <ng-container matColumnDef="name">
       <th mat-header-cell *matHeaderCellDef>Nombre largo</th>
-      <td mat-cell *matCellDef="let group">{{group.name}}</td>
+      <td mat-cell *matCellDef="let group" (click)="doSomething(group.gid)">{{group.name}}</td>
     </ng-container>
 
     <!-- Majors Column -->
     <ng-container matColumnDef="majors">
       <th mat-header-cell *matHeaderCellDef>Carreras</th>
-      <td mat-cell *matCellDef="let group">{{group.majors}}</td>
+      <td mat-cell *matCellDef="let group" (click)="doSomething(group.gid)">{{group.majors}}</td>
     </ng-container>
 
     <!-- Toggle Column -->
