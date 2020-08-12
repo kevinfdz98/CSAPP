@@ -86,7 +86,7 @@ export class EditGroupComponent implements OnInit {
       instagram: this.groupForm.get('instagram').value,
       twitter: this.groupForm.get('twitter').value
     };
-    value.logoUrl =  await this.uploadBtnRef.getImageUrl();
+    value.logoURL = await this.uploadBtnRef.getImageUrl();
     value.majorsTec21 = (typeof value.majorsTec21.length === 'string') ? [] : this.groupForm.get('majorsTec21').value;
     value.majorsTec20 = (typeof value.majorsTec20.length === 'string') ? [] : this.groupForm.get('majorsTec20').value;
     if (this.data.action === 'create') { value.gid = this.groupForm.get('gid').value; }

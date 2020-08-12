@@ -19,13 +19,19 @@
     <mat-select formControlName="type">
       <mat-option value="Conferencia">Conferencia</mat-option>
       <mat-option value="Conferencia">Congreso</mat-option>
+      <mat-option value="Conferencia">Taller</mat-option>
+      <mat-option value="Conferencia">Foro</mat-option>
+      <mat-option value="Conferencia">Visita a empresa</mat-option>
+      <mat-option value="Conferencia">Networking session </mat-option>
+      <mat-option value="Conferencia">Takeover</mat-option>
+      <mat-option value="Conferencia">Otro</mat-option>
     </mat-select>
     <mat-error
     *ngIf="eventForm.get('type').hasError('required')"
     >This field is required</mat-error>
     <mat-hint>Esto sirve para que los alumnos puedan filtrar eventos por tipo</mat-hint>
   </mat-form-field>
-
+  <div class="smallSpacer"> </div>
   <!--Event.areaT21-->
   <mat-form-field appearance="fill" class="form-element">
     <mat-label [ngStyle]="{'color': (eventForm.get('areaT21').valid ? areasTec21[eventForm.get('areaT21').value].color : 'white'), 'font-weight': '700'}">Area del evento*</mat-label>
@@ -42,6 +48,7 @@
     >This field is required</mat-error>
     <mat-hint>Esto sirve para determinar el color del evento y para que los alumnos puedan filtrar eventos por área</mat-hint>
   </mat-form-field>
+  <div class="smallSpacer"></div>
 
   <!--Event.timestamp.start-->
   <mat-form-field appearance="fill" class="form-element">
@@ -94,6 +101,7 @@
     >This field is required</mat-error>
     <mat-hint>Todas las sociedades organizadoras van a poder editar/borrar este evento</mat-hint>
   </mat-form-field>
+  <div class="smallSpacer"> </div>
 
   <!--Event.description-->
   <mat-form-field appearance="fill" class="form-element">
@@ -119,6 +127,7 @@
     <input matInput formControlName="linkEvent">
     <mat-hint>Por ejemplo, liga de la transmisión en vivo o sesión de Zoom</mat-hint>
   </mat-form-field>
+  <div class="smallSpacer"> </div>
 
   <!--Event.imgUrl-->
   <app-upload-button

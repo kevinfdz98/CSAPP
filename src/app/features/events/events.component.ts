@@ -46,6 +46,7 @@ export class EventsComponent implements OnInit, OnDestroy {
                // Retrieve logo from students group
               const storageRef = this.fireStorage.storage;
               this.event.organizingGroups.forEach(element => {
+                console.log(element);
                 const logoRef = storageRef.ref(`sociedades/${element}.png`);
                 logoRef.getDownloadURL().then(url => {
                      document.querySelector('.displayLogos').innerHTML +=

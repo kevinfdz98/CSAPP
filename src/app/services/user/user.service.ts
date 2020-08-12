@@ -72,7 +72,7 @@ export class UserService {
   async getUserByEmail(email: string, forceUpdate = false): Promise<User> {
     // Validate superadmin privileges
     if (!this.authState.roles.includes('sa')) { throw Error('User needs superadmin privileges'); }
-
+    email = email.toLowerCase();
     const localResults = Object.values(this.userDetails).filter(user => user.email === email);
     return (localResults.length === 0 || forceUpdate) ?
       this.fetchUserByEmail(email) :
