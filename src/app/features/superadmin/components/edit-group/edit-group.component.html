@@ -1,85 +1,89 @@
-<form class="registration-form-container"
-      [formGroup]="groupForm"
-      (ngSubmit)="onSubmit()"
->
-  <h1 *ngIf="data.action == 'create'" class="form-element">Registro de sociedad</h1>
-  <h1 *ngIf="data.action == 'edit'" class="form-element">Edición de sociedad</h1>
-  <mat-form-field appearance="fill" class="form-element">
-    <mat-label>Siglas*</mat-label>
-    <input matInput [readonly]="data.action == 'edit'" formControlName="gid">
-  </mat-form-field>
+<div class="mainContainer">
+  
+  <form class="registration-form-container"
+        [formGroup]="groupForm"
+        (ngSubmit)="onSubmit()"
+  >
+    <h1 *ngIf="data.action == 'create'" class="form-element">Registro de sociedad</h1>
+    <h1 *ngIf="data.action == 'edit'" class="form-element">Edición de sociedad</h1>
+    <mat-form-field appearance="fill" class="form-element">
+      <mat-label>Siglas*</mat-label>
+      <input matInput [readonly]="data.action == 'edit'" formControlName="gid">
+    </mat-form-field>
 
-  <mat-form-field appearance="fill" class="form-element">
-    <mat-label>Nombre de la sociedad*</mat-label>
-    <input matInput formControlName="name">
-    <mat-error
-      *ngIf="groupForm.get('name').hasError('required')"
-    >This field is required</mat-error>
-  </mat-form-field>
+    <mat-form-field appearance="fill" class="form-element">
+      <mat-label>Nombre de la sociedad*</mat-label>
+      <input matInput formControlName="name">
+      <mat-error
+        *ngIf="groupForm.get('name').hasError('required')"
+      >This field is required</mat-error>
+    </mat-form-field>
 
-  <mat-form-field appearance="fill" class="form-element">
-    <mat-label>Carreras Tec21</mat-label>
-    <mat-select formControlName="majorsTec21" multiple>
-      <mat-optgroup *ngFor="let item of Tec21ByArea | keyvalue">
-      <label [ngStyle]="
-      {
-        'color': areasList.Tec21[item.value[0].area].color,
-        'font-weight': '700'
-      }
-      ">{{item.key}}</label>
+    <mat-form-field appearance="fill" class="form-element">
+      <mat-label>Carreras Tec21</mat-label>
+      <mat-select formControlName="majorsTec21" multiple>
+        <mat-optgroup *ngFor="let item of Tec21ByArea | keyvalue">
+        <label [ngStyle]="
+        {
+          'color': areasList.Tec21[item.value[0].area].color,
+          'font-weight': '700'
+        }
+        ">{{item.key}}</label>
+          <mat-option *ngFor="let major of item.value"
+                      [value]="major.mid"
+          >
+            {{major.mid+' - '+major.name}}
+          </mat-option>
+        </mat-optgroup>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" class="form-element">
+      <mat-label>Carreras Tec20</mat-label>
+      <mat-select formControlName="majorsTec20" multiple>
+        <mat-optgroup *ngFor="let item of Tec20ByArea | keyvalue">
+        <label [ngStyle]="
+        {
+          'color': areasList.Tec20[item.value[0].area].color,
+          'font-weight': '700'
+        }
+        ">{{item.key}}</label>
         <mat-option *ngFor="let major of item.value"
                     [value]="major.mid"
         >
-          {{major.mid+' - '+major.name}}
-        </mat-option>
-      </mat-optgroup>
-    </mat-select>
-  </mat-form-field>
+            {{major.mid+' - '+major.name}}
+          </mat-option>
+        </mat-optgroup>
+      </mat-select>
+    </mat-form-field>
 
-  <mat-form-field appearance="fill" class="form-element">
-    <mat-label>Carreras Tec20</mat-label>
-    <mat-select formControlName="majorsTec20" multiple>
-      <mat-optgroup *ngFor="let item of Tec20ByArea | keyvalue">
-      <label [ngStyle]="
-      {
-        'color': areasList.Tec20[item.value[0].area].color,
-        'font-weight': '700'
-      }
-      ">{{item.key}}</label>
-      <mat-option *ngFor="let major of item.value"
-                  [value]="major.mid"
-      >
-          {{major.mid+' - '+major.name}}
-        </mat-option>
-      </mat-optgroup>
-    </mat-select>
-  </mat-form-field>
+    <mat-form-field appearance="fill" class="form-element">
+      <mat-label>Facebook</mat-label>
+      <input matInput formControlName="facebook">
+    </mat-form-field>
 
-  <mat-form-field appearance="fill" class="form-element">
-    <mat-label>Facebook</mat-label>
-    <input matInput formControlName="facebook">
-  </mat-form-field>
+    <mat-form-field appearance="fill" class="form-element">
+      <mat-label>Instagram</mat-label>
+      <input matInput formControlName="instagram">
+    </mat-form-field>
 
-  <mat-form-field appearance="fill" class="form-element">
-    <mat-label>Instagram</mat-label>
-    <input matInput formControlName="instagram">
-  </mat-form-field>
+    <mat-form-field appearance="fill" class="form-element">
+      <mat-label>Twitter</mat-label>
+      <input matInput formControlName="twitter">
+    </mat-form-field>
 
-  <mat-form-field appearance="fill" class="form-element">
-    <mat-label>Twitter</mat-label>
-    <input matInput formControlName="twitter">
-  </mat-form-field>
+    <!--Event.imgUrl-->
+    <app-logo-upload
+      class="form-element"
+      style="height: 200px;"
+      [url]="this.data.group? this.data.group.logoURL : '' "
+      #uploadBtn
+    ></app-logo-upload>
 
-  <!--Event.imgUrl-->
-  <app-logo-upload
-    class="form-element"
-    style="height: 200px;"
-    [url]="this.data.group? this.data.group.logoURL : '' "
-    #uploadBtn
-  ></app-logo-upload>
-
-  <div class="form-buttons form-element">
-    <button mat-raised-button color="accent" type="submit">Guardar</button>
-    <button mat-raised-button color="primary" type="button" (click)="onClose()">Cancelar</button>
-  </div>
+    <div class="form-buttons form-element">
+      <button mat-raised-button color="accent" type="submit">Guardar</button>
+      <button mat-raised-button color="primary" type="button" (click)="onClose()">Cancelar</button>
+    </div>
 </form>
+
+</div>

@@ -11,6 +11,7 @@ import { majorsList } from 'src/app/shared/interfaces/major.interface';
 import { UserService } from 'src/app/services/user/user.service';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { Router, ActivatedRoute, ParamMap } from '@angular/router';
+import {MatSnackBar} from '@angular/material/snack-bar';
 
 interface GroupTableRow {
   gid: string;
@@ -37,7 +38,8 @@ export class FollowingComponent implements OnInit, OnDestroy {
     private groups: GroupService,
     private users: UserService,
     private breakpointObserver: BreakpointObserver,
-    private router: Router
+    private router: Router,
+    private snack: MatSnackBar
   ) { }
 
   ngOnInit(): void {
@@ -83,7 +85,8 @@ export class FollowingComponent implements OnInit, OnDestroy {
   }
 
   toggleSubscription(event: MatSlideToggleChange, group: GroupTableRow): void {
-    console.log(event, group);
+    event.checked ? this.openSnack(`Ahora sigues a ${group.gid}`, 'Nice!', 2000) :
+    this.openSnack(`Dejaste de seguir a ${group.gid}`, 'Nice!', 2000);
     this.users.updateSubscriptions(
       event.checked ? [] : [group.gid],
       event.checked ? [group.gid] : []
@@ -98,4 +101,11 @@ export class FollowingComponent implements OnInit, OnDestroy {
     this.subscriptions.unsubscribe();
   }
 
+  private openSnack(message: string, action: string, ms: number): void {
+    this.snack.open(message, action, {
+      duration: ms,
+      horizontalPosition: 'center',
+      verticalPosition: 'top'
+    });
+  }
 }
