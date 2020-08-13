@@ -1,0 +1,68 @@
+<form class="reports-form-container"
+      [formGroup]="reportsForm"
+      (ngSubmit)="onSubmit()"
+>
+
+  <h1 class="form-element">Generador de reportes</h1>
+  <!--Report.from-->
+  <h3>Buscar eventos desde (inclusivo):</h3>
+  <mat-form-field appearance="fill" class="form-element">
+    <mat-label>Fecha*</mat-label>
+    <input matInput [matDatepicker]="startDatepicker" formControlName="startDate">
+    <mat-datepicker-toggle matSuffix [for]="startDatepicker"></mat-datepicker-toggle>
+    <mat-datepicker #startDatepicker></mat-datepicker>
+    <mat-error
+      *ngIf="reportsForm.get('startDate').hasError('required')"
+    >This field is required</mat-error>
+  </mat-form-field>
+  <mat-form-field appearance="fill" class="form-element">
+    <mat-label>Hora*</mat-label>
+    <input matInput formControlName="startTime" type="time">
+    <mat-error
+      *ngIf="reportsForm.get('startTime').hasError('required')"
+    >This field is required</mat-error>
+  </mat-form-field>
+
+  <!--Report.to-->
+  <h3>Buscar eventos hasta (inclusivo):</h3>
+  <mat-form-field appearance="fill" class="form-element">
+    <mat-label>Fecha*</mat-label>
+    <input matInput [matDatepicker]="endDatepicker" formControlName="endDate">
+    <mat-datepicker-toggle matSuffix [for]="endDatepicker"></mat-datepicker-toggle>
+    <mat-datepicker #endDatepicker></mat-datepicker>
+    <mat-error
+      *ngIf="reportsForm.get('endDate').hasError('required')"
+    >This field is required</mat-error>
+  </mat-form-field>
+  <mat-form-field appearance="fill" class="form-element">
+    <mat-label>Hora*</mat-label>
+    <input matInput formControlName="endTime" type="time">
+    <mat-error
+      *ngIf="reportsForm.get('endTime').hasError('required')"
+    >This field is required</mat-error>
+  </mat-form-field>
+
+  <h3>Report details</h3>
+
+  <mat-form-field appearance="fill" class="form-element">
+    <mat-label>Seleccionar sociedad(es)</mat-label>
+    <mat-select formControlName="group">
+        <mat-option *ngFor="let group of (groups.observeGroupsList() | async) | keyvalue"
+                    [value]="group.key"
+        >
+          {{group.key}}
+        </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <div class="form-element">
+    <mat-slide-toggle formControlName="includeUsers">Incluir alumnos</mat-slide-toggle>
+  </div>
+
+
+  <div class="form-buttons form-element">
+    <button mat-raised-button color="accent" type="submit">Generar</button>
+    <button mat-raised-button color="primary" type="reset">Borrar</button>
+  </div>
+
+</form>

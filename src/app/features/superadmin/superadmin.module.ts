@@ -10,10 +10,11 @@ import { GroupsListComponent } from './components/groups-list/groups-list.compon
 import { EditGroupComponent } from './components/edit-group/edit-group.component';
 import { EditAdminComponent } from './components/edit-admin/edit-admin.component';
 import { LogoUploadComponent } from './components/logo-upload/logo-upload.component';
+import { ReportsPanelComponent } from './components/reports-panel/reports-panel.component';
 
 
 @NgModule({
-  declarations: [SuperadminComponent, AdminsListComponent, GroupsListComponent, EditGroupComponent, EditAdminComponent, LogoUploadComponent],
+  declarations: [SuperadminComponent, AdminsListComponent, GroupsListComponent, EditGroupComponent, EditAdminComponent, LogoUploadComponent, ReportsPanelComponent],
   imports: [
     CommonModule,
     SuperadminRoutingModule,
