@@ -24,9 +24,9 @@
 
 
     <div class="buttons-container">
-      <button mat-icon-button class="btn-favorite" *ngIf="favorite"  (click)="toggleFavorite()"><mat-icon>favorite</mat-icon></button>
-      <button mat-icon-button class="btn-favorite" *ngIf="!favorite" (click)="toggleFavorite()"><mat-icon>favorite_border</mat-icon></button>
-      <h2>{{(event && event.favoriteof) ?  (event.favoriteof.length) : ''}}</h2>
+      <button mat-raised-button color="accent" matBadge="{{(event && event.favoriteof) ?  (event.favoriteof.length) : '0'}}" class="btn-favorite" *ngIf="favorite"  (click)="toggleFavorite()">Registrarmen't</button>
+      <button mat-raised-button color="accent" matBadge="{{(event && event.favoriteof) ?  (event.favoriteof.length) : '0'}}" class="btn-favorite" *ngIf="!favorite" (click)="toggleFavorite()">Registrarme</button>
+      <!--<h2>{{(event && event.favoriteof) ?  (event.favoriteof.length) : ''}}</h2>-->
       <button mat-icon-button class="btn-share"  (click)="copy()"> <mat-icon>share</mat-icon></button>
     </div>
 

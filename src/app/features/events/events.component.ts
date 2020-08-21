@@ -79,15 +79,15 @@ export class EventsComponent implements OnInit, OnDestroy {
   async toggleFavorite(): Promise<void> {
     // If user is not authenticated, display invitation to login
     if (!(await this.authS.observeAuthState().pipe(take(1), map(state => state.loggedIn)).toPromise())) {
-      this.openSnack(`Para marcar como favorito este, tienes que iniciar sesión`, 'ok', 2500);
+      this.openSnack(`Para registrarte en el evento, debes de iniciar sesión`, 'ok', 2500);
     } else {
       if (this.favorite) {
         this.eventS.unsubscribeFromEvent(this.eid)
-                   .then(() => this.openSnack(`Borraste este evento de Favorites`, 'ok', 1000))
+                   .then(() => this.openSnack(`Te desregistraste de este evento`, 'ok', 1000))
                    .catch(reason => this.openSnack(`Error: ${reason}`, 'Oh noes!', 1000));
       } else {
         this.eventS.favoriteEvent(this.eid)
-                   .then(() => this.openSnack(`Guardaste este evento en Favoritos`, 'Yay!', 1000))
+                   .then(() => this.openSnack(`Te registraste en este evento`, 'Yay!', 1000))
                    .catch(reason => this.openSnack(`Error: ${reason}`, 'Oh noes!', 1000));
       }
     }
