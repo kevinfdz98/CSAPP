@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { EventService } from 'src/app/services/event/event.service';
-import { Subscription } from 'rxjs';
+import { Subscription, Observable } from 'rxjs';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Event } from 'src/app/shared/interfaces/event.interface';
 import { AuthService } from 'src/app/services/auth/auth.service';
@@ -22,6 +22,7 @@ export class EventsComponent implements OnInit, OnDestroy {
   public event: Event;
   public favorite: boolean;
   public areaColor = '#FFFFFF';
+  public try: any;
 
   constructor(
     private authS: AuthService,
@@ -46,7 +47,6 @@ export class EventsComponent implements OnInit, OnDestroy {
                // Retrieve logo from students group
               const storageRef = this.fireStorage.storage;
               this.event.organizingGroups.forEach(element => {
-                console.log(element);
                 const logoRef = storageRef.ref(`sociedades/${element}.png`);
                 logoRef.getDownloadURL().then(url => {
                      document.querySelector('.displayLogos').innerHTML +=
@@ -60,7 +60,11 @@ export class EventsComponent implements OnInit, OnDestroy {
     );
     // Subscribe to user favorite this event
     this.subscriptions.add(
-      this.authS.observeAuthState().subscribe(state => this.favorite = (state.user && state.user.favorite.includes(this.eid)))
+      this.authS.observeAuthState().subscribe(state => {
+          this.favorite = (state.user && state.user.favorite.includes(this.eid));
+          console.log('Esto si esta suscrito', state);
+      }
+        )
     );
   }
 

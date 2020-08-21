@@ -1,5 +1,5 @@
 <div class="mainContainer">
-  
+
   <form class="registration-form-container"
         [formGroup]="groupForm"
         (ngSubmit)="onSubmit()"
@@ -8,12 +8,12 @@
     <h1 *ngIf="data.action == 'edit'" class="form-element">Edición de sociedad</h1>
     <mat-form-field appearance="fill" class="form-element">
       <mat-label>Siglas*</mat-label>
-      <input matInput [readonly]="data.action == 'edit'" formControlName="gid">
+      <input matInput [readonly]="data.action == 'edit'" formControlName="gid" placeholder="SA###">
     </mat-form-field>
 
     <mat-form-field appearance="fill" class="form-element">
       <mat-label>Nombre de la sociedad*</mat-label>
-      <input matInput formControlName="name">
+      <input matInput formControlName="name" placeholder="Sociedad de Alumnos ...">
       <mat-error
         *ngIf="groupForm.get('name').hasError('required')"
       >This field is required</mat-error>

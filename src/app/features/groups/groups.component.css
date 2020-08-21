@@ -53,3 +53,16 @@
 .btn-back {
   color: white;
 }
+
+.ig-container {
+    height: 26px;
+    position: relative;
+    top: 6px;
+    right: 0px;
+}
+
+.tw-container {
+    height: 28px;
+    position: relative;
+    top: 6px;
+}
