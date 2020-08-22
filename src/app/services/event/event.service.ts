@@ -4,6 +4,7 @@ import { AngularFirestore, DocumentReference } from '@angular/fire/firestore';
 import { Event } from '../../shared/interfaces/event.interface';
 import { EventSummary } from '../../shared/interfaces/event-summary.interface';
 import { firestore, database, User } from 'firebase';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -80,6 +81,7 @@ export class EventService {
               }) :
       Promise.resolve(this.eventDetails[eid]);
   }
+
 
   /**
    * Updates the info of an event in the Firebase database and returns a

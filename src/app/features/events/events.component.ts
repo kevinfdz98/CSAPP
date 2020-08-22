@@ -50,7 +50,8 @@ export class EventsComponent implements OnInit, OnDestroy {
                 const logoRef = storageRef.ref(`sociedades/${element}.png`);
                 logoRef.getDownloadURL().then(url => {
                      document.querySelector('.displayLogos').innerHTML +=
-                      `<img src="${url}" alt="Logo de la mesa" class="logos" style= "width: 110px;">`;
+                      `<img src="${url}" alt="Logo de la mesa" class="logos" style=
+                      "width:${this.event.organizingGroups.length > 2 ? '110px' : '55px' } ;">`;
                   }).catch( err => { });
                 });
               } else { this.event = null; }
