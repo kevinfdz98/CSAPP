@@ -3,6 +3,9 @@
      Every toolbar row uses a flexbox row layout. */
   flex: 1 1 auto;
 }
+a {
+  color:black;
+}
 
 .event-container {
   box-sizing: border-box;
