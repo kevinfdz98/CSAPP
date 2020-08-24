@@ -18,6 +18,7 @@ export class GroupService {
   private authState: AuthState;
   private groupsList$ = new BehaviorSubject<{[gid: string]: GroupSummary}>({});
   private groupDetails: {[gid: string]: Group} = {};
+  private groupSummary: {[gid: string]: GroupSummary} = {};
 
   constructor(
     private auth: AuthService,
@@ -319,7 +320,12 @@ export class GroupService {
       gid: g.gid,
       name: g.name,
       majorsTec21: g.majorsTec21,
-      majorsTec20: g.majorsTec20
+      majorsTec20: g.majorsTec20,
+      facebook: g.facebook,
+      instagram: g.instagram,
+      twitter: g.twitter,
+      webPage: g.webPage,
+      logoURL: g.logoURL
     };
   }
 
