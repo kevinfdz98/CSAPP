@@ -19,3 +19,7 @@
   position: relative;
   top: 6px;
 }
+
+.hoverGroup {
+  cursor: pointer;
+}

@@ -35,7 +35,8 @@ export class EditGroupComponent implements OnInit {
         majorsTec20 : [''],
         facebook    : [''],
         instagram   : [''],
-        twitter     : ['']
+        twitter     : [''],
+        webPage     : ['']
       });
     }
 
@@ -68,7 +69,8 @@ export class EditGroupComponent implements OnInit {
         majorsTec20 : this.data.group.majorsTec20,
         facebook    : this.data.group.facebook,
         instagram   : this.data.group.instagram,
-        twitter     : this.data.group.twitter
+        twitter     : this.data.group.twitter,
+        webPage     : this.data.group.webPage
       });
     }
   }
@@ -84,7 +86,8 @@ export class EditGroupComponent implements OnInit {
       majorsTec20: this.groupForm.get('majorsTec20').value,
       facebook: this.groupForm.get('facebook').value,
       instagram: this.groupForm.get('instagram').value,
-      twitter: this.groupForm.get('twitter').value
+      twitter: this.groupForm.get('twitter').value,
+      webPage: this.groupForm.get('webPage').value
     };
     value.logoURL = await this.uploadBtnRef.getImageUrl();
     value.majorsTec21 = (typeof value.majorsTec21.length === 'string') ? [] : this.groupForm.get('majorsTec21').value;

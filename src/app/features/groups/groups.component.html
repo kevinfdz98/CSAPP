@@ -11,25 +11,29 @@
   <div class="event-container">
 
     <div class="title-container">
-      <h2>{{group ? group.name: ''}} </h2>
+      <h2>{{groupSummary ? groupSummary.name: ''}} </h2>
      </div>
     
     <div class="sidenav-grid bottom" >
       <span class="name-container">
         <mat-icon>group</mat-icon>
-        <span>{{group ? group.majorsTec21: '' }},{{group ? group.majorsTec20: '' }}</span>
+        <span>{{groupSummary ? groupSummary.majorsTec21: '' }},{{groupSummary ? groupSummary.majorsTec20: '' }}</span>
       </span>
       <span class="fb-container">
         <mat-icon>facebook</mat-icon>
-        <span>{{group ?  group.facebook: '' }}</span>
+        <span>{{groupSummary ?  groupSummary.facebook: '' }}</span>
       </span>
       <span class="ig-container">
         <img src="https://firebasestorage.googleapis.com/v0/b/csapp2020-8620b.appspot.com/o/assets%2FinstaIcon%20(2).jpg?alt=media&token=4146b7ca-a102-4a8f-ab98-4ef823173eb3" alt="instagram" />
-        <span>{{group ?  group.instagram: '' }}</span>
+        <span>{{groupSummary ?  groupSummary.instagram: '' }}</span>
       </span>
       <span class="tw-container">
         <img src="https://firebasestorage.googleapis.com/v0/b/csapp2020-8620b.appspot.com/o/assets%2FtwitterIcon%20(2).jpg?alt=media&token=e7959f37-8ae6-4a73-b094-9f540dff410e" alt="Twitter" />
-        <span>{{group ?  group.twitter: '' }}</span>
+        <span>{{groupSummary ?  groupSummary.twitter: '' }}</span>
+      </span>
+      <span class="web-container">
+        <mat-icon>language</mat-icon>
+        <span>{{groupSummary ?  groupSummary.webPage: '' }}</span>
       </span>
      
     </div>

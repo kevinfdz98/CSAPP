@@ -37,9 +37,11 @@ export class UploadButtonComponent implements OnInit {
   readFile(e: any): void {
     this.state = State.loading;
     const reader = new FileReader();
+    console.log(this.state);
     reader.onload = () => {
       this.value = reader.result as string;
       this.state = State.preview;
+      console.log(this.state);
     };
     reader.onerror = () => {
       console.error(reader.error);

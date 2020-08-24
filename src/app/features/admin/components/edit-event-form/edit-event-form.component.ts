@@ -21,6 +21,7 @@ export class EditEventFormComponent implements OnInit {
   eventForm: FormGroup;
   areasTec21: {[aid: string]: Area};
   @ViewChild('uploadBtn') uploadBtnRef: UploadButtonComponent;
+  public stateOfUploadedImage = (this.uploadBtnRef ? this.uploadBtnRef.state : 'No state');
 
   constructor(
     public dialogRef: MatDialogRef<EditEventFormComponent, EditEventData>,
@@ -40,7 +41,8 @@ export class EditEventFormComponent implements OnInit {
       description: [''],
       place: [''],
       linkRegister: [''],
-      linkEvent: ['']
+      linkEvent: [''],
+      imgURL: ['', Validators.required]
     });
   }
 
@@ -63,13 +65,19 @@ export class EditEventFormComponent implements OnInit {
       description  : this.data.eventIn.description ?      this.data.eventIn.description  : null,
       place        : this.data.eventIn.place ?            this.data.eventIn.place  : null,
       linkRegister : this.data.eventIn.linkRegister ?     this.data.eventIn.linkRegister  : null,
-      linkEvent    : this.data.eventIn.linkEvent ?        this.data.eventIn.linkEvent  : null
+      linkEvent    : this.data.eventIn.linkEvent ?        this.data.eventIn.linkEvent  : null,
+      imgURL       : this.data.eventIn.imgUrl ?           this.data.eventIn.imgUrl  : null
     });
     // Make areasList accessible to html template
     this.areasTec21 = areasList.Tec21;
   }
 
   async onSubmit(): Promise<boolean> {
+    this.stateOfUploadedImage = this.uploadBtnRef.state;
+    if ( !(this.stateOfUploadedImage === 'untouched' && this.data.eventIn.imgUrl == null) ){
+      console.log('Evento nuevo, sin imagen');
+      this.eventForm.get('imgURL').setValue('valueToFormControlToAllowSubmit');
+    }
     // Fail if some fields are invalid
     this.eventForm.markAsTouched();
     if (!this.eventForm.valid) { return false; }

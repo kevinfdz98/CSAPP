@@ -136,7 +136,9 @@
     [url]="this.data.eventIn.imgUrl"
     #uploadBtn
   ></app-upload-button>
-
+  <mat-error
+  *ngIf="eventForm.get('imgURL').hasError('required')"> Un evento no se guardara si no tiene imagen </mat-error>
+<div class="smallSpacer"></div>
   <!--https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/Taka_Shiba.jpg/1200px-Taka_Shiba.jpg-->
 
   <!--<mat-form-field appearance="fill" class="form-element">

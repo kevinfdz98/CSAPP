@@ -8,15 +8,16 @@
     <h1 *ngIf="data.action == 'edit'" class="form-element">Edición de sociedad</h1>
     <mat-form-field appearance="fill" class="form-element">
       <mat-label>Siglas*</mat-label>
-      <input matInput [readonly]="data.action == 'edit'" formControlName="gid" placeholder="SA###">
+      <input matInput [readonly]="data.action == 'edit'" formControlName="gid" 
+      pattern="[^' ']+" placeholder="SA###">
+      <mat-error *ngIf="groupForm.get('gid').hasError('pattern')"> Avoid the use of whitespaces </mat-error>
+      <mat-error *ngIf="groupForm.get('gid').hasError('required')">This field is required</mat-error>
     </mat-form-field>
 
     <mat-form-field appearance="fill" class="form-element">
       <mat-label>Nombre de la sociedad*</mat-label>
       <input matInput formControlName="name" placeholder="Sociedad de Alumnos ...">
-      <mat-error
-        *ngIf="groupForm.get('name').hasError('required')"
-      >This field is required</mat-error>
+      <mat-error *ngIf="groupForm.get('name').hasError('required')">This field is required</mat-error>
     </mat-form-field>
 
     <mat-form-field appearance="fill" class="form-element">
@@ -70,6 +71,11 @@
     <mat-form-field appearance="fill" class="form-element">
       <mat-label>Twitter</mat-label>
       <input matInput formControlName="twitter">
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" class="form-element">
+      <mat-label>Web Page</mat-label>
+      <input matInput formControlName="webPage">
     </mat-form-field>
 
     <!--Event.imgUrl-->
