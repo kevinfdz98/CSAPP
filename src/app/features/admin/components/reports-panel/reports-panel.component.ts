@@ -46,7 +46,9 @@ export class ReportsPanelComponent implements OnInit {
       return false;
     }
 
-    this.reportS.generateEventsReport(this.route.snapshot.paramMap.get('gid'), timestamp.from, timestamp.to);
+    this.reportS.generateEventsWithUsersReport(this.route.snapshot.paramMap.get('gid'), timestamp.from, timestamp.to);
+    // this.reportS.generateEventsReport(this.route.snapshot.paramMap.get('gid'), timestamp.from, timestamp.to);
+
     return false; // To avoid refreshing of page due to submit (because single-page application)
   }
 

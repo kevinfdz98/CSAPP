@@ -132,7 +132,7 @@ export class EventsListComponent implements OnInit, AfterViewInit, OnDestroy {
           // If event deleted
           } else {
             this.openSnack('Evento eliminado', 'Ok!', 1000);
-            await this.eventS.deleteEvent(data.eventOut.eid);
+            await this.eventS.deleteEvent(eid);
           }
           this.calendarS.refresh();
           this.calendarComponent.getApi().refetchEvents();
