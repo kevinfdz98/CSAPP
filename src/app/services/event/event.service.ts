@@ -3,8 +3,11 @@ import { AuthService, AuthState } from '../auth/auth.service';
 import { AngularFirestore, DocumentReference } from '@angular/fire/firestore';
 import { Event } from '../../shared/interfaces/event.interface';
 import { EventSummary } from '../../shared/interfaces/event-summary.interface';
-import { firestore, database, User } from 'firebase';
+import { firestore } from 'firebase';
 import { Observable } from 'rxjs';
+import { User } from 'src/app/shared/interfaces/user.interface';
+import { Models } from 'src/app/shared/enums/major-models.enum';
+import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -80,6 +83,25 @@ export class EventService {
                 return this.eventDetails[eid];
               }) :
       Promise.resolve(this.eventDetails[eid]);
+  }
+
+  /**
+   * Subscribe to the data of an event
+   * @async
+   * @param  eid         Id of the event to get
+   * @return             Promise with the event data
+   */
+  getEventObservable(eid: string): Observable<Event> {
+    // Check if the event is available localy or if a snapshot must be fetched
+    return this.afs.doc<Event>(`events/${eid}`).valueChanges().pipe(map(e => {
+      this.eventDetails[eid] = e;
+      // Parse Firebase date formats from data
+      this.eventDetails[eid].timestamp = {
+        start: (this.eventDetails[eid].timestamp.start as any).toDate(),
+        end: (this.eventDetails[eid].timestamp.end as any).toDate()
+      };
+      return this.eventDetails[eid];
+    }));
   }
 
 
@@ -177,9 +199,51 @@ export class EventService {
   }
 
   /**
+   * Registers the current user in an event
+   * @async
+   * @param  eid  Id of the event to register in
+   */
+  registerInEvent(eid: string): Promise<void> {
+    // Check that user is authenticated
+    if (!this.authState.user) {
+      throw Error('The current user is not authenticated');
+    }
+    const      uid = this.authState.uid;
+    const      user = this.authState.user;
+    const eventRef = this.afs.doc<Event>(`events/${eid}`).ref;
+    const  userRef = this.afs.doc<User>(`users/${uid}`).ref;
+
+    return this.afs.firestore.runTransaction(async trans => {
+      trans.update(userRef, {registeredIn: firestore.FieldValue.arrayUnion(eid)});
+      trans.update(eventRef, {[`registered.${uid}`]: this.mapUserToUserRegister(user)});
+    });
+  }
+
+  /**
+   * Unregisters the current user from an event
+   * @async
+   * @param  eid  Id of the event to unregister from
+   */
+  unregisterFromEvent(eid: string): Promise<void> {
+    // Check that user is authenticated
+    if (!this.authState.user) {
+      throw Error('The current user is not authenticated');
+    }
+    const      uid = this.authState.uid;
+    const      user = this.authState.user;
+    const eventRef = this.afs.doc<Event>(`events/${eid}`).ref;
+    const  userRef = this.afs.doc<User>(`users/${uid}`).ref;
+
+    return this.afs.firestore.runTransaction(async trans => {
+      trans.update(userRef, {registeredIn: firestore.FieldValue.arrayRemove(eid)});
+      trans.update(eventRef, {[`registered.${uid}`]: firestore.FieldValue.delete()});
+    });
+  }
+
+  /**
    * Favorites an event on behalf of the current user
    * @async
-   * @param  eid  Id of the event to delete
+   * @param  eid  Id of the event to favorite
    */
   favoriteEvent(eid: string): Promise<void> {
     // Check that user is authenticated
@@ -196,8 +260,12 @@ export class EventService {
     });
   }
 
-  // TO DO
-  unsubscribeFromEvent(eid: string): Promise<void> {
+  /**
+   * Unfavorites an event on behalf of the current user
+   * @async
+   * @param  eid  Id of the event to unfavorite
+   */
+  unfavoriteFromEvent(eid: string): Promise<void> {
     // Check that user is authenticated
     if (!this.authState.user) {
       throw Error('The current user is not authenticated');
@@ -241,5 +309,39 @@ export class EventService {
       organizingGroups: [...event.organizingGroups],
       timestamp: {...event.timestamp},
     };
+  }
+
+  mapUserToUserRegister(user: User): {
+    uid: string;
+    fName: string;
+    lName: string;
+    email: string;
+    // Atributos para alumnos Tec
+    model?: Models;
+    major?: string;
+    matricula?: string;
+    semester?: number;
+  } {
+    const val: {
+      uid: string;
+      fName: string;
+      lName: string;
+      email: string;
+      // Atributos para alumnos Tec
+      model?: Models;
+      major?: string;
+      matricula?: string;
+      semester?: number;
+    } = {
+      uid: user.uid,
+      fName: user.fName,
+      lName: user.lName,
+      email: user.email,
+    };
+    if (user.model) { val.model = user.model; }
+    if (user.major) { val.major = user.major; }
+    if (user.matricula) { val.matricula = user.matricula; }
+    if (user.semester) { val.semester = user.semester; }
+    return val;
   }
 }

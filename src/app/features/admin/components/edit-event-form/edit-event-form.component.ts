@@ -90,11 +90,11 @@ export class EditEventFormComponent implements OnInit {
     value.organizingGroups = this.eventForm.get('groups').value;
     value.timestamp        = {
       start: moment(this.eventForm.get('startDate').value).startOf('day')
-                .add(moment.duration(this.eventForm.get('startTime').value))
-                .toDate(),
-        end: moment(this.eventForm.get('endDate').value).startOf('day')
-                .add(moment.duration(this.eventForm.get('endTime').value))
-                .toDate(),
+      .add(moment.duration(this.eventForm.get('startTime').value))
+      .toDate(),
+      end: moment(this.eventForm.get('endDate').value).startOf('day')
+      .add(moment.duration(this.eventForm.get('endTime').value))
+      .toDate(),
     };
     value.place            = this.eventForm.get('place').value;
     value.description      = this.eventForm.get('description').value;

@@ -177,6 +177,7 @@ export class AuthService {
       roles     : ['u'],
       following : [],
       favorite  : [],
+      registeredIn: [],
       isNewUser : true,
       administra: []
     };

@@ -8,8 +8,8 @@
   >
     <div class="sidenav-grid top">
       <span matRipple [routerLink]="['calendar', 'month']" [routerLinkActive]="'activated'"><mat-icon>calendar_today</mat-icon><span>Mes</span></span>
-      <span matRipple [routerLink]="['calendar', 'week']" [routerLinkActive]="'activated'"><mat-icon>view_week</mat-icon><span>Semana</span></span>
       <span matRipple [routerLink]="['calendar', 'list']" [routerLinkActive]="'activated'"><mat-icon>view_list</mat-icon><span>Lista</span></span>
+      <span matRipple [routerLink]="['calendar', 'week']" [routerLinkActive]="'activated'"><mat-icon>view_week</mat-icon><span>Semana</span></span>
     </div>
     <div class="sidenav-grid bottom" >
       <span *ngIf="(loggedIn | async)"
@@ -21,7 +21,7 @@
             matRipple
             [routerLink]="['user', 'subscriptions']"
             [routerLinkActive]="'activated'"
-      ><mat-icon>email</mat-icon><span>Suscripciones</span></span>
+      ><mat-icon>email</mat-icon><span>Suscripciones y Perfiles</span></span>
       <span *ngFor="let gid of (administraList | async)"
             matRipple
             [routerLink]="['admin', gid]"
