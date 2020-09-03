@@ -4,6 +4,7 @@ html, body { height: 100%; }
 body {
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
+  background: black;
 }
 
 .mat-tab-body-wrapper {
@@ -11,12 +12,12 @@ body {
  }
 
 .punto-180-gradient {
-  background: linear-gradient(135deg,#f81751,#81074c,#53014a);
+  background: linear-gradient(135deg,#f8c235,#e9a82f,#d68b26);
   color: white;
 }
 
 button.punto-180-fab {
-  background: linear-gradient(135deg,#f81751,#81074c,#53014a);
+  background: linear-gradient(135deg,#f8c235,#e9a82f,#d68b26);
   color: white;
   position: absolute;
   right: 15px;
@@ -29,4 +30,8 @@ button.punto-180-fab {
     right: 25px;
     bottom: 10px;
   }
+}
+
+.fc-toolbar-title {
+  font-size: 1.50em;
 }

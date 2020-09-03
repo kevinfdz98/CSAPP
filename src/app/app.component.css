@@ -52,6 +52,9 @@ mat-sidenav-container {
   background: transparent;
   color: white;
 }
+.app-toolbar.top {
+  height: 60px;
+}
 .horizontal-spacer { flex: 1 1 auto; }
 .content-container {
   background-color: white;
@@ -61,4 +64,6 @@ mat-sidenav-container {
 /* For desktop: */
 @media only screen and (min-width: 600px) {
   .app-sidenav { width: 350px; width: 250px;}
+  .logo {width: 300px;}
+  .app-toolbar.top {height: 90px;}
 }

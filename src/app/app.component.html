@@ -46,10 +46,11 @@
 
   <mat-sidenav-content class="main-window">
     <!--Material Toolbar (main row)-->
-    <mat-toolbar class="app-toolbar">
+    <mat-toolbar class="app-toolbar top">
       <button mat-icon-button (click)="drawer.toggle()"><mat-icon>menu</mat-icon></button>
       <span class="horizontal-spacer"></span>
-      <img class="logo" src="https://firebasestorage.googleapis.com/v0/b/csapp2020-8620b.appspot.com/o/assets%2Flogo-punto.png?alt=media&token=2a4f6988-527c-45ad-812e-2373b4d9e253">
+      <img class="logo" src="https://firebasestorage.googleapis.com/v0/b/csapp2020-8620b.appspot.com/o/assets%2Flogo_blanco.png?alt=media&token=e747e1d7-409d-46d8-a3b5-05c304215a2e">
+      <span class="horizontal-spacer" *ngIf="!(onMobile | async).matches"></span>
     </mat-toolbar>
 
     <!--Container for the app routes-->
@@ -60,7 +61,7 @@
     </div>
 
     <!--Material Toolbar (bottom row)-->
-    <mat-toolbar-row class="app-toolbar">
+    <mat-toolbar-row class="app-toolbar bottom">
       <span class="horizontal-spacer"></span>
 
           <button mat-icon-button  routerLink="/calendar/month" routerLinkActive="active"><mat-icon>home</mat-icon></button>
