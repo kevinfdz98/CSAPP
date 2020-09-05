@@ -15,11 +15,13 @@ import {AngularFirestoreModule} from '@angular/fire/firestore';
 import {environment} from '../environments/environment';
 import {AngularFireStorageModule} from '@angular/fire/storage';
 import { TextDialogComponent } from './components/text-dialog/text-dialog.component';
+import { InfoPageComponent } from './components/info-page/info-page.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    TextDialogComponent
+    TextDialogComponent,
+    InfoPageComponent
   ],
   imports: [
     BrowserModule,

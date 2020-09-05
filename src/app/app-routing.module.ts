@@ -4,6 +4,7 @@ import { LoginGuard } from './shared/guards/login/login.guard';
 import { SuperadminGuard } from './shared/guards/superadmin/superadmin.guard';
 import { AdminGuard } from './shared/guards/admin/admin.guard';
 import { UserGuard } from './shared/guards/user/user.guard';
+import { InfoPageComponent } from './components/info-page/info-page.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'calendar', pathMatch: 'full'},
@@ -14,7 +15,8 @@ const routes: Routes = [
   { path: 'admin', canActivate: [AdminGuard], loadChildren: () => import('./features/admin/admin.module').then(m => m.AdminModule) },
   { path: 'events', loadChildren: () => import('./features/events/events.module').then(m => m.EventsModule) },
   { path: 'user', loadChildren: () => import('./features/user/user.module').then(m => m.UserModule) },
-  { path: 'groups', loadChildren: () => import('./features/groups/groups.module').then(m => m.GroupsModule) }
+  { path: 'groups', loadChildren: () => import('./features/groups/groups.module').then(m => m.GroupsModule) },
+  { path: 'info', component: InfoPageComponent },
 ];
 
 @NgModule({

@@ -37,6 +37,10 @@
             [routerLink]="['superadmin']"
             [routerLinkActive]="'activated'"
       ><mat-icon>admin_panel_settings</mat-icon><span>Panel de administración</span></span>
+      <span matRipple
+            [routerLink]="['info']"
+            [routerLinkActive]="'activated'"
+      ><mat-icon>information</mat-icon><span>Información</span></span>
       <span *ngIf="(loggedIn | async)"
             matRipple
             (click)="auth.signout()"
