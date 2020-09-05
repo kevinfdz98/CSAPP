@@ -37,11 +37,9 @@ export class UploadButtonComponent implements OnInit {
   readFile(e: any): void {
     this.state = State.loading;
     const reader = new FileReader();
-    console.log(this.state);
     reader.onload = () => {
       this.value = reader.result as string;
       this.state = State.preview;
-      console.log(this.state);
     };
     reader.onerror = () => {
       console.error(reader.error);
@@ -52,7 +50,6 @@ export class UploadButtonComponent implements OnInit {
   }
 
   public getImageUrl(): Promise<string> {
-    console.log(this.state);
     // If no image was uploaded, return the same url
     if (this.state === State.untouched || this.state === State.error) {
       return Promise.resolve(this.url);

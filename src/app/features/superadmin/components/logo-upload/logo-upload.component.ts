@@ -46,7 +46,6 @@ export class LogoUploadComponent implements OnInit {
     reader.readAsDataURL(e.target.files[0]);
   }
   public getImageUrl(): Promise<string> {
-    console.log(this.state);
     // If no image was uploaded, return the same url
     if (this.state === State.untouched || this.state === State.error) {
       return Promise.resolve(this.url);

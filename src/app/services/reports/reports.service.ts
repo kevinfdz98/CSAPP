@@ -70,14 +70,12 @@ export class ReportsService {
       await promiseA;
 
       const event = doc.data() as Event;
-      console.log(event);
       await event.favoriteof.reduce(async (promiseB: Promise<void>, uid) => {
         await promiseB;
 
         // If user info is missing, fetch from Firebase
         if (!this.usersList[uid]) {
           this.usersList[uid] = (await this.afs.doc(`users/${uid}`).get().toPromise()).data() as User;
-          console.log(this.usersList[uid]);
         }
 
         try {

@@ -75,7 +75,6 @@ export class EditEventFormComponent implements OnInit {
   async onSubmit(): Promise<boolean> {
     this.stateOfUploadedImage = this.uploadBtnRef.state;
     if ( !(this.stateOfUploadedImage === 'untouched' && this.data.eventIn.imgUrl == null) ){
-      console.log('Evento nuevo, sin imagen');
       this.eventForm.get('imgURL').setValue('valueToFormControlToAllowSubmit');
     }
     // Fail if some fields are invalid
