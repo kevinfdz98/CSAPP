@@ -9,7 +9,7 @@ export interface Major {
 
 export const majorsList: {
   Tec20: {[mid: string]: Major},
-  Tec21: {[mid: string]: Major}
+  Tec21: {[mid: string]: Major},
 } = {
   Tec20: {
     'ADI': {mid: 'ADI', model: Models.Tec20, area: 'ADI', name: 'Arquitectura y Diseño / Exploración'},
@@ -66,7 +66,7 @@ export const majorsList: {
     'LNB': {mid: 'LNB', model: Models.Tec20, area: 'SLD', name: 'Lic. en Nutrición y Bienestar Integral'},
     'LP ': {mid: 'LP ', model: Models.Tec20, area: 'COM', name: 'Lic. en Psicología'},
     'LPL': {mid: 'LPL', model: Models.Tec20, area: 'CIS', name: 'Lic. en Ciencia Política'},
-    'LPM': {mid: 'LPM', model: Models.Tec20, area: 'COM', name: 'Lic. en Publicidad y Comunicación de Mercados'},
+    'LPM': {mid: 'LPM', model: Models.Tec20, area: 'COM', name: 'Lic. en Publimidad y Comunicación de Mercados'},
     'LPO': {mid: 'LPO', model: Models.Tec20, area: 'NEG', name: 'Lic. en Psicología Organizacional'},
     'LPS': {mid: 'LPS', model: Models.Tec20, area: 'SLD', name: 'Lic. en Psicología Clínica y de la Salud'},
     'LRI': {mid: 'LRI', model: Models.Tec20, area: 'NEG', name: 'Lic. en Relaciones Internacionales'},
@@ -132,5 +132,8 @@ export const majorsList: {
     'MO ': {mid: 'MO ', model: Models.Tec21, area: 'SLD', name: 'Medico Cirujano Odontologo'},
     'NEG': {mid: 'NEG', model: Models.Tec21, area: 'NEG', name: 'Negocios / Exploración'},
     'SLD': {mid: 'SLD', model: Models.Tec21, area: 'SLD', name: 'Salud / Exploración'},
-  }
+    'REG': {mid: 'REG', model: Models.Tec21, area: 'REG', name: 'Asociación Regional'},
+    'CAP': {mid: 'CAP', model: Models.Tec21, area: 'CAP', name: 'Capítulo Estudiantil'},
+    //'SOC': {mid: 'SOC', model: Models.Tec21, area: 'SOC', name: 'Sociedad de Alumnos'},
+  },
 };
