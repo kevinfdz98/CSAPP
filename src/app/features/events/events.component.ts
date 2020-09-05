@@ -21,6 +21,7 @@ export class EventsComponent implements OnInit, OnDestroy {
   private eventSubscription: Subscription = null;
   private eid: string;
   public event: Event;
+  public groups: string[] = [];
   public favorite: boolean;
   public registered: boolean;
   public areaColor = '#FFFFFF';
@@ -45,18 +46,18 @@ export class EventsComponent implements OnInit, OnDestroy {
         // Fetch event information
         if (this.eid) {
           // If already subscribed to an event, unsubscribe
-          if (this.eventSubscription && !this.eventSubscription.closed) { this.eventSubscription.unsubscribe(); console.log('unsubscribe from event'); }
+          if (this.eventSubscription && !this.eventSubscription.closed) { this.eventSubscription.unsubscribe(); }
           // Subscribe to event
           this.eventSubscription = this.eventS.getEventObservable(this.eid).subscribe(e => {
             if (e) {
               this.areaColor = areasList.Tec21[e.areaT21].color;
               this.favoriteCount = (e && e.favoriteof) ?  e.favoriteof.length : 0;
               this.registeredCount = (e && e.registered) ?  Object.keys(e.registered).length : 0;
+              this.groups = [...e.organizingGroups];
               // If logos changed, reload logos in display
-              if (!this.event || (e.organizingGroups.toString() !== this.event.organizingGroups.toString())) {
-                console.log('ok');
-                this.displayLogos(e.organizingGroups);
-              }
+              // if (!this.event || (e.organizingGroups.toString() !== this.event.organizingGroups.toString())) {
+              //   this.displayLogos(e.organizingGroups);
+              // }
               this.event = e;
               } else { this.event = null; }
           });

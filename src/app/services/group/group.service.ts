@@ -29,15 +29,6 @@ export class GroupService {
 
     // Subscribe to changes in auth state from AuthService
     this.auth.observeAuthState().subscribe(state => {
-      // If subscribed to Firebase (groupsList)
-      if (!this.subscriptionToGroupsList.closed) {
-        // If user logs out
-        if (!state.loggedIn) {
-          // Unsubscribe from Firebase (groupsList)
-          this.subscriptionToGroupsList.unsubscribe();
-          this.groupsList$.next({});
-        }
-      }
       // Update local copy of AuthState
       this.authState = state;
     });
@@ -165,10 +156,6 @@ export class GroupService {
    *         authenticated as a superadmin
    */
   observeGroupsList(): Observable<{[uid: string]: GroupSummary}> {
-    // Validate superadmin privileges
-    if (!this.authState.roles.includes('u') && !this.authState.roles.includes('a') && !this.authState.roles.includes('sa')) {
-      throw Error('Operation needs user, admin or superadmin privileges');
-    }
 
     // If subscribed to Firebase (adminsList)
     if (this.subscriptionToGroupsList.closed) {

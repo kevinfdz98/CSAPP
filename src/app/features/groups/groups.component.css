@@ -57,6 +57,13 @@ a {
   color: white;
 }
 
+.logos {
+  display: block;
+  color: white;
+  font-size: 25pt;
+  margin: 0 20px;
+}
+
 .ig-container {
     height: 26px;
     position: relative;

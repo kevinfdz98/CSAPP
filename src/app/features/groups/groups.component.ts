@@ -38,21 +38,20 @@ export class GroupsComponent implements OnInit, OnDestroy {
         if (this.gid){
           this.subscriptions.add(
             this.groupS.observeGroupsList().subscribe(groupSummaryList => {
-              if (groupSummaryList){
+              console.log(groupSummaryList[this.gid]);
+              if (groupSummaryList && groupSummaryList[this.gid]){
                 // Getting info of the specific group from Shared/groupssummary
-                this.groupSummary = groupSummaryList[this.gid];
+                this.groupSummary = {...groupSummaryList[this.gid]};
                 // Get color of the group
                 this.areaColor = (this.groupSummary.majorsTec21.length > 0) ?
                 areasList.Tec21[majorsList.Tec21[this.groupSummary.majorsTec21[0]].area].color : 'black';
                 // Retrieve logo from students group
-                const storageRef = this.fireStorage.storage;
-                console.log(this.gid);
-                const logoRef = storageRef.ref(`sociedades/${this.gid}.png`);
-                logoRef.getDownloadURL().then(url => {
-                  console.log(url);
-                  document.querySelector('.displayLogos').innerHTML +=
-                  `<img src="${url}" alt="Logo de la mesa" class="logos" style= "width: 220px;">`;
-                }).catch( err => {console.log(err); });
+                // const storageRef = this.fireStorage.storage;
+                // const logoRef = storageRef.ref(`sociedades/${this.gid}.png`);
+                // logoRef.getDownloadURL().then(url => {
+                //   document.querySelector('.displayLogos').innerHTML +=
+                //   `<img src="${url}" alt="Logo de la mesa" class="logos" style= "width: 220px;">`;
+                // }).catch( err => {console.log(err); });
               } else {  this.groupSummary = null; }
             })
           );

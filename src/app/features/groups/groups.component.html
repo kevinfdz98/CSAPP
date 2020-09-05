@@ -1,7 +1,10 @@
-<mat-toolbar [ngStyle]="{ 'background-color': areaColor }" id="displayGroup">
+<!--<mat-toolbar [ngStyle]="{ 'background-color': areaColor }" id="displayGroup">-->
+<mat-toolbar [ngStyle]="{'background-color': 'rgb(134, 134, 134)'}" id="displayGroup">
   <button mat-icon-button class="btn-back" (click)="location.back()"><mat-icon>arrow_back_ios</mat-icon></button>
   <span class="example-fill-remaining-space"> </span>
-  <span class="displayLogos"> </span>
+  <span class="displayLogos">
+    <div class="logos">{{(groupSummary)? groupSummary.gid : ''}}</div>
+  </span>
   <span class="example-fill-remaining-space"></span>
 </mat-toolbar>
 
@@ -13,7 +16,7 @@
     <div class="title-container">
       <h2>{{groupSummary ? groupSummary.name: ''}} </h2>
      </div>
-    
+
     <div class="sidenav-grid bottom" >
       <span class="name-container">
         <mat-icon>group</mat-icon>
@@ -35,7 +38,7 @@
         <mat-icon>language</mat-icon>
         <a target="_blank" href="{{groupSummary ?  groupSummary.webPage: ''}}">{{groupSummary ?  groupSummary.webPage: '' }}</a>
       </span>
-     
+
     </div>
   </div>
 

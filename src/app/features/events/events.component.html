@@ -1,7 +1,10 @@
-<mat-toolbar [ngStyle]="{ 'background-color': areaColor }" id="displayGroup">
+<!--<mat-toolbar [ngStyle]="{ 'background-color': areaColor }" id="displayGroup">-->
+<mat-toolbar [ngStyle]="{'background-color': 'rgb(134, 134, 134)'}" id="displayGroup">
   <button mat-icon-button class="btn-back" (click)="location.back()"><mat-icon>arrow_back_ios</mat-icon></button>
   <span class="example-fill-remaining-space"> </span>
-  <span class="displayLogos"> </span>
+  <span class="displayLogos" *ngFor="let item of groups">
+    <div class="logos">{{item}}</div>
+  </span>
   <span class="example-fill-remaining-space"></span>
 </mat-toolbar>
 

@@ -27,6 +27,12 @@
   color: white;
 }
 
+.logos {
+  display: block;
+  color: white;
+  font-size: 25pt;
+  margin: 0 20px;
+}
 
 .sidenav-grid {
   display: grid;
