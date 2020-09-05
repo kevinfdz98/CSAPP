@@ -17,14 +17,7 @@
   <mat-form-field appearance="fill" class="form-element">
     <mat-label>Tipo de evento*</mat-label>
     <mat-select formControlName="type">
-      <mat-option value="Conferencia">Conferencia</mat-option>
-      <mat-option value="Conferencia">Congreso</mat-option>
-      <mat-option value="Conferencia">Taller</mat-option>
-      <mat-option value="Conferencia">Foro</mat-option>
-      <mat-option value="Conferencia">Visita a empresa</mat-option>
-      <mat-option value="Conferencia">Networking session </mat-option>
-      <mat-option value="Conferencia">Takeover</mat-option>
-      <mat-option value="Conferencia">Otro</mat-option>
+      <mat-option *ngFor="let type of eventTypesArray" value="type">{{type}}</mat-option>
     </mat-select>
     <mat-error
     *ngIf="eventForm.get('type').hasError('required')"

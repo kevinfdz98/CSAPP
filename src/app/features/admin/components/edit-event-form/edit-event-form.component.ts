@@ -5,6 +5,7 @@ import { Event } from 'src/app/shared/interfaces/event.interface';
 import { areasList, Area } from 'src/app/shared/interfaces/area.interface';
 import { GroupService } from 'src/app/services/group/group.service';
 import { UploadButtonComponent } from '../upload-button/upload-button.component';
+import { EventTypesArray } from 'src/app/shared/enums/event-types.enum';
 import * as moment from 'moment';
 
 export interface EditEventData {
@@ -22,6 +23,7 @@ export class EditEventFormComponent implements OnInit {
   areasTec21: {[aid: string]: Area};
   @ViewChild('uploadBtn') uploadBtnRef: UploadButtonComponent;
   public stateOfUploadedImage = (this.uploadBtnRef ? this.uploadBtnRef.state : 'No state');
+  public eventTypesArray = EventTypesArray;
 
   constructor(
     public dialogRef: MatDialogRef<EditEventFormComponent, EditEventData>,
