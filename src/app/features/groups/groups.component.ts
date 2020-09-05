@@ -38,7 +38,6 @@ export class GroupsComponent implements OnInit, OnDestroy {
         if (this.gid){
           this.subscriptions.add(
             this.groupS.observeGroupsList().subscribe(groupSummaryList => {
-              console.log(groupSummaryList[this.gid]);
               if (groupSummaryList && groupSummaryList[this.gid]){
                 // Getting info of the specific group from Shared/groupssummary
                 this.groupSummary = {...groupSummaryList[this.gid]};
