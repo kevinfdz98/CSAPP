@@ -7,10 +7,11 @@ import { MyFullCalendarModule } from 'src/app/shared/modules/my-fullcalendar.mod
 import { UserComponent } from './user.component';
 import { FavoriteComponent } from './components/favorite/favorite.component';
 import { FollowingComponent } from './components/following/following.component';
+import { RegistersComponent } from './components/registers/registers.component';
 
 
 @NgModule({
-  declarations: [UserComponent, FavoriteComponent, FollowingComponent],
+  declarations: [UserComponent, FavoriteComponent, FollowingComponent, RegistersComponent],
   imports: [
     CommonModule,
     UserRoutingModule,

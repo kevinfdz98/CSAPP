@@ -10,11 +10,11 @@ import { User } from 'src/app/shared/interfaces/user.interface';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-favorite',
-  templateUrl: './favorite.component.html',
-  styleUrls: ['./favorite.component.css']
+  selector: 'app-registers',
+  templateUrl: './registers.component.html',
+  styleUrls: ['./registers.component.css']
 })
-export class FavoriteComponent implements OnInit, OnDestroy {
+export class RegistersComponent implements OnInit, OnDestroy {
   @ViewChild('calendar') calendarComponent: FullCalendarComponent;
   private subscriptions = new Subscription();
   private onMobile: boolean;
@@ -40,7 +40,7 @@ export class FavoriteComponent implements OnInit, OnDestroy {
     events: (info, success, failure) => {
       this.calendarS.getEvents(info.start, info.end)
                     .then(events => success(
-                      events.filter(event => this.user.favorite.includes(event.eid))
+                      events.filter(event => this.user.registeredIn.includes(event.eid))
                             .map(event => ({
                               id: event.eid,
                               title: event.title,
