@@ -14,10 +14,12 @@ import {AngularFireAuthModule} from '@angular/fire/auth';
 import {AngularFirestoreModule} from '@angular/fire/firestore';
 import {environment} from '../environments/environment';
 import {AngularFireStorageModule} from '@angular/fire/storage';
+import { TextDialogComponent } from './components/text-dialog/text-dialog.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    TextDialogComponent
   ],
   imports: [
     BrowserModule,

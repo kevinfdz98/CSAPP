@@ -14,7 +14,12 @@
     <div class="sidenav-grid bottom" >
       <span *ngIf="(loggedIn | async)"
             matRipple
-            [routerLink]="['user', 'favorite']"
+            [routerLink]="['user', 'favorites']"
+            [routerLinkActive]="'activated'"
+      ><mat-icon>favorite</mat-icon><span>Favoritos</span></span>
+      <span *ngIf="(loggedIn | async)"
+            matRipple
+            [routerLink]="['user', 'registered']"
             [routerLinkActive]="'activated'"
       ><mat-icon>bookmarks</mat-icon><span>Registros</span></span>
       <span *ngIf="(loggedIn | async)"
