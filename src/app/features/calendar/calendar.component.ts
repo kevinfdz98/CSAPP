@@ -28,6 +28,8 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnDestroy {
     nowIndicator: true,
     handleWindowResize: true,
     expandRows: true,
+    dayMaxEventRows: 4,
+    allDaySlot: true,
 
     customButtons: {
       backToMonth: {
@@ -73,6 +75,12 @@ export class CalendarComponent implements OnInit, AfterViewInit, OnDestroy {
                       end: event.timestamp.end as Date,
                       backgroundColor: areasList.Tec21[event.areaT21].color,
                       borderColor: areasList.Tec21[event.areaT21].color,
+                      allDay: (
+                        event.timestamp.start.getHours() < 1 &&
+                        event.timestamp.start.getMinutes() < 30 &&
+                        event.timestamp.end.getHours() > 22 &&
+                        event.timestamp.end.getMinutes() > 30
+                      ),
                     }))))
                     .catch(reason => failure(reason));
     }
