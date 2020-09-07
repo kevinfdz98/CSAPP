@@ -37,27 +37,27 @@
 
 
     <div class="sidenav-grid bottom" >
-      <span class="date-container">
+      <span *ngIf="event.timestamp" class="date-container">
         <mat-icon>event</mat-icon>
         <span>{{event ? ( event.timestamp.start  | date:'yyyy/MM/dd') : '' }} - {{event ? (event.timestamp.end  | date:'yyyy/MM/dd') : '' }}</span>
       </span>
-      <span class="hour-container">
+      <span *ngIf="event.timestamp" class="hour-container">
         <mat-icon>schedule</mat-icon>
         <span>{{event ? (event.timestamp.start  | date:'h:mm:ss a') : '' }} - {{event ? (event.timestamp.end  | date:'h:mm:ss a') : '' }} </span>
       </span>
-      <span class="location-container">
+      <span *ngIf="event.place" class="location-container">
         <mat-icon>place</mat-icon>
         <span>{{event ? event.place : ''}}</span>
       </span>
-      <span class="url-container">
+      <span *ngIf="event.linkEvent" class="url-container">
         <mat-icon>link</mat-icon>
         <span>{{event ? event.linkEvent : ''}}</span>
       </span>
-      <span>
+      <span *ngIf="event.linkRegister">
         <mat-icon>how_to_reg</mat-icon>
         <span>{{event ? event.linkRegister : ''}}</span>
       </span>
-      <span>
+      <span *ngIf="event.description">
         <mat-icon>description</mat-icon>
         <span>{{event ? event.description : ''}}</span>
       </span>

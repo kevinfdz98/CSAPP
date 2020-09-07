@@ -18,23 +18,23 @@
      </div>
 
     <div class="sidenav-grid bottom" >
-      <span class="name-container">
+      <span class="name-container" *ngIf="strMajors">
         <mat-icon>group</mat-icon>
-        <span>{{groupSummary ? groupSummary.majorsTec21: '' }},{{groupSummary ? groupSummary.majorsTec20: '' }}</span>
+        <span>{{strMajors}}</span>
       </span>
-      <span class="fb-container">
+      <span class="fb-container" *ngIf="groupSummary.facebook">
         <mat-icon>facebook</mat-icon>
         <a target="_blank"  href="{{groupSummary ?  groupSummary.facebook: '' }}">{{groupSummary ?  groupSummary.facebook: '' }}</a>
       </span>
-      <span class="ig-container">
+      <span class="ig-container" *ngIf="groupSummary.instagram">
         <img src="https://firebasestorage.googleapis.com/v0/b/csapp2020-8620b.appspot.com/o/assets%2FinstaIcon%20(2).jpg?alt=media&token=4146b7ca-a102-4a8f-ab98-4ef823173eb3" alt="instagram" />
         <a target="_blank"  href="{{groupSummary ?  groupSummary.instagram: '' }}">{{groupSummary ?  groupSummary.instagram: '' }}</a>
       </span>
-      <span class="tw-container">
+      <span class="tw-container" *ngIf="groupSummary.twitter">
         <img src="https://firebasestorage.googleapis.com/v0/b/csapp2020-8620b.appspot.com/o/assets%2FtwitterIcon%20(2).jpg?alt=media&token=e7959f37-8ae6-4a73-b094-9f540dff410e" alt="Twitter" />
         <a target="_blank"  href="{{groupSummary ?  groupSummary.twitter: '' }}">{{groupSummary ?  groupSummary.twitter: '' }}</a>
       </span>
-      <span class="web-container">
+      <span class="web-container" *ngIf="groupSummary.webPage">
         <mat-icon>language</mat-icon>
         <a target="_blank" href="{{groupSummary ?  groupSummary.webPage: ''}}">{{groupSummary ?  groupSummary.webPage: '' }}</a>
       </span>
