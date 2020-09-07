@@ -2,20 +2,22 @@
 
   <mat-selection-list #selAreas (selectionChange)="onChangeSelAreas($event)" class="form-element">
     <mat-list-option
-      *ngFor="let item of (areasList.Tec21 | keyvalue)"
-      [value]="item.key"
+      *ngFor="let item of data"
+      [value]="item.value"
+      [selected]="item.selected"
       [ngStyle]="
       {
-        'color': item.value.color,
+        'color': item.color,
         'font-weight': '700'
       }"
     >
-      {{item.value.aid+' - '+item.value.name}}
+      {{item.text}}
     </mat-list-option>
   </mat-selection-list>
 
   <div class="form-buttons form-element">
-    <button mat-raised-button color="primary" type="button" (click)="onClose()">Cerrar</button>
+    <button mat-raised-button color="accent" type="button" (click)="onClose()">OK</button>
+    <button mat-raised-button color="warn" type="button" (click)="onClear()">Clear Filter</button>
   </div>
 
 </div>
