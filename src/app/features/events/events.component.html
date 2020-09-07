@@ -27,8 +27,8 @@
 
 
     <div class="buttons-container">
-      <button mat-raised-button color="accent" matBadge="{{registeredCount}}" class="btn-register" *ngIf="registered"  (click)="toggleRegister()">Registrarmen't</button>
-      <button mat-raised-button color="accent" matBadge="{{registeredCount}}" class="btn-register" *ngIf="!registered" (click)="toggleRegister()">Registrarme</button>
+      <!--<button mat-raised-button color="accent" matBadge="{{registeredCount}}" class="btn-register" *ngIf="registered"  (click)="toggleRegister()">Registrarmen't</button>
+      <button mat-raised-button color="accent" matBadge="{{registeredCount}}" class="btn-register" *ngIf="!registered" (click)="toggleRegister()">Registrarme</button>-->
       <button mat-icon-button                  matBadge="{{favoriteCount}}"   class="btn-favorite" *ngIf="favorite"    (click)="toggleFavorite()"><mat-icon>favorite</mat-icon></button>
       <button mat-icon-button                  matBadge="{{favoriteCount}}"   class="btn-favorite" *ngIf="!favorite"   (click)="toggleFavorite()"><mat-icon>favorite_border</mat-icon></button>
       <button mat-icon-button class="btn-share"  (click)="copy()"> <mat-icon>share</mat-icon></button>

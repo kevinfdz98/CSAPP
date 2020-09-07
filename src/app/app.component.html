@@ -17,11 +17,11 @@
             [routerLink]="['user', 'favorites']"
             [routerLinkActive]="'activated'"
       ><mat-icon>favorite</mat-icon><span>Favoritos</span></span>
-      <span *ngIf="(loggedIn | async)"
+      <!--<span *ngIf="(loggedIn | async)"
             matRipple
             [routerLink]="['user', 'registered']"
             [routerLinkActive]="'activated'"
-      ><mat-icon>bookmarks</mat-icon><span>Registros</span></span>
+      ><mat-icon>bookmarks</mat-icon><span>Registros</span></span>-->
       <span *ngIf="(loggedIn | async)"
             matRipple
             [routerLink]="['user', 'subscriptions']"
@@ -37,19 +37,19 @@
             [routerLink]="['superadmin']"
             [routerLinkActive]="'activated'"
       ><mat-icon>admin_panel_settings</mat-icon><span>Panel de administración</span></span>
+      <span *ngIf="(loggedIn | async)"
+      matRipple
+      (click)="auth.signout()"
+      ><mat-icon>meeting_room</mat-icon><span>Salir</span></span>
+      <span *ngIf="!(loggedIn | async)"
+      matRipple
+      [routerLink]="['login']"
+      [routerLinkActive]="'activated'"
+      ><mat-icon>login</mat-icon><span>Acceder</span></span>
       <span matRipple
             [routerLink]="['info']"
             [routerLinkActive]="'activated'"
       ><mat-icon>information</mat-icon><span>Información</span></span>
-      <span *ngIf="(loggedIn | async)"
-            matRipple
-            (click)="auth.signout()"
-      ><mat-icon>meeting_room</mat-icon><span>Salir</span></span>
-      <span *ngIf="!(loggedIn | async)"
-            matRipple
-            [routerLink]="['login']"
-            [routerLinkActive]="'activated'"
-      ><mat-icon>login</mat-icon><span>Acceder</span></span>
     </div>
   </mat-sidenav>
 
