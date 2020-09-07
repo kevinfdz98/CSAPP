@@ -71,7 +71,7 @@ export class FollowingComponent implements OnInit, OnDestroy {
       // Subscribe to changes to GroupsList (in Firebase) and build data array for table
       this.groups.observeGroupsList().subscribe(list => {
         this.data = Object.values(list).map(group => {
-          const majors = [].concat(group.majorsTec20, group.majorsTec21);
+          const majors = [].concat(group.majorsTec20 ? group.majorsTec20 : [], group.majorsTec21 ? group.majorsTec21 : []);
           return {
             gid: group.gid,
             name: group.name,

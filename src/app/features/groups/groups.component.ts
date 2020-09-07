@@ -21,6 +21,7 @@ export class GroupsComponent implements OnInit, OnDestroy {
   public group: Group;
   public areaColor = '#FFFFFF';
   public groupSummary: GroupSummary;
+  public strMajors: string;
 
   constructor(
     private groupS: GroupService,
@@ -44,6 +45,10 @@ export class GroupsComponent implements OnInit, OnDestroy {
                 // Get color of the group
                 this.areaColor = (this.groupSummary.majorsTec21.length > 0) ?
                 areasList.Tec21[majorsList.Tec21[this.groupSummary.majorsTec21[0]].area].color : 'black';
+                this.strMajors = [].concat(
+                  this.groupSummary.majorsTec21 ? this.groupSummary.majorsTec21 : [],
+                  this.groupSummary.majorsTec20 ? this.groupSummary.majorsTec20 : []
+                ).join(', ');
                 // Retrieve logo from students group
                 // const storageRef = this.fireStorage.storage;
                 // const logoRef = storageRef.ref(`sociedades/${this.gid}.png`);
