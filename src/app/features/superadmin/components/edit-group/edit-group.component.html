@@ -4,24 +4,24 @@
         [formGroup]="groupForm"
         (ngSubmit)="onSubmit()"
   >
-    <h1 *ngIf="data.action == 'create'" class="form-element">Registro de sociedad</h1>
-    <h1 *ngIf="data.action == 'edit'" class="form-element">Edición de sociedad</h1>
+    <h1 *ngIf="data.action == 'create'" class="form-element">Registro de grupo</h1>
+    <h1 *ngIf="data.action == 'edit'" class="form-element">Edición de grupo</h1>
     <mat-form-field appearance="fill" class="form-element">
       <mat-label>Siglas*</mat-label>
-      <input matInput [readonly]="data.action == 'edit'" formControlName="gid" 
+      <input matInput [readonly]="data.action == 'edit'" formControlName="gid"
       pattern="[^' ']+" placeholder="SA###">
       <mat-error *ngIf="groupForm.get('gid').hasError('pattern')"> Avoid the use of whitespaces </mat-error>
       <mat-error *ngIf="groupForm.get('gid').hasError('required')">This field is required</mat-error>
     </mat-form-field>
 
     <mat-form-field appearance="fill" class="form-element">
-      <mat-label>Nombre de la sociedad*</mat-label>
-      <input matInput formControlName="name" placeholder="Sociedad de Alumnos ...">
+      <mat-label>Nombre del grupo*</mat-label>
+      <input matInput formControlName="name" placeholder="Sociedad de Alumnos de...">
       <mat-error *ngIf="groupForm.get('name').hasError('required')">This field is required</mat-error>
     </mat-form-field>
 
     <mat-form-field appearance="fill" class="form-element">
-      <mat-label>Carreras Tec21</mat-label>
+      <mat-label>Carreras Tec21 (o CAP/REG)</mat-label>
       <mat-select formControlName="majorsTec21" multiple>
         <mat-optgroup *ngFor="let item of Tec21ByArea | keyvalue">
         <label [ngStyle]="

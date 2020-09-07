@@ -52,8 +52,8 @@ export class EditEventFormComponent implements OnInit {
     const d = moment().add(1, 'hour').startOf('hour');
     const dStart = this.data.eventIn.timestamp && this.data.eventIn.timestamp.start ?
                    moment(this.data.eventIn.timestamp.start) : d.clone();
-    const dEnd   = this.data.eventIn.timestamp && this.data.eventIn.timestamp.start ?
-                   moment(this.data.eventIn.timestamp.start) : d.clone().add(1, 'hour');
+    const dEnd   = this.data.eventIn.timestamp && this.data.eventIn.timestamp.end ?
+                   moment(this.data.eventIn.timestamp.end) : d.clone().add(1, 'hour');
 
     this.eventForm.setValue({
       title        : this.data.eventIn.title ?            this.data.eventIn.title  : null,

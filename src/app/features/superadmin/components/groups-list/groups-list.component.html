@@ -3,7 +3,7 @@
 
     <!-- Mobile Column -->
     <ng-container matColumnDef="mobile">
-      <th mat-header-cell *matHeaderCellDef>Sociedad</th>
+      <th mat-header-cell *matHeaderCellDef>Grupo estudiantil</th>
       <td mat-cell *matCellDef="let group">
         <span class="mobile-name"><span [ngStyle]="{'color': group.color, 'font-weight': '700'}">{{group.gid}}</span>{{' - '+group.name}}</span>
         <span class="mobile-majors">{{group.majors}}</span>
@@ -12,13 +12,13 @@
 
     <!-- Gid Column -->
     <ng-container matColumnDef="gid">
-      <th mat-header-cell *matHeaderCellDef>Sociedad</th>
+      <th mat-header-cell *matHeaderCellDef>Grupo</th>
       <td mat-cell *matCellDef="let group" [ngStyle]="{'color': group.color, 'font-weight': '700'}">{{group.gid}}</td>
     </ng-container>
 
     <!-- Name Column -->
     <ng-container matColumnDef="name">
-      <th mat-header-cell *matHeaderCellDef>Nombre largo</th>
+      <th mat-header-cell *matHeaderCellDef>Nombre completo</th>
       <td mat-cell *matCellDef="let group">{{group.name}}</td>
     </ng-container>
 
@@ -32,7 +32,7 @@
     <tr mat-row *matRowDef="let group; columns: columns" (click)="editGroupDialog(group.gid)"></tr>
 
     <tr class="mat-row" *matNoDataRow>
-      <td class="mat-cell" colspan="3">No se encontraron sociedades</td>
+      <td class="mat-cell" colspan="3">No se encontraron grupos</td>
     </tr>
   </table>
   <button mat-fab

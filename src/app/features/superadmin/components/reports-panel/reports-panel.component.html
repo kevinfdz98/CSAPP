@@ -46,7 +46,7 @@
     <h3>Report details</h3>
 
     <mat-form-field appearance="fill" class="form-element">
-      <mat-label>Seleccionar sociedad(es)</mat-label>
+      <mat-label>Seleccionar grupo(s)</mat-label>
       <mat-select formControlName="group">
           <mat-option *ngFor="let group of (groups.observeGroupsList() | async) | keyvalue"
                       [value]="group.key"

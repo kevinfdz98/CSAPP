@@ -17,7 +17,7 @@
   <mat-form-field appearance="fill" class="form-element">
     <mat-label>Tipo de evento*</mat-label>
     <mat-select formControlName="type">
-      <mat-option *ngFor="let type of eventTypesArray" value="type">{{type}}</mat-option>
+      <mat-option *ngFor="let type of eventTypesArray" value="{{type}}">{{type}}</mat-option>
     </mat-select>
     <mat-error
     *ngIf="eventForm.get('type').hasError('required')"
@@ -81,7 +81,7 @@
 
   <!--Event.oranizingGroups-->
   <mat-form-field appearance="fill" class="form-element">
-    <mat-label>Sociedades organizadoras*</mat-label>
+    <mat-label>Grupos organizadores*</mat-label>
     <mat-select formControlName="groups" multiple>
       <mat-option *ngFor="let item of (groupS.observeGroupsList() | async) | keyvalue"
                   [value]="item.key"
@@ -92,7 +92,7 @@
     <mat-error
       *ngIf="eventForm.get('groups').hasError('required')"
     >This field is required</mat-error>
-    <mat-hint>Todas las sociedades organizadoras van a poder editar/borrar este evento</mat-hint>
+    <mat-hint>Todas los grupos organizadores van a poder editar/borrar este evento</mat-hint>
   </mat-form-field>
   <div class="smallSpacer"> </div>
 

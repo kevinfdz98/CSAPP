@@ -23,7 +23,7 @@
   </mat-form-field>
 
   <mat-form-field appearance="fill" class="form-element">
-    <mat-label>Seleccionar sociedad(es)</mat-label>
+    <mat-label>Seleccionar grupo(s)</mat-label>
     <mat-select formControlName="administra" multiple>
         <mat-option *ngFor="let group of groupsList | keyvalue"
                     [value]="group.key"
