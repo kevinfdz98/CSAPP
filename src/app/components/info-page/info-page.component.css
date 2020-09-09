@@ -2,9 +2,44 @@
   margin: 20px 40px;
 }
 
+.spacer{
+  height: 5px;
+}
+
+.imageInfo{
+  width : 200px;
+  border-radius: 50%;
+}
+/* For mobile devices */
+@media only screen and (max-width : 599px){
+  
+.title{
+  text-align:center; 
+  vertical-align: middle;
+  display: table-cell; 
+}
+
+.imagesContainer{
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  }
+
+}
+
 /* For desktop: */
 @media only screen and (min-width: 600px) {
   .container-info-page {
     margin: 20px 40px;
+  }
+  .imagesContainer{
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+  }
+  .title{
+    text-align:center; 
+    vertical-align: middle;
+    display: table-cell; 
   }
 }

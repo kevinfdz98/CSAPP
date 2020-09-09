@@ -51,11 +51,11 @@
       </span>
       <span *ngIf="event.linkEvent" class="url-container">
         <mat-icon>link</mat-icon>
-        <span>{{event ? event.linkEvent : ''}}</span>
+        <a href="{{event ? event.linkEvent : ''}}" target="_blank"><span>{{event ? event.linkEvent : ''}}</span></a>
       </span>
       <span *ngIf="event.linkRegister">
         <mat-icon>how_to_reg</mat-icon>
-        <span>{{event ? event.linkRegister : ''}}</span>
+        <a href="{{event ? event.linkRegister : ''}}" target="_blank"><span>{{event ? event.linkRegister : ''}}</span></a>
       </span>
       <span *ngIf="event.description">
         <mat-icon>description</mat-icon>
